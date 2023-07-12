@@ -77,7 +77,7 @@ function ProductDescription() {
                 Add To Cart
                 <FontAwesomeIcon icon={faCartShopping} className="ms-2" />
               </button>
-              <Link to={'/'} className="btn border mt-3">Back to Store</Link>
+              <Link to={`/store/${product.category}`} className="btn border mt-3">Back to Store</Link>
             </div>
           </div>
         </div>
