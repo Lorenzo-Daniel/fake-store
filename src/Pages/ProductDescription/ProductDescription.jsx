@@ -8,7 +8,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
 import { Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-import Navbar from "../../Components/Navbar";
 // import { useSelector ,useDispatch} from "react-redux";
 // import { removeProductFromCart } from "../../Reducers/cartSlice";
 
@@ -34,7 +33,6 @@ function ProductDescription() {
   }, [title]);
   return (
     <div>
-      <Navbar />
       <div className="d-flex flex-column mt-4 mb-5 m-auto col-sm-10 col-md-8">
         <h1 className="text-center mb-4"> {product.title}</h1>
         <div className="m-auto p-2">

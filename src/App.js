@@ -3,15 +3,17 @@ import "bootstrap/dist/css/bootstrap.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./Pages/Home/Home";
 import Cart from "./Pages/Cart/Cart";
-// import Navbar from "./Components/Navbar";
+import Navbar from "./Components/Navbar";
 import ProductDescription from "./Pages/ProductDescription/ProductDescription";
+import StoreProducts from "./Pages/StoreProducts/StoreProducts";
 function App() {
   return (
     <div>
       <BrowserRouter>
-        {/* <Navbar /> */}
+        <Navbar />
         <Routes>
-          <Route exact path="/" element={<Home />} />
+        <Route exact path="/" element={<Home />} />
+        <Route exact path="/store/:categorie" element={<StoreProducts />} />
           <Route
             exact
             path="/description/:title"
