@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
-import Button from "@mui/material/Button";
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
 import ListItem from "@mui/material/ListItem";
@@ -41,10 +40,13 @@ function TemporaryDrawer({ allCategories }) {
       <List>
         <ListItem className="p-0">
           <ListItemButton>
-            <ListItemText primary="All Products" onClick={()=>navigate('/store/all products')} />
+            <ListItemText
+              primary="All Products"
+              onClick={() => navigate("/store/all products")}
+            />
           </ListItemButton>
         </ListItem>
-        <Divider/>
+        <Divider />
         {allCategories.map((text, index) => (
           <ListItem key={text} disablePadding>
             <ListItemButton>
@@ -84,11 +86,9 @@ function TemporaryDrawer({ allCategories }) {
   return (
     <div>
       <>
-        <Button onClick={toggleDrawer(anchor, true)}>
-          <IconButton className="text-white">
-            <MenuIcon />
-          </IconButton>
-        </Button>
+        <IconButton className="text-white" onClick={toggleDrawer(anchor, true)}>
+          <MenuIcon />
+        </IconButton>
         <Drawer
           anchor={anchor}
           open={state[anchor]}
