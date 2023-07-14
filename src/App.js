@@ -6,6 +6,8 @@ import Cart from "./Pages/Cart/Cart";
 import Navbar from "./Components/Navbar";
 import ProductDescription from "./Pages/ProductDescription/ProductDescription";
 import StoreProducts from "./Pages/StoreProducts/StoreProducts";
+import LoginPage from "./Pages/LoginPage/LoginPage";
+import SignUpPage from "./Pages/SignUpPage/SignUpPage";
 function App() {
   return (
     <div>
@@ -20,6 +22,9 @@ function App() {
             element={<ProductDescription />}
           />
           <Route exact path="/cart" element={<Cart />} />
+          <Route exact path="/loginPage" element={<LoginPage />} />
+          <Route exact path="/signUp" element={<SignUpPage />} />
+
         </Routes>
       </BrowserRouter>
     </div>

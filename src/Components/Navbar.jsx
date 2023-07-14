@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { selectTotalCount } from "../Reducers/cartSlice";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -20,8 +21,9 @@ function Navbar() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
   const [allCategories, setAllCategories] = useState([]);
-  const cart = useSelector((state) => state.cart);
   const navigate = useNavigate();
+  const counterCart = useSelector(selectTotalCount);
+  console.log(counterCart);
   const CategoryRequest = async () => {
     try {
       const request = await fetch(`https://dummyjson.com/products/categories`);
@@ -31,11 +33,13 @@ function Navbar() {
       throw new Error(`Something went wrong | Error : ${error}`);
     }
   };
+
   useEffect(() => {
     setAllCategories(
       JSON.parse(localStorage.getItem("categoriesList")) || CategoryRequest()
     );
   }, []);
+
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
@@ -73,7 +77,7 @@ function Navbar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+      <MenuItem onClick={()=>navigate('/loginPage')}>Login</MenuItem>
       <MenuItem onClick={handleMenuClose}>My account</MenuItem>
     </Menu>
   );
@@ -147,7 +151,7 @@ function Navbar() {
               aria-label="show 4 new mails"
               color="inherit"
             >
-              <Badge badgeContent={cart.totalCount} color="error">
+              <Badge badgeContent={counterCart} color="error">
                 <ShoppingCartSharp />
               </Badge>
             </IconButton>

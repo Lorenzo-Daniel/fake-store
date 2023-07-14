@@ -1,9 +1,10 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { selectProductsCartList } from "../../Reducers/cartSlice";
 import { removeProductFromCart } from "../../Reducers/cartSlice";
 function Cart() {
   const dispatch = useDispatch();
-  const { productsList } = useSelector((state) => state.cart);
+  const productsInCart = useSelector(selectProductsCartList);
 
   const handleRemoveProduct = (productId) =>
     dispatch(removeProductFromCart(productId));
@@ -22,7 +23,7 @@ function Cart() {
           </tr>
         </thead>
         <tbody>
-          {productsList.map((product) => {
+          {productsInCart.map((product) => {
             return (
               <tr key={product.id}>
                 <th>{product.id}</th>

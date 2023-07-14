@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import { selectProductsCartList } from "../../Reducers/cartSlice";
 import {
   addProductToCart,
   removeProductFromCart,
@@ -19,7 +20,7 @@ import { Delete, ShoppingCartCheckoutTwoTone } from "@mui/icons-material";
 
 function StoreProducts() {
   const [allProducts, setAllProducts] = useState([]);
-  const { productsList } = useSelector((state) => state.cart);
+  const productsInCart = useSelector(selectProductsCartList);
   const [productsInStore, setProductsInStore] = useState([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -27,7 +28,7 @@ function StoreProducts() {
 
   const handleAddRemoveProductToCart = (productId) => {
     const product = allProducts.find((product) => product.id === productId);
-    const findProduct = productsList.find(
+    const findProduct = productsInCart.find(
       (product) => product.id === productId
     );
     if (findProduct) {
@@ -112,13 +113,13 @@ function StoreProducts() {
                   size="small"
                   variant="outlined"
                   color={
-                    productsList.find((pdt) => pdt.id === product.id)
+                    productsInCart.find((pdt) => pdt.id === product.id)
                       ? "error"
                       : "primary"
                   }
                   onClick={() => handleAddRemoveProductToCart(product.id)}
                 >
-                  {productsList.find((pdt) => pdt.id === product.id) ? (
+                  {productsInCart.find((pdt) => pdt.id === product.id) ? (
                     <Box>
                       Remove FROM CART
                       <Delete />
