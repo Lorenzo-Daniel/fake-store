@@ -60,7 +60,7 @@ function Navbar() {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
-  const menuId = "primary-search-account-menu";
+  // const menuId = "primary-search-account-menu";
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
@@ -68,7 +68,7 @@ function Navbar() {
         vertical: "top",
         horizontal: "right",
       }}
-      id={menuId}
+      // id={menuId}
       keepMounted
       transformOrigin={{
         vertical: "top",
@@ -77,12 +77,14 @@ function Navbar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
+    <MenuItem divider  > jonDoe@example.com</MenuItem>
       <MenuItem onClick={()=>navigate('/loginPage')}>Login</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <MenuItem divider onClick={handleMenuClose}>My account</MenuItem>
+      <MenuItem >Logout</MenuItem>
     </Menu>
   );
 
-  const mobileMenuId = "primary-search-account-menu-mobile";
+  // const mobileMenuId = "primary-search-account-menu-mobile";
   const renderMobileMenu = (
     <Menu
       anchorEl={mobileMoreAnchorEl}
@@ -90,7 +92,7 @@ function Navbar() {
         vertical: "top",
         horizontal: "right",
       }}
-      id={mobileMenuId}
+      // id={mobileMenuId}
       keepMounted
       transformOrigin={{
         vertical: "top",
@@ -99,11 +101,11 @@ function Navbar() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem>
+      <MenuItem divider >
         <IconButton
           size="large"
           aria-label="account of current user"
-          aria-controls="primary-search-account-menu"
+          // aria-controls="primary-search-account-menu"
           aria-haspopup="true"
           color="inherit"
           onClick={handleProfileMenuOpen}
@@ -170,7 +172,7 @@ function Navbar() {
               size="large"
               edge="end"
               aria-label="account of current user"
-              aria-controls={menuId}
+              // aria-controls={menuId}
               aria-haspopup="true"
               onClick={handleProfileMenuOpen}
               color="inherit"
@@ -182,7 +184,7 @@ function Navbar() {
             <IconButton
               size="large"
               aria-label="show more"
-              aria-controls={mobileMenuId}
+              // aria-controls={mobileMenuId}
               aria-haspopup="true"
               onClick={handleMobileMenuOpen}
               color="inherit"
