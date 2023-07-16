@@ -1,12 +1,3 @@
-// import { configureStore } from '@reduxjs/toolkit';
-
-// import  cartSlice from '../Reducers/cartSlice';
-
-// export default configureStore({
-//   reducer: {
-//     cart: cartSlice 
-//   }
-// })
 
 import { configureStore } from '@reduxjs/toolkit';
 import storage  from 'redux-persist/lib/storage';
@@ -14,25 +5,27 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { persistReducer } from 'redux-persist';
 import thunk from 'redux-thunk'
 import  cartSlice from '../Reducers/cartSlice';
+import userSlice from '../Reducers/userSlice';
 
 
 const persistConfig = {
-  key:'productsInCart',
+  key:'root',
   storage,
-  whitelist: ['cartState']
+  whitelist: ['cartState','userState']
 }
 
 
-const productInCartreducer = combineReducers({
-  cartState : cartSlice
+const rootReducers = combineReducers({
+  cartState : cartSlice,
+  userState : userSlice
 })
 
-const presistReducer = persistReducer(persistConfig,productInCartreducer)
+const presistReducer = persistReducer(persistConfig,rootReducers)
 
 
 export default configureStore({
   reducer: {
-    cart: presistReducer 
-  },
-  middleware : [thunk]
+    rootReducer:presistReducer ,
+  } ,
+  middleware : [thunk],
 })

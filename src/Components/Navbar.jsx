@@ -1,29 +1,41 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  selectUserIsLogeedIn,
+  logout,
+  selectUser,
+} from "../Reducers/userSlice";
 import { selectTotalCount } from "../Reducers/cartSlice";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import Badge from "@mui/material/Badge";
-import MenuItem from "@mui/material/MenuItem";
-import Menu from "@mui/material/Menu";
-import AccountCircle from "@mui/icons-material/AccountCircle";
-import { ShoppingCartSharp } from "@mui/icons-material";
+import TemporaryDrawer from "./TemporaryDrawer";
+//-------------------------------------------------------------------
+import {
+  AppBar,
+  Box,
+  Toolbar,
+  IconButton,
+  Typography,
+  Badge,
+  MenuItem,
+  Button,
+  Menu,
+} from "@mui/material";
+
+import { ShoppingCartSharp, AccountCircle } from "@mui/icons-material";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
-import TemporaryDrawer from "./TemporaryDrawer";
-import { Button } from "@mui/material";
 
+//-----------------------------------------------------------------------
 function Navbar() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
   const [allCategories, setAllCategories] = useState([]);
   const navigate = useNavigate();
   const counterCart = useSelector(selectTotalCount);
-  console.log(counterCart);
+  const userData = useSelector(selectUser);
+  const userIsLogged = useSelector(selectUserIsLogeedIn);
+  const dispatch = useDispatch();
+
   const CategoryRequest = async () => {
     try {
       const request = await fetch(`https://dummyjson.com/products/categories`);
@@ -60,7 +72,6 @@ function Navbar() {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
-  // const menuId = "primary-search-account-menu";
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
@@ -68,7 +79,6 @@ function Navbar() {
         vertical: "top",
         horizontal: "right",
       }}
-      // id={menuId}
       keepMounted
       transformOrigin={{
         vertical: "top",
@@ -77,14 +87,26 @@ function Navbar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-    <MenuItem divider  > jonDoe@example.com</MenuItem>
-      <MenuItem onClick={()=>navigate('/loginPage')}>Login</MenuItem>
-      <MenuItem divider onClick={handleMenuClose}>My account</MenuItem>
-      <MenuItem >Logout</MenuItem>
+      {userIsLogged ? (
+        <div>
+          <MenuItem divider>
+            {userData.firstName} <br /> {userData.email}
+          </MenuItem>
+          <MenuItem divider onClick={handleMenuClose}>
+            My account
+          </MenuItem>
+          <MenuItem onClick={() => dispatch(logout())}>Logout</MenuItem>
+        </div>
+      ) : (
+        <div>
+          <MenuItem divider>You are not logged in </MenuItem>
+          <MenuItem onClick={() => navigate("/loginPage")}>Login</MenuItem>
+          <MenuItem onClick={() => navigate("/SignUp")}>Register</MenuItem>
+        </div>
+      )}
     </Menu>
   );
 
-  // const mobileMenuId = "primary-search-account-menu-mobile";
   const renderMobileMenu = (
     <Menu
       anchorEl={mobileMoreAnchorEl}
@@ -92,7 +114,6 @@ function Navbar() {
         vertical: "top",
         horizontal: "right",
       }}
-      // id={mobileMenuId}
       keepMounted
       transformOrigin={{
         vertical: "top",
@@ -101,13 +122,12 @@ function Navbar() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem divider >
+      <MenuItem divider>
         <IconButton
           size="large"
           aria-label="account of current user"
-          // aria-controls="primary-search-account-menu"
           aria-haspopup="true"
-          color="inherit"
+          color={userIsLogged ? "primary" : "inherit"}
           onClick={handleProfileMenuOpen}
         >
           <AccountCircle />
@@ -172,10 +192,9 @@ function Navbar() {
               size="large"
               edge="end"
               aria-label="account of current user"
-              // aria-controls={menuId}
               aria-haspopup="true"
               onClick={handleProfileMenuOpen}
-              color="inherit"
+              color={userIsLogged ? "primary" : "inherit"}
             >
               <AccountCircle />
             </IconButton>
@@ -184,7 +203,6 @@ function Navbar() {
             <IconButton
               size="large"
               aria-label="show more"
-              // aria-controls={mobileMenuId}
               aria-haspopup="true"
               onClick={handleMobileMenuOpen}
               color="inherit"

@@ -1,5 +1,12 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import {login,setUser} from '../../../Reducers/userSlice'
+// import { initializeApp } from 'firebase/app';
+import { getFirestore, collection, addDoc} from 'firebase/firestore';
+// import { firebaseConfig } from "../../../firebaseConfig/firebaseConfig";
+
+//-------------------------------------------------------------------
 import {
   Stack,
   IconButton,
@@ -13,34 +20,35 @@ import { Button } from "@mui/material";
 import Iconify from "../../../Components/Iconify/Iconify";
 
 // ----------------------------------------------------------------------
+
 const validationConfig = {
   firstName: (value) =>
-    value.length === 0
+  value.length === 0
       ? "*This field is required"
       : value.length < 3
       ? "First name must be at least 3 characters"
       : "",
-
-  lastName: (value) =>
+      
+      lastName: (value) =>
     value.length === 0
-      ? "*This field is required"
+    ? "*This field is required"
       : value.length < 3
       ? "Last name must be at least 3 characters"
       : "",
-  email: (value) =>
-    value.length === 0
+      email: (value) =>
+      value.length === 0
       ? "*This field is required"
       : /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)
       ? ""
       : "Email is invalid",
   password: (value) =>
-    value.length === 0
+  value.length === 0
       ? "*This field is required"
       : value.length < 8
       ? "Password must be at least 8 characters"
       : "",
-  confirmPassword: (value, formValues) =>
-    value.length === 0
+      confirmPassword: (value, formValues) =>
+      value.length === 0
       ? "*This field is required"
       : value !== formValues.password
       ? "Passwords do not match"
@@ -48,7 +56,10 @@ const validationConfig = {
 };
 
 //-----------------------------------------------------------------------
+// const app = initializeApp(firebaseConfig)
+// const db = getFirestore(app)
 
+//--------------------------------------------------------------------------
 function SignUpForm() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
@@ -56,6 +67,8 @@ function SignUpForm() {
   const formRef = useRef();
   const [signUpSuccess, setsignUpSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch()
+  
   const [formValues, setFormValues] = useState({
     firstName: "",
     lastName: "",
@@ -71,6 +84,15 @@ function SignUpForm() {
     confirmPassword: "",
   });
 
+  const handleFisrestoreAdd = async (formValues) =>{
+    try {
+      const db = getFirestore()
+      const docRef = await addDoc(collection(db, "users"),formValues );
+      console.log("Document written with ID: ", docRef.id);
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
+  }
   const handleBlur = (e) => {
     const { name, value } = e.target;
     const validate = validationConfig[name];
@@ -85,6 +107,7 @@ function SignUpForm() {
       });
     }
   };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormValues((prevValues) => {
@@ -94,6 +117,7 @@ function SignUpForm() {
       return prevValues;
     });
   };
+ 
   const handleSubmit = (e) => {
     e.preventDefault();
     const updatedFormErrors = Object.keys(formValues).reduce(
@@ -116,17 +140,23 @@ function SignUpForm() {
       console.log("algo salio mal con el envio del formulario ");
       return;
     }
+ 
+    handleFisrestoreAdd(formValues)
     setIsLoading(true);
     setTimeout(() => {
       setsignUpSuccess(true);
       setIsLoading(false);
       formRef.current.reset();
+      dispatch(setUser(formValues))
+      dispatch(login())
     }, 2000);
     setTimeout(() => {
       setsignUpSuccess(false);
       navigate('/store/all products')
     }, 4000);
   };
+
+  //----------------------------------------------------------------------
 
   return (
     <>
