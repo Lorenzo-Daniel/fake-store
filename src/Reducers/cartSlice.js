@@ -17,11 +17,15 @@ export const cartSlice = createSlice({
       const productId = action.payload;
       state.totalCount -= 1;
       state.productsList = state.productsList.filter(product => product.id !== productId);
+    },
+    removeAllProductFromCart :(state) =>{
+      state.totalCount = 0;
+      state.productsList = [];
     }
   }
 })
 
-export const { addProductToCart, removeProductFromCart } = cartSlice.actions;
+export const { addProductToCart, removeProductFromCart ,removeAllProductFromCart} = cartSlice.actions;
 export const selectTotalCount = (state)=> state.rootReducer.cartState.totalCount;
 export const selectProductsCartList = (state)=>state.rootReducer.cartState.productsList;
 export default cartSlice.reducer;

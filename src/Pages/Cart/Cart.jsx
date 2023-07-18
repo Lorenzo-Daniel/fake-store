@@ -1,7 +1,10 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { selectProductsCartList } from "../../Reducers/cartSlice";
-import { removeProductFromCart } from "../../Reducers/cartSlice";
+import {
+  removeProductFromCart,
+  removeAllProductFromCart,
+} from "../../Reducers/cartSlice";
 function Cart() {
   const dispatch = useDispatch();
   const productsInCart = useSelector(selectProductsCartList);
@@ -43,6 +46,14 @@ function Cart() {
           })}
         </tbody>
       </table>
+      <div className="d-flex justify-content-end">
+        <button
+          className="btn btn-warning btn-sm text-white"
+          onClick={() => dispatch(removeAllProductFromCart())}
+        >
+          Remove All Products
+        </button>
+      </div>
     </div>
   );
 }

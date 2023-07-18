@@ -15,10 +15,12 @@ const userSlice = createSlice({
     logout: (state) => {
       state.isLoggedIn = false;
       state.user = null;
+      state.userData = null;
+
     },
     setUser: (state, action) => {
       state.userData = action.payload;
-    }, 
+    }
   },
 });
 

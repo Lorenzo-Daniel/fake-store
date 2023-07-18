@@ -6,8 +6,10 @@ import {
   logout,
   selectUser,
 } from "../Reducers/userSlice";
-import { selectTotalCount } from "../Reducers/cartSlice";
+import { selectTotalCount ,removeAllProductFromCart} from "../Reducers/cartSlice";
 import TemporaryDrawer from "./TemporaryDrawer";
+import { getAuth, signOut } from "firebase/auth";
+
 //-------------------------------------------------------------------
 import {
   AppBar,
@@ -26,6 +28,7 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
 
 //-----------------------------------------------------------------------
+
 function Navbar() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
@@ -35,6 +38,8 @@ function Navbar() {
   const userData = useSelector(selectUser);
   const userIsLogged = useSelector(selectUserIsLogeedIn);
   const dispatch = useDispatch();
+  const auth = getAuth();
+
 
   const CategoryRequest = async () => {
     try {
@@ -44,6 +49,20 @@ function Navbar() {
     } catch (error) {
       throw new Error(`Something went wrong | Error : ${error}`);
     }
+  };
+
+  const handleLogout = () => {
+    signOut(auth)
+      .then(() => {
+        dispatch(logout());
+        dispatch(removeAllProductFromCart())
+      })
+      .catch((error) => {
+        // Manejo de errores
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorMessage);
+      });
   };
 
   useEffect(() => {
@@ -89,13 +108,11 @@ function Navbar() {
     >
       {userIsLogged ? (
         <div>
-          <MenuItem divider>
-            {userData.firstName} <br /> {userData.email}
-          </MenuItem>
+          <MenuItem divider>{userData.email}</MenuItem>
           <MenuItem divider onClick={handleMenuClose}>
             My account
           </MenuItem>
-          <MenuItem onClick={() => dispatch(logout())}>Logout</MenuItem>
+          <MenuItem onClick={handleLogout}>Logout</MenuItem>
         </div>
       ) : (
         <div>
@@ -196,7 +213,16 @@ function Navbar() {
               onClick={handleProfileMenuOpen}
               color={userIsLogged ? "primary" : "inherit"}
             >
-              <AccountCircle />
+              {userData?.photoURL ? (
+                <img
+                  src={userData.photoURL}
+                  alt="alt"
+                  width={"25px"}
+                  className="rounded-5"
+                />
+              ) : (
+                <AccountCircle />
+              )}
             </IconButton>
           </Box>
           <Box sx={{ display: { xs: "flex", md: "none" } }}>
