@@ -1,27 +1,14 @@
-import { useNavigate } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 import useResponsive from "../../../hooks/useResponsive";
-import Iconify from "../../../Components/Iconify/Iconify";
 import LoginForm from "./LoginForm";
-import { useDispatch } from "react-redux";
-import { login, setUser } from "../../../Reducers/userSlice";
-import {
-  getAuth,
-  fetchSignInMethodsForEmail,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  GoogleAuthProvider,
-  FacebookAuthProvider,
-} from "firebase/auth";
+
 //-------------------------------------------------------------------
 
 import {
-  Link,
   Container,
   Typography,
   Divider,
   Stack,
-  Button,
 } from "@mui/material";
 
 // ----------------------------------------------------------------------
@@ -56,53 +43,47 @@ const StyledContent = styled("div")(({ theme }) => ({
 
 function LoginPage() {
   const mdUp = useResponsive("up", "md");
-  const navigate = useNavigate();
-  const googleProvider = new GoogleAuthProvider();
-  const facebookProvider = new FacebookAuthProvider();
-  const auth = getAuth();
-  const dispatch = useDispatch(); 
-
-  const signInWithGoogle = () => {
+  // const signInWithGoogle = () => {
     
-    signInWithPopup(auth, googleProvider)
-      .then((userCredential) => {
-        // Inicio de sesión exitoso con Google
-        const user = userCredential.user;
-        console.log(user);
-        dispatch(setUser(user))
-        dispatch(login())
-        navigate("/store/all products")
-        // Realiza acciones adicionales después del inicio de sesión
-      })
-      .catch((error) => {
-        // Manejo de errores
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorCode);
-        console.log(errorMessage);
-      });
-  };
+  //   signInWithPopup(auth, googleProvider)
+  //     .then((userCredential) => {
+  //       // Inicio de sesión exitoso con Google
+  //       const user = userCredential.user;
+  //       console.log(user);
+  //       dispatch(setUser(user))
+  //       dispatch(login())
+  //       navigate("/store/all products")
+  //       // Realiza acciones adicionales después del inicio de sesión
+  //     })
+  //     .catch((error) => {
+  //       // Manejo de errores
+  //       const errorCode = error.code;
+  //       const errorMessage = error.message;
+  //       console.log(errorCode);
+  //       console.log(errorMessage);
+  //     });
+  // };
 
   // Función para iniciar sesión con Facebook
-  const signInWithFacebook = () => {
-    signInWithPopup(auth, facebookProvider)
-    .then((userCredential) => {
-      // Inicio de sesión exitoso con Google
-      const user = userCredential.user;
-      console.log(user);
-      dispatch(setUser(user))
-      dispatch(login())
-      navigate("/store/all products")
-      // Realiza acciones adicionales después del inicio de sesión
-    })
-    .catch((error) => {
-      // Manejo de errores
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.log(errorCode);
-      console.log(errorMessage);
-    });
-  };
+  // const signInWithFacebook = () => {
+  //   signInWithPopup(auth, facebookProvider)
+  //   .then((userCredential) => {
+  //     // Inicio de sesión exitoso con Google
+  //     const user = userCredential.user;
+  //     console.log(user);
+  //     dispatch(setUser(user))
+  //     dispatch(login())
+  //     navigate("/store/all products")
+  //     // Realiza acciones adicionales después del inicio de sesión
+  //   })
+  //   .catch((error) => {
+  //     // Manejo de errores
+  //     const errorCode = error.code;
+  //     const errorMessage = error.message;
+  //     console.log(errorCode);
+  //     console.log(errorMessage);
+  //   });
+  // };
 
   return (
     <>

@@ -58,8 +58,6 @@ function Navbar() {
         dispatch(removeAllProductFromCart())
       })
       .catch((error) => {
-        // Manejo de errores
-        const errorCode = error.code;
         const errorMessage = error.message;
         console.log(errorMessage);
       });
