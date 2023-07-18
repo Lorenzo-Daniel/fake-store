@@ -16,6 +16,7 @@ import {
   Checkbox,
   Box,
   Typography,
+  Alert
 } from "@mui/material";
 import Iconify from "../../../Components/Iconify/Iconify";
 
@@ -112,7 +113,7 @@ function LoginForm() {
       (error) => error !== ""
     );
     if (hasErrors) {
-      console.log("Algo salió mal con el envío del formulario");
+      console.log("Somthing went wrong , try again.");
       return;
     }
 
@@ -126,7 +127,7 @@ function LoginForm() {
             const user = userCredential.user;
             dispatch(setUser(user));
             dispatch(login());
-            setSuccess("Logueado correctamente"); // Reemplazar setError(true) por setSuccess(true)
+            setSuccess("successfully logged in"); // Reemplazar setError(true) por setSuccess(true)
             setTimeout(() => {
               navigate("/store/all products");
             }, 1000);
@@ -207,6 +208,13 @@ function LoginForm() {
           Login
         </Button>
       </form>
+      {success && (
+        <Box mt={2} display={"flex"} justifyContent={"center"}>
+            <Alert sx={{ py: 2,width:'100%' }} severity="success">
+              {success}
+            </Alert>
+        </Box>
+      )}
       {error && (
         <Box mt={2} display={"flex"} alignItems={"center"}>
           <Typography variant="caption" color={"error"} sx={{ mt: 1 }}>
@@ -217,13 +225,6 @@ function LoginForm() {
               Register
             </Link>
           )}
-        </Box>
-      )}
-      {success && (
-        <Box mt={2} display={"flex"} alignItems={"center"}>
-          <Typography variant="caption" color={"error"} sx={{ mt: 1 }}>
-            {success}
-          </Typography>
         </Box>
       )}
     </>
