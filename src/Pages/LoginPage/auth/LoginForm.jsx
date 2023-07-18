@@ -13,10 +13,9 @@ import {
   IconButton,
   InputAdornment,
   TextField,
-  Checkbox,
   Box,
   Typography,
-  Alert
+  Alert,
 } from "@mui/material";
 import Iconify from "../../../Components/Iconify/Iconify";
 
@@ -138,8 +137,10 @@ function LoginForm() {
             const errorMessage = error.message;
             console.log(errorCode);
             console.log(errorMessage);
-            setErrorMessage("something went wrong; Check that the username and password are correct and try again");
-            setError(true)
+            setErrorMessage(
+              "something went wrong; Check that the username and password are correct and try again"
+            );
+            setError(true);
           });
       }
     });
@@ -195,11 +196,10 @@ function LoginForm() {
         <Stack
           direction="row"
           alignItems="center"
-          justifyContent="space-between"
+          justifyContent="end"
           sx={{ my: 2 }}
         >
-          <Checkbox name="remember" label="Remember me" />
-          <Link to={'/recover-password'}variant="subtitle2" underline="hover">
+          <Link to={"/recover-password"} variant="subtitle2" underline="hover">
             Forgot password?
           </Link>
         </Stack>
@@ -210,21 +210,21 @@ function LoginForm() {
       </form>
       {success && (
         <Box mt={2} display={"flex"} justifyContent={"center"}>
-            <Alert sx={{ py: 2,width:'100%' }} severity="success">
-              {success}
-            </Alert>
+          <Alert sx={{ py: 2, width: "100%" }} severity="success">
+            {success}
+          </Alert>
         </Box>
       )}
       {error && (
         <Box mt={2} display={"flex"} alignItems={"center"}>
-          <Typography variant="caption" color={"error"} sx={{ mt: 1 }}>
+          <Alert severity="error" sx={{ mt: 1, width: "100%",display:'flex',alignItems:'center' }}>
             {errorMessage}
-          </Typography>
-          {errorMessage === "The user is not registered" && (
-            <Link to="/signUp" className="btn">
-              Register
-            </Link>
-          )}
+            {errorMessage === "The user is not registered" && (
+              <Link to="/signUp" className="btn text-success">
+                Register
+              </Link>
+            )}
+          </Alert>
         </Box>
       )}
     </>
