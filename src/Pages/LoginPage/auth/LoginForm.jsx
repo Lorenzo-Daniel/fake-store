@@ -2,11 +2,22 @@ import { useNavigate, Link } from "react-router-dom";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { login, setUser } from "../../../Reducers/userSlice";
+
+//------------------------------------------------------------
+
+import {
+  handleBlur,
+  validationConfig,
+  handleChange,
+} from "../../../helpers/formHelpers";
+//-------------------------------------------------------------
+
 import {
   getAuth,
   fetchSignInMethodsForEmail,
   signInWithEmailAndPassword,
 } from "firebase/auth";
+
 import {
   Button,
   Stack,
@@ -19,79 +30,31 @@ import {
 } from "@mui/material";
 import Iconify from "../../../Components/Iconify/Iconify";
 
-// ----------------------------------------------------------------------
-const validationConfig = {
-  firstName: (value) =>
-    value.length === 0
-      ? "*This field is required"
-      : value.length < 3
-      ? "First name must be at least 3 characters"
-      : "",
-
-  lastName: (value) =>
-    value.length === 0
-      ? "*This field is required"
-      : value.length < 3
-      ? "Last name must be at least 3 characters"
-      : "",
-  email: (value) =>
-    value.length === 0
-      ? "*This field is required"
-      : /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)
-      ? ""
-      : "Email is invalid",
-  password: (value) =>
-    value.length === 0
-      ? "*This field is required"
-      : value.length < 8
-      ? "Password must be at least 8 characters"
-      : "",
-  confirmPassword: (value, formValues) =>
-    value.length === 0
-      ? "*This field is required"
-      : value !== formValues.password
-      ? "Passwords do not match"
-      : "",
-};
-
 //-------------------------------------------------------------------------------
+
 function LoginForm() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(false);
+  const [errorSubmitMessage, setErrorSubmitMessage] = useState(false);
   const [formValues, setFormValues] = useState({ email: "", password: "" });
   const [formErrors, setFormErrors] = useState({ email: "", password: "" });
   const [success, setSuccess] = useState("");
   const auth = getAuth();
   const dispatch = useDispatch();
-  console.log(formValues.email);
 
-  const handleBlur = (e) => {
-    const { name, value } = e.target;
-    const validate = validationConfig[name];
-    setFormValues((prevValues) => ({ ...prevValues, [name]: value }));
-    if (validate) {
-      const errorMessage = validate(value, formValues);
-      setFormErrors((prevErrors) => {
-        if (prevErrors[name] !== errorMessage) {
-          return { ...prevErrors, [name]: errorMessage };
-        }
-        return prevErrors;
-      });
-    }
-  };
+  const handleOnBlur = (e) =>
+    handleBlur(
+      e,
+      validationConfig,
+      setFormErrors,
+      setFormValues,
+      setError,
+      formValues
+    );
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setError(false);
-    setFormValues((prevValues) => {
-      if (prevValues[name] !== value) {
-        return { ...prevValues, [name]: value };
-      }
-      return prevValues;
-    });
-  };
+  const handleOnChange = (e) =>
+    handleChange(e, setError, setFormValues, setErrorSubmitMessage);
 
   const onSubmitHandler = (e) => {
     e.preventDefault();
@@ -115,29 +78,26 @@ function LoginForm() {
       console.log("Somthing went wrong , try again.");
       return;
     }
-
     fetchSignInMethodsForEmail(auth, formValues.email).then((signInMethods) => {
       if (signInMethods.length === 0) {
-        setError(true);
-        setErrorMessage("The user is not registered");
+        setErrorSubmitMessage("The user is not registered");
       } else {
         signInWithEmailAndPassword(auth, formValues.email, formValues.password)
           .then((userCredential) => {
             const user = userCredential.user;
             dispatch(setUser(user));
             dispatch(login());
-            setSuccess("successfully logged in"); // Reemplazar setError(true) por setSuccess(true)
+            setSuccess("successfully logged in");
             setTimeout(() => {
               navigate("/store/all products");
             }, 1000);
           })
           .catch((error) => {
-            // Manejo de errores
             const errorCode = error.code;
             const errorMessage = error.message;
-            console.log(errorCode);
-            console.log(errorMessage);
-            setErrorMessage(
+            console.error(errorCode);
+            console.error(errorMessage);
+            setErrorSubmitMessage(
               "something went wrong; Check that the username and password are correct and try again"
             );
             setError(true);
@@ -155,11 +115,11 @@ function LoginForm() {
               name="email"
               autoComplete="user-name"
               label="Email address"
-              onBlur={(e) => handleBlur(e)}
-              onChange={handleChange}
+              onBlur={handleOnBlur}
+              onChange={handleOnChange}
             />
             <Typography variant="caption" color={"error"} sx={{ mt: 1 }}>
-              {formErrors?.email}
+              {error && formErrors?.email}
             </Typography>
           </Box>
           <Box display={"flex"} flexDirection={"column"}>
@@ -168,8 +128,8 @@ function LoginForm() {
               autoComplete="new-password"
               label="Password"
               type={showPassword ? "text" : "password"}
-              onBlur={(e) => handleBlur(e)}
-              onChange={handleChange}
+              onBlur={handleOnBlur}
+              onChange={handleOnChange}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
@@ -188,7 +148,7 @@ function LoginForm() {
               }}
             />
             <Typography variant="caption" color={"error"} sx={{ mt: 1 }}>
-              {formErrors?.password}
+              {error && formErrors?.password}
             </Typography>
           </Box>
         </Stack>
@@ -215,11 +175,14 @@ function LoginForm() {
           </Alert>
         </Box>
       )}
-      {error && (
+      {errorSubmitMessage && (
         <Box mt={2} display={"flex"} alignItems={"center"}>
-          <Alert severity="error" sx={{ mt: 1, width: "100%",display:'flex',alignItems:'center' }}>
-            {errorMessage}
-            {errorMessage === "The user is not registered" && (
+          <Alert
+            severity="error"
+            sx={{ mt: 1, width: "100%", display: "flex", alignItems: "center" }}
+          >
+            {errorSubmitMessage}
+            {errorSubmitMessage === "The user is not registered" && (
               <Link to="/signUp" className="btn text-success">
                 Register
               </Link>

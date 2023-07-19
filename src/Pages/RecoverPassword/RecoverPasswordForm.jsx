@@ -39,7 +39,7 @@ function RecoverPasswordForm() {
       } else {
         sendPasswordResetEmail(auth, email)
           .then(() => {
-            setSuccess("We have sent the code to your email. check your inbox");
+            setSuccess("We have sent you a message to your email, check your inbox");
             setError('')
           })
           .catch((error) => {
@@ -52,6 +52,7 @@ function RecoverPasswordForm() {
   const handleOnchange = (e) => {
     setEmail(e.target.value);
   };
+
   return (
     <>
       <form onSubmit={handleSubmit}>

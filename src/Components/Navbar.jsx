@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import TemporaryDrawer from "./TemporaryDrawer";
+import FullScreenUserMessage from "./FullScreenUserMessage";
+import FullScreenUserAccount from "./FullScreenUserAccount";
+
+
 import {
   selectUserIsLogeedIn,
   logout,
@@ -11,15 +16,11 @@ import {
   removeAllProductFromCart,
   selectProductsCartList,
 } from "../Reducers/cartSlice";
-import TemporaryDrawer from "./TemporaryDrawer";
+import { checkAndHandleCartDocument } from "../helpers/firebaseHelpers/firestoreHelpers";
+//----------------------------------------------------------------------------
+
 import { getAuth, signOut } from "firebase/auth";
-import {
-  setDoc,
-  doc,
-  getDoc,
-  updateDoc,
-  getFirestore,
-} from "firebase/firestore";
+
 //-------------------------------------------------------------------
 import {
   AppBar,
@@ -32,7 +33,7 @@ import {
   Button,
   Menu,
 } from "@mui/material";
-
+//--------------------------------------------------------------------
 import { ShoppingCartSharp, AccountCircle } from "@mui/icons-material";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
@@ -43,16 +44,17 @@ function Navbar() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
   const [allCategories, setAllCategories] = useState([]);
+  const [userMessageOpen,setUserMessageOpen] = useState(false)
   const totalCount = useSelector(selectTotalCount);
   const userData = useSelector(selectUser);
   const productsCartList = useSelector(selectProductsCartList);
   const userIsLogged = useSelector(selectUserIsLogeedIn);
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
   const auth = getAuth();
-  const db = getFirestore();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const[userAccountOpen, setUserAccountOpen] = useState(false)
 
-  
+
   const CategoryRequest = async () => {
     try {
       const request = await fetch(`https://dummyjson.com/products/categories`);
@@ -62,40 +64,15 @@ function Navbar() {
       throw new Error(`Something went wrong | Error : ${error}`);
     }
   };
-
-  const checkAndHandleCartDocument = async (
-    db,
-    userId,
-    totalCount,
-    productsCartList
-  ) => {
-    try {
-      const cartDoc = await getDoc(doc(db, "cartProducts", userId));
-      if (cartDoc.exists()) {
-        await updateDoc(doc(db, "cartProducts", userId), {
-          cart: { totalCount: totalCount, productsCartList: productsCartList },
-        });
-      } else {
-        await setDoc(doc(db, "cartProducts", userId), {
-          cart: { totalCount: totalCount, productsCartList: productsCartList },
-        });
-      }
-    } catch (error) {
-      console.error(
-        "Error al verificar y manejar el documento en cartProducts:",
-        error
-      );
-    }
-  };
-
+console.log(userMessageOpen);
   const handleLogout = () => {
     signOut(auth)
       .then(() => {
         checkAndHandleCartDocument(
-          db,
           userData?.uid,
           totalCount,
-          productsCartList
+          productsCartList,
+          userData
         );
         dispatch(removeAllProductFromCart());
         dispatch(logout());
@@ -150,7 +127,7 @@ function Navbar() {
       {userIsLogged ? (
         <div>
           <MenuItem divider>{userData.email}</MenuItem>
-          <MenuItem divider onClick={handleMenuClose}>
+          <MenuItem divider onClick={()=>setUserAccountOpen(true)}>
             My account
           </MenuItem>
           <MenuItem onClick={handleLogout}>Logout</MenuItem>
@@ -197,6 +174,7 @@ function Navbar() {
           size="large"
           aria-label="show 17 new notifications"
           color="inherit"
+          onClick={()=>setUserMessageOpen(true)}
         >
           <Badge badgeContent={0} color="error">
             <NotificationsIcon />
@@ -240,6 +218,7 @@ function Navbar() {
               size="large"
               aria-label="show 17 new notifications"
               color="inherit"
+              onClick={()=>setUserMessageOpen(true)}
             >
               <Badge badgeContent={0} color="error">
                 <NotificationsIcon />
@@ -249,21 +228,10 @@ function Navbar() {
               sx={{ display: { xs: "none", md: "flex" } }}
               size="large"
               edge="end"
-              aria-label="account of current user"
-              aria-haspopup="true"
               onClick={handleProfileMenuOpen}
-              color={userIsLogged ? "primary" : "inherit"}
+              color={userIsLogged ? "primary" : "inherit" }
             >
-              {userData?.photoURL ? (
-                <img
-                  src={userData.photoURL}
-                  alt="alt"
-                  width={"25px"}
-                  className="rounded-5"
-                />
-              ) : (
-                <AccountCircle />
-              )}
+              <AccountCircle />
             </IconButton>
           </Box>
           <Box sx={{ display: { xs: "flex", md: "none" } }}>
@@ -281,6 +249,8 @@ function Navbar() {
       </AppBar>
       {renderMobileMenu}
       {renderMenu}
+      <FullScreenUserMessage userMessageOpen={userMessageOpen} setUserMessageOpen = {setUserMessageOpen}/>
+      <FullScreenUserAccount userAccountOpen={userAccountOpen} setUserAccountOpen = {setUserAccountOpen}/>
     </Box>
   );
 }
