@@ -68,6 +68,8 @@ function StoreProducts() {
       handleCategoriesSelected(categorie);
     }
   }, [categorie, allProducts]);
+
+  
   return (
     <>
       <Box sx={{ mt: 5, display: "flex", justifyContent: "center" }}>

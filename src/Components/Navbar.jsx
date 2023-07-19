@@ -6,10 +6,20 @@ import {
   logout,
   selectUser,
 } from "../Reducers/userSlice";
-import { selectTotalCount ,removeAllProductFromCart} from "../Reducers/cartSlice";
+import {
+  selectTotalCount,
+  removeAllProductFromCart,
+  selectProductsCartList,
+} from "../Reducers/cartSlice";
 import TemporaryDrawer from "./TemporaryDrawer";
 import { getAuth, signOut } from "firebase/auth";
-
+import {
+  setDoc,
+  doc,
+  getDoc,
+  updateDoc,
+  getFirestore,
+} from "firebase/firestore";
 //-------------------------------------------------------------------
 import {
   AppBar,
@@ -33,14 +43,16 @@ function Navbar() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
   const [allCategories, setAllCategories] = useState([]);
-  const navigate = useNavigate();
-  const counterCart = useSelector(selectTotalCount);
+  const totalCount = useSelector(selectTotalCount);
   const userData = useSelector(selectUser);
+  const productsCartList = useSelector(selectProductsCartList);
   const userIsLogged = useSelector(selectUserIsLogeedIn);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const auth = getAuth();
+  const db = getFirestore();
 
-
+  
   const CategoryRequest = async () => {
     try {
       const request = await fetch(`https://dummyjson.com/products/categories`);
@@ -51,11 +63,42 @@ function Navbar() {
     }
   };
 
+  const checkAndHandleCartDocument = async (
+    db,
+    userId,
+    totalCount,
+    productsCartList
+  ) => {
+    try {
+      const cartDoc = await getDoc(doc(db, "cartProducts", userId));
+      if (cartDoc.exists()) {
+        await updateDoc(doc(db, "cartProducts", userId), {
+          cart: { totalCount: totalCount, productsCartList: productsCartList },
+        });
+      } else {
+        await setDoc(doc(db, "cartProducts", userId), {
+          cart: { totalCount: totalCount, productsCartList: productsCartList },
+        });
+      }
+    } catch (error) {
+      console.error(
+        "Error al verificar y manejar el documento en cartProducts:",
+        error
+      );
+    }
+  };
+
   const handleLogout = () => {
     signOut(auth)
       .then(() => {
+        checkAndHandleCartDocument(
+          db,
+          userData?.uid,
+          totalCount,
+          productsCartList
+        );
+        dispatch(removeAllProductFromCart());
         dispatch(logout());
-        dispatch(removeAllProductFromCart())
       })
       .catch((error) => {
         const errorMessage = error.message;
@@ -188,7 +231,7 @@ function Navbar() {
               aria-label="show 4 new mails"
               color="inherit"
             >
-              <Badge badgeContent={counterCart} color="error">
+              <Badge badgeContent={totalCount} color="error">
                 <ShoppingCartSharp />
               </Badge>
             </IconButton>

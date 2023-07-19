@@ -205,7 +205,7 @@ function LoginForm() {
         </Stack>
 
         <Button fullWidth size="large" type="submit" variant="outlined">
-          Login
+          Sign in
         </Button>
       </form>
       {success && (

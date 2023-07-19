@@ -48,7 +48,7 @@ function RecoverPasswordPage() {
             Recover your password!
             </Typography>
             <img
-              src="/assets/illustrations/illustration_recover_password.jpg"
+              src="/assets/illustrations/illustration_recover_password.svg"
               alt="login"
             />
           </StyledSection>
