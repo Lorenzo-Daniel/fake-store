@@ -30,6 +30,12 @@ export const validationConfig = {
       : value !== formValues.password
       ? "Passwords do not match"
       : "",
+  phone: (value) =>
+    value.length === 0
+      ? "*This field is required"
+      : value.length < 9
+      ? "Phone number must be at least 9 characters"
+      : "",
 };
 
 export const handleBlur = (
@@ -56,8 +62,7 @@ export const handleBlur = (
   }
 };
 
-
-export const handleChange = (e, setError, setFormValues,errorSubmit) => {
+export const handleChange = (e, setError, setFormValues, errorSubmit) => {
   const { name, value } = e.target;
   setError(false);
   errorSubmit("");

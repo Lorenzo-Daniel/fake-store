@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { useNavigate,Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { login, setUser } from "../../../Reducers/userSlice";
 import Iconify from "../../../Components/Iconify/Iconify";
@@ -13,7 +13,7 @@ import {
 
 //-------------------------------------------------------------------
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import { getFirestore, collection, addDoc } from "firebase/firestore";
+import { getFirestore, setDoc, doc } from "firebase/firestore";
 
 //-------------------------------------------------------------------
 import {
@@ -46,6 +46,7 @@ function SignUpForm() {
     email: "",
     password: "",
     confirmPassword: "",
+    phone: "",
   });
   const [formErrors, setFormErrors] = useState({
     firstName: "",
@@ -53,13 +54,15 @@ function SignUpForm() {
     email: "",
     password: "",
     confirmPassword: "",
+    phone: "",
   });
 
-  const handleFisrestoreAdd = async (formValues) => {
+  const handleFisrestoreAdd = async (formValues, userId) => {
     try {
       const db = getFirestore();
       // eslint-disable-next-line
-      const docRef = await addDoc(collection(db, "users"), formValues);
+      // const docRef = await addDoc(collection(db, "users"), formValues);
+      await setDoc(doc(db, "users", userId), formValues); // Guarda el documento con la ID de usuario
     } catch (e) {
       console.error(`Error adding document:formValues `, e);
     }
@@ -68,11 +71,11 @@ function SignUpForm() {
   const handleOnBlur = (e) =>
     handleBlur(
       e,
-  validationConfig,
-  setFormErrors,
-  setFormValues,
-  setError,
-  formValues
+      validationConfig,
+      setFormErrors,
+      setFormValues,
+      setError,
+      formValues
     );
 
   const handleOnChange = (e) =>
@@ -104,7 +107,7 @@ function SignUpForm() {
       .then((userCredential) => {
         const user = userCredential.user;
         setIsLoading(true);
-        handleFisrestoreAdd(formValues);
+        handleFisrestoreAdd(formValues, user.uid);
         setTimeout(() => {
           setsignUpSuccess(true);
           setIsLoading(false);
@@ -118,7 +121,9 @@ function SignUpForm() {
         }, 4000);
       })
       .catch((error) => {
-        setErrorSubmit("Something went wrong when submitting the form. Check if you already have an account with this user");
+        setErrorSubmit(
+          "Something went wrong when submitting the form. Check if you already have an account with this user"
+        );
         console.error(error.code);
         console.error(error.message);
       });
@@ -163,6 +168,18 @@ function SignUpForm() {
             />
             <Typography variant="caption" color={"error"} sx={{ mt: 1 }}>
               {error && formErrors?.email}
+            </Typography>
+          </Box>
+          <Box display={"flex"} flexDirection={"column"}>
+            <TextField
+              name="phone"
+              type="number"
+              label="Phone number"
+              onBlur={handleOnBlur}
+              onChange={handleOnChange}
+            />
+            <Typography variant="caption" color={"error"} sx={{ mt: 1 }}>
+              {error && formErrors?.phone}
             </Typography>
           </Box>
           <Box display={"flex"} flexDirection={"column"}>
@@ -238,9 +255,16 @@ function SignUpForm() {
           </Button>
           {errorSubmit && (
             <Alert sx={{ p: 5 }} severity="error">
-              {errorSubmit} {errorSubmit.includes('have an account') && <Link to={"/recover-password"} variant="subtitle2" underline="hover">
-            Forgot password?
-          </Link> }
+              {errorSubmit}{" "}
+              {errorSubmit.includes("have an account") && (
+                <Link
+                  to={"/recover-password"}
+                  variant="subtitle2"
+                  underline="hover"
+                >
+                  Forgot password?
+                </Link>
+              )}
             </Alert>
           )}
           {signUpSuccess && (

@@ -54,7 +54,6 @@ function Navbar() {
   const navigate = useNavigate();
   const[userAccountOpen, setUserAccountOpen] = useState(false)
 
-
   const CategoryRequest = async () => {
     try {
       const request = await fetch(`https://dummyjson.com/products/categories`);
@@ -64,7 +63,6 @@ function Navbar() {
       throw new Error(`Something went wrong | Error : ${error}`);
     }
   };
-console.log(userMessageOpen);
   const handleLogout = () => {
     signOut(auth)
       .then(() => {
