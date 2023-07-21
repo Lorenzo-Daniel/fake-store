@@ -1,30 +1,30 @@
-import { useState, useRef } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useRef, useState } from "react";
 import { useDispatch } from "react-redux";
-import { login, setUser } from "../../../Reducers/userSlice";
+import { Link, useNavigate } from "react-router-dom";
 import Iconify from "../../../Components/Iconify/Iconify";
+import { login, setUser } from "../../../Reducers/userSlice";
 //------------------------------------------------------------
 
 import {
   handleBlur,
-  validationConfig,
   handleChange,
+  validationConfig,
 } from "../../../helpers/formHelpers";
 
 //-------------------------------------------------------------------
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import { getFirestore, setDoc, doc } from "firebase/firestore";
+import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import { doc, getFirestore, setDoc } from "firebase/firestore";
 
 //-------------------------------------------------------------------
 import {
-  Stack,
+  Alert,
+  Box,
+  Button,
   IconButton,
   InputAdornment,
+  Stack,
   TextField,
   Typography,
-  Box,
-  Alert,
-  Button,
 } from "@mui/material";
 
 //--------------------------------------------------------------------------
@@ -60,9 +60,7 @@ function SignUpForm() {
   const handleFisrestoreAdd = async (formValues, userId) => {
     try {
       const db = getFirestore();
-      // eslint-disable-next-line
-      // const docRef = await addDoc(collection(db, "users"), formValues);
-      await setDoc(doc(db, "users", userId), formValues); // Guarda el documento con la ID de usuario
+      await setDoc(doc(db, "users", userId), formValues);
     } catch (e) {
       console.error(`Error adding document:formValues `, e);
     }
@@ -95,6 +93,7 @@ function SignUpForm() {
       },
       formErrors
     );
+    setError(true);
     setFormErrors(updatedFormErrors);
     const hasErrors = Object.values(updatedFormErrors).some(
       (error) => error !== ""
@@ -251,11 +250,12 @@ function SignUpForm() {
             variant="outlined"
             sx={{ mt: 4 }}
           >
-            {isLoading ? "Login..." : "Login"}
+            {isLoading ? "Sign Up..." : "Sign Up"}
           </Button>
           {errorSubmit && (
             <Alert sx={{ p: 5 }} severity="error">
-              {errorSubmit}{" "}
+              {errorSubmit}
+              <br />
               {errorSubmit.includes("have an account") && (
                 <Link
                   to={"/recover-password"}

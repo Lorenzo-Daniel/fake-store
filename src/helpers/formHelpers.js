@@ -48,7 +48,6 @@ export const handleBlur = (
 ) => {
   const { name, value } = e.target;
   setError(true);
-
   const validate = validationConfig[name];
   setFormValues((prevValues) => ({ ...prevValues, [name]: value }));
   if (validate) {

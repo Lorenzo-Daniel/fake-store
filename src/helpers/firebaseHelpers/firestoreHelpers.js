@@ -1,24 +1,18 @@
 import {
-  setDoc,
+  deleteDoc,
   doc,
   getDoc,
-  updateDoc,
   getFirestore,
+  setDoc,
+  updateDoc,
 } from "firebase/firestore";
 
-
-
-
-export const getUserIdDocument = async (userId,setUserData) => {
+// OBTENER DOCUMENTO POR ID DE USUARIO ------------------------------------
+export const getUserIdDocument = async (userId, setUserData) => {
   try {
-    const db = getFirestore()
-
-    // Obtén los datos del documento
+    const db = getFirestore();
     const userSnapshot = await getDoc(doc(db, "users", userId));
-
-    // Comprueba si el documento existe
     if (userSnapshot.exists()) {
-      // El documento existe, puedes acceder a los datos del usuario utilizando userSnapshot.data()
       const userData = userSnapshot.data();
       setUserData(userData);
     } else {
@@ -29,9 +23,21 @@ export const getUserIdDocument = async (userId,setUserData) => {
   }
 };
 
+//ELIMINAR DOC DE COLLECTION ----------------------------------------------
+export const deleteDocFromCollection = async (db, collection, userId) => {
+  try {
+    deleteDoc(doc(db, collection, userId)).then(() => {
+      console.log("Document successfully deleted!");
+    });
+  } catch (error) {
+    console.error(
+      "Error al borrar el documento de la colección: collection",
+      error
+    );
+  }
+};
 
-
-
+// MANEJAR DOCUMENTO DE CARRITO ---------------------------------------------------------
 export const checkAndHandleCartDocument = async (
   userId,
   totalCount,
@@ -43,7 +49,7 @@ export const checkAndHandleCartDocument = async (
     const cartDoc = await getDoc(doc(db, "cartProducts", userId));
     if (cartDoc.exists()) {
       const cartData = {
-        user: user.email,
+        email: user.email,
         totalCount: totalCount,
         productsCartList: productsCartList,
       };
@@ -52,7 +58,7 @@ export const checkAndHandleCartDocument = async (
       });
     } else {
       const cartData = {
-        user: user.email,
+        email: user.email,
         totalCount: totalCount,
         productsCartList: productsCartList,
       };
@@ -64,6 +70,59 @@ export const checkAndHandleCartDocument = async (
     console.error(
       "Error al verificar y manejar el documento en cartProducts:",
       error
+    );
+  }
+};
+
+// ACTUALIZAR VALOR DE UNA UNICA CLAVE DE OBJETO EN DOCUMNETO
+
+export const updateValueInObjectDoc = async (
+  db,
+  userId,
+  collection,
+  key,
+  newValue,
+  setAlertToShow,
+  setAlertChanges
+) => {
+  try {
+    await updateDoc(doc(db, collection, userId), {
+      [key]: newValue,
+    });
+    setAlertChanges(false);
+    setAlertToShow({
+      phoneChanged: "Your phone number was updated successfully",
+    });
+    console.log("actualizado correctamente.");
+  } catch (error) {
+    console.error("Error al actualizar la email en objeto: ", error);
+  }
+};
+
+//UPDATE PHONE ----------------------------------------------------
+
+export const updateUserPhone = (
+  db,
+  userId,
+  collection,
+  key,
+  newValue,
+  setAlertToShow,
+  setAlertChanges
+) => {
+  if (newValue < 9) {
+  alert("Your phone number must be at least 9 digits long.")
+    console.log("El número de teléfono debe tener al menos 9 dígitos.");
+    return;
+  } else {
+    updateValueInObjectDoc(
+      db,
+      userId,
+      collection,
+      key,
+      newValue,
+      setAlertToShow,
+      setAlertChanges
     );
   }
 };

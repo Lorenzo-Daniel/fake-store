@@ -70,6 +70,7 @@ function LoginForm() {
       },
       formErrors
     );
+    setError(true)
     setFormErrors(updatedFormErrors);
     const hasErrors = Object.values(updatedFormErrors).some(
       (error) => error !== ""
