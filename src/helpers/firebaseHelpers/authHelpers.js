@@ -11,6 +11,8 @@ export const deleteAccount = (
   dispatch,
   setAlertToShow,
   setAlertChanges,
+  setSuccesChange,
+  setErrorChanges,
   auth,
   db
 ) => {
@@ -24,20 +26,19 @@ export const deleteAccount = (
         dispatch(removeAllProductFromCart());
         dispatch(logout());
         setAlertChanges(false);
-        setAlertToShow({
-          deletedAccountSuccess: "Your account was permanently deleted",
-        });
+        setSuccesChange(
+           "Your account was permanently deleted");
         console.log("La cuenta del usuario se eliminó correctamente.");
       })
       .catch((error) => {
-        setAlertChanges(true);
-        setAlertToShow({
-          text: "Something went wrong when trying to delete your account, please try again",
-        });
+        setErrorChanges( "Something went wrong when trying to delete your account, please try again",
+        );
+        setAlertChanges(false)
         console.error("Error al eliminar la cuenta del usuario:", error);
       });
   } else {
-    setAlertToShow({ text: "There is no registered user" });
+    setAlertChanges(false)
+    setErrorChanges( "There is no registered user" );
     console.error("No hay un usuario autenticado.");
   }
 };

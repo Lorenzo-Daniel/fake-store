@@ -47,17 +47,13 @@ export const handleBlur = (
   formValues
 ) => {
   const { name, value } = e.target;
-  setError(true);
   const validate = validationConfig[name];
   setFormValues((prevValues) => ({ ...prevValues, [name]: value }));
   if (validate) {
     const errorMessage = validate(value, formValues);
-    setFormErrors((prevErrors) => {
-      if (prevErrors[name] !== errorMessage) {
-        return { ...prevErrors, [name]: errorMessage };
-      }
-      return prevErrors;
-    });
+    setError(true);
+    console.log(errorMessage);
+    setFormErrors({ [name]: errorMessage });
   }
 };
 
@@ -71,4 +67,27 @@ export const handleChange = (e, setError, setFormValues, errorSubmit) => {
     }
     return prevValues;
   });
+};
+
+
+export const onSubmitFormValidtionHelper = (e, formValues, formErrors) => {
+  e.preventDefault();
+  const updatedFormErrors = Object.keys(formValues).reduce(
+    (errors, fieldName) => {
+      const validate = validationConfig[fieldName];
+      const value = formValues[fieldName];
+      const errorMessage = validate ? validate(value, formValues) : "";
+      if (errors[fieldName] !== errorMessage) {
+        return { ...errors, [fieldName]: errorMessage };
+      }
+      return errors;
+    },
+    formErrors
+  );
+
+  const hasErrors = Object.values(updatedFormErrors).some(
+    (error) => error !== ""
+  );
+
+  return { updatedFormErrors: updatedFormErrors, hasErrors };
 };

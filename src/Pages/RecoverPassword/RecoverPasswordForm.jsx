@@ -1,84 +1,93 @@
-import { useState } from "react";
 import {
+  fetchSignInMethodsForEmail,
   getAuth,
   sendPasswordResetEmail,
-  fetchSignInMethodsForEmail,
 } from "firebase/auth";
+import { useState } from "react";
 
 //-------------------------------------------------------------------
-import {
-  Stack,
-  TextField,
-  Typography,
-  Box,
-  Alert,
-  Button,
-} from "@mui/material";
+import { Alert, Stack, Button } from "@mui/material";
 
 // ----------------------------------------------------------------------
+import { onSubmitFormValidtionHelper } from "../../helpers/formHelpers";
+// ----------------------------------------------------------------------
 
+import InputForm from "../../Components/Form Componenets/InputForm";
 function RecoverPasswordForm() {
-  const [email, setEmail] = useState("");
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const [errorSubmit, setErrorSubmit] = useState("");
+  const [successSubmit, setSuccessSubmit] = useState("");
+  const [formValues, setFormValues] = useState({ email: "" });
+  const [formErrors, setFormErrors] = useState({ email: "" });
+
   const auth = getAuth();
 
   const handleSubmit = (e) => {
-    const regExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    e.preventDefault();
-    if (email.length === 0) {
-      setError("Email is Required");
-      return;
-    } else if (!regExp.test(email)) {
-      setError("Email is invalid format");
+    const { updatedFormErrors, hasErrors } = onSubmitFormValidtionHelper(
+      e,
+      formValues,
+      formErrors
+    );
+
+    if (hasErrors) {
+      console.log("Something went wrong, try again.");
+      setError(true);
+      setFormErrors(updatedFormErrors);
       return;
     }
-    fetchSignInMethodsForEmail(auth, email).then((signInMethods) => {
+
+    setIsLoading(true);
+    fetchSignInMethodsForEmail(auth, formValues.email).then((signInMethods) => {
       if (signInMethods.length === 0) {
-        setError("The user is not registered");
+        setErrorSubmit("The user is not registered");
+        setIsLoading(false);
       } else {
-        sendPasswordResetEmail(auth, email)
+        sendPasswordResetEmail(auth, formValues.email)
           .then(() => {
-            setSuccess("We have sent you a message to your email, check your inbox");
-            setError('')
+            setSuccessSubmit(
+              "We have sent you a message to your email, check your inbox"
+            );
+            setIsLoading(false);
           })
           .catch((error) => {
-            setError("Something went wrong with the shipment, try again");
+            setErrorSubmit("Something went wrong with the shipment, try again");
+            setIsLoading(false);
+
+            console.error(error);
           });
       }
     });
-  };
-
-  const handleOnchange = (e) => {
-    setEmail(e.target.value);
   };
 
   return (
     <>
       <form onSubmit={handleSubmit}>
         <Stack spacing={3}>
-          <Box display={"flex"} flexDirection={"column"}>
-            <TextField
-              name="email"
-              autoComplete="user-name"
-              label="Email address"
-              onChange={(e) => handleOnchange(e)}
-            />
-          </Box>
-          <Box>
-            <Typography variant="caption">
-              we will send a code to your email
-            </Typography>
-            <Button type="submit">send email</Button>
-          </Box>
-          {error && (
+          <InputForm
+            type={"text"}
+            formValues={formValues}
+            setFormValues={setFormValues}
+            setFormErrors={setFormErrors}
+            setError={setError}
+            formErrors={formErrors}
+            error={error}
+            setErrorSubmit={setErrorSubmit}
+            name="email"
+            label="Email address"
+            autoComplete="user-email"
+          />
+          <Button fullWidth size="large" type="submit" variant="outlined">
+            {isLoading ? "sending..." : "send email"}
+          </Button>
+          {errorSubmit && (
             <Alert sx={{ p: 5 }} severity="error">
-              {error}
+              {errorSubmit}
             </Alert>
           )}
-          {success && (
+          {successSubmit && (
             <Alert sx={{ p: 5 }} severity="success">
-              {success}
+              {successSubmit}
             </Alert>
           )}
         </Stack>

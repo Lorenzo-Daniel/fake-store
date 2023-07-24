@@ -83,18 +83,20 @@ export const updateValueInObjectDoc = async (
   key,
   newValue,
   setAlertToShow,
-  setAlertChanges
+  setAlertChanges,
+  setSuccesChange
 ) => {
   try {
     await updateDoc(doc(db, collection, userId), {
       [key]: newValue,
     });
     setAlertChanges(false);
-    setAlertToShow({
-      phoneChanged: "Your phone number was updated successfully",
-    });
+    setSuccesChange(
+      "Your phone number was updated successfully"
+    );
     console.log("actualizado correctamente.");
   } catch (error) {
+    setAlertToShow()
     console.error("Error al actualizar la email en objeto: ", error);
   }
 };
@@ -108,7 +110,8 @@ export const updateUserPhone = (
   key,
   newValue,
   setAlertToShow,
-  setAlertChanges
+  setAlertChanges,
+  setSuccesChange
 ) => {
   if (newValue < 9) {
   alert("Your phone number must be at least 9 digits long.")

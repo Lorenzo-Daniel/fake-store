@@ -50,7 +50,11 @@ function FullScreenUserAccount({ userAccountOpen, setUserAccountOpen }) {
   const [userExtendedData, setUserExtenderData] = useState(null);
   const [alertChanges, setAlertChanges] = useState(false);
   const [alertToShow, setAlertToShow] = useState();
+  const [succesChanges, setSuccesChange] = useState(false);
+  const [errorChanges, setErrorChanges] = useState(false);
   const alertBox = useRef(null);
+  const alertBox2 = useRef(null);
+
   const userId = useSelector(selectUser)?.uid;
   const getExtendedDataStorage = useSelector(selectUserExtendedData);
   const [newEmail, setNewEmail] = useState("");
@@ -58,8 +62,6 @@ function FullScreenUserAccount({ userAccountOpen, setUserAccountOpen }) {
   const dispatch = useDispatch();
   const auth = getAuth();
   const db = getFirestore();
-
-  // console.log(userExtendedData);
 
   const handleAlertModificationAccount = (name) => {
     setAlertChanges(true);
@@ -91,6 +93,7 @@ function FullScreenUserAccount({ userAccountOpen, setUserAccountOpen }) {
   const handleClickOutSideBoxAlert = (event) => {
     if (alertBox.current && !alertBox.current.contains(event.target)) {
       setAlertChanges(false);
+      setErrorChanges(false)
     }
   };
   const handleClose = () => {
@@ -100,8 +103,12 @@ function FullScreenUserAccount({ userAccountOpen, setUserAccountOpen }) {
 
   useEffect(() => {
     setOpen(userAccountOpen);
-    getUserIdDocument(userId, setUserExtenderData);
-    dispatch(setUserExtendedData(userExtendedData));
+    if (!getExtendedDataStorage) {
+      if (userId) {
+        getUserIdDocument(userId, setUserExtenderData);
+        dispatch(setUserExtendedData(userExtendedData));
+      }
+    }
     document.addEventListener("mousedown", handleClickOutSideBoxAlert);
     return () => {
       document.removeEventListener("mousedown", handleClickOutSideBoxAlert);
@@ -213,6 +220,8 @@ function FullScreenUserAccount({ userAccountOpen, setUserAccountOpen }) {
                         dispatch,
                         setAlertToShow,
                         setAlertChanges,
+                        setSuccesChange,
+                        setErrorChanges,
                         auth,
                         db
                       )
@@ -243,6 +252,8 @@ function FullScreenUserAccount({ userAccountOpen, setUserAccountOpen }) {
                       newEmail,
                       setAlertToShow,
                       setAlertChanges,
+                      setSuccesChange,
+                      setErrorChanges,
                       db,
                       newEmail,
                       "email",
@@ -281,7 +292,11 @@ function FullScreenUserAccount({ userAccountOpen, setUserAccountOpen }) {
               )}
               {alertToShow.changePhone && (
                 <Box>
-                  <TextField sx={{ mt: 1 }} onChange={(e) => setNewPhone(e.target.value)} placeholder="Enter your new number"/>
+                  <TextField
+                    sx={{ mt: 1 }}
+                    onChange={(e) => setNewPhone(e.target.value)}
+                    placeholder="Enter your new number"
+                  />
                   <Button
                     sx={{ p: 1 }}
                     size="small"
@@ -292,7 +307,11 @@ function FullScreenUserAccount({ userAccountOpen, setUserAccountOpen }) {
                         userId,
                         "users",
                         "phone",
-                        newPhone,setAlertToShow,setAlertChanges
+                        newPhone,
+                        setAlertToShow,
+                        setAlertChanges,
+                        setSuccesChange,
+                        setErrorChanges
                       )
                     }
                   >
@@ -315,19 +334,14 @@ function FullScreenUserAccount({ userAccountOpen, setUserAccountOpen }) {
             </Alert>
           )}
           <Box ref={alertBox}>
-            {alertToShow?.deletedAccountSuccess && (
+            {succesChanges && (
               <Alert sx={{ p: 4 }} severity="success">
-                {alertToShow.deletedAccountSuccess}
+                {succesChanges}
               </Alert>
             )}
-            {alertToShow?.updatedEmail && (
-              <Alert sx={{ p: 4 }} severity="success">
-                {alertToShow.updatedEmail}
-              </Alert>
-            )}
-            {alertToShow?.phoneChanged && (
-              <Alert sx={{ p: 4 }} severity="success">
-                {alertToShow.phoneChanged}
+            {errorChanges && (
+              <Alert sx={{ p: 4 }} severity="error">
+                {errorChanges}
               </Alert>
             )}
           </Box>

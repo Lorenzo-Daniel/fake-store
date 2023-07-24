@@ -1,14 +1,11 @@
 import { useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import Iconify from "../../../Components/Iconify/Iconify";
 import { login, setUser } from "../../../Reducers/userSlice";
 //------------------------------------------------------------
 
 import {
-  handleBlur,
-  handleChange,
-  validationConfig,
+  onSubmitFormValidtionHelper
 } from "../../../helpers/formHelpers";
 
 //-------------------------------------------------------------------
@@ -18,20 +15,14 @@ import { doc, getFirestore, setDoc } from "firebase/firestore";
 //-------------------------------------------------------------------
 import {
   Alert,
-  Box,
   Button,
-  IconButton,
-  InputAdornment,
   Stack,
-  TextField,
-  Typography,
 } from "@mui/material";
+import InputForm from "../../../Components/Form Componenets/InputForm";
 
 //--------------------------------------------------------------------------
 function SignUpForm() {
   const navigate = useNavigate();
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState(false);
   const [errorSubmit, setErrorSubmit] = useState("");
   const [signUpSuccess, setsignUpSuccess] = useState(false);
@@ -66,40 +57,17 @@ function SignUpForm() {
     }
   };
 
-  const handleOnBlur = (e) =>
-    handleBlur(
-      e,
-      validationConfig,
-      setFormErrors,
-      setFormValues,
-      setError,
-      formValues
-    );
-
-  const handleOnChange = (e) =>
-    handleChange(e, setError, setFormValues, setErrorSubmit);
-
   const handleSubmit = (e) => {
-    e.preventDefault();
-    const updatedFormErrors = Object.keys(formValues).reduce(
-      (errors, fieldName) => {
-        const validate = validationConfig[fieldName];
-        const value = formValues[fieldName];
-        const errorMessage = validate ? validate(value, formValues) : "";
-        if (errors[fieldName] !== errorMessage) {
-          return { ...errors, [fieldName]: errorMessage };
-        }
-        return errors;
-      },
+    const { updatedFormErrors, hasErrors } = onSubmitFormValidtionHelper(
+      e,
+      formValues,
       formErrors
     );
-    setError(true);
-    setFormErrors(updatedFormErrors);
-    const hasErrors = Object.values(updatedFormErrors).some(
-      (error) => error !== ""
-    );
+
     if (hasErrors) {
-      setErrorSubmit("All fields are required!");
+      console.log("Something went wrong, try again.");
+      setError(true);
+      setFormErrors(updatedFormErrors);
       return;
     }
     createUserWithEmailAndPassword(auth, formValues.email, formValues.password)
@@ -134,115 +102,88 @@ function SignUpForm() {
     <>
       <form onSubmit={handleSubmit} ref={formRef}>
         <Stack spacing={3}>
-          <Box display={"flex"} flexDirection={"column"}>
-            <TextField
-              name="firstName"
-              label="First name"
-              onBlur={handleOnBlur}
-              onChange={handleOnChange}
-            />
-            <Typography variant="caption" color={"error"} sx={{ mt: 1 }}>
-              {error && formErrors?.firstName}
-            </Typography>
-          </Box>
-          <Box display={"flex"} flexDirection={"column"}>
-            <TextField
-              name="lastName"
-              label="Last name"
-              onBlur={handleOnBlur}
-              onChange={handleOnChange}
-            />
+          <InputForm
+            type={"text"}
+            formValues={formValues}
+            setFormValues={setFormValues}
+            setFormErrors={setFormErrors}
+            setError={setError}
+            formErrors={formErrors}
+            error={error}
+            setErrorSubmit={setErrorSubmit}
+            name="firstName"
+            label="First name"
+            autoComplete="user-name"
+          />
 
-            <Typography variant="caption" color={"error"} sx={{ mt: 1 }}>
-              {error && formErrors?.lastName}
-            </Typography>
-          </Box>
-          <Box display={"flex"} flexDirection={"column"}>
-            <TextField
-              name="email"
-              autoComplete="user-name"
-              label="Email address"
-              onBlur={handleOnBlur}
-              onChange={handleOnChange}
-            />
-            <Typography variant="caption" color={"error"} sx={{ mt: 1 }}>
-              {error && formErrors?.email}
-            </Typography>
-          </Box>
-          <Box display={"flex"} flexDirection={"column"}>
-            <TextField
-              name="phone"
-              type="number"
-              label="Phone number"
-              onBlur={handleOnBlur}
-              onChange={handleOnChange}
-            />
-            <Typography variant="caption" color={"error"} sx={{ mt: 1 }}>
-              {error && formErrors?.phone}
-            </Typography>
-          </Box>
-          <Box display={"flex"} flexDirection={"column"}>
-            <TextField
-              name="password"
-              autoComplete="new-password"
-              label="Password"
-              type={showPassword ? "text" : "password"}
-              onBlur={handleOnBlur}
-              onChange={handleOnChange}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={() => setShowPassword(!showPassword)}
-                      edge="end"
-                    >
-                      <Iconify
-                        icon={
-                          showPassword ? "eva:eye-fill" : "eva:eye-off-fill"
-                        }
-                      />
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-            <Typography variant="caption" color={"error"} sx={{ mt: 1 }}>
-              {error && formErrors?.password}
-            </Typography>
-          </Box>
-          <Box display={"flex"} flexDirection={"column"}>
-            <TextField
-              name="confirmPassword"
-              label="Confirm password"
-              autoComplete="current-password"
-              type={showConfirmPassword ? "text" : "password"}
-              onBlur={handleOnBlur}
-              onChange={handleOnChange}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={() =>
-                        setShowConfirmPassword(!showConfirmPassword)
-                      }
-                      edge="end"
-                    >
-                      <Iconify
-                        icon={
-                          showConfirmPassword
-                            ? "eva:eye-fill"
-                            : "eva:eye-off-fill"
-                        }
-                      />
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-            <Typography variant="caption" color={"error"} sx={{ mt: 1 }}>
-              {error && formErrors?.confirmPassword}
-            </Typography>
-          </Box>
+          <InputForm
+            type={"text"}
+            formValues={formValues}
+            setFormValues={setFormValues}
+            setFormErrors={setFormErrors}
+            setError={setError}
+            formErrors={formErrors}
+            error={error}
+            setErrorSubmit={setErrorSubmit}
+            name="lastName"
+            label="Last name"
+            autoComplete="user-lastName"
+          />
+       
+          <InputForm
+            type={"text"}
+            formValues={formValues}
+            setFormValues={setFormValues}
+            setFormErrors={setFormErrors}
+            setError={setError}
+            formErrors={formErrors}
+            error={error}
+            setErrorSubmit={setErrorSubmit}
+            name="email"
+            label="Email address"
+            autoComplete = 'user-email'
+          />
+          <InputForm
+            type={"phone"}
+            formValues={formValues}
+            setFormValues={setFormValues}
+            setFormErrors={setFormErrors}
+            setError={setError}
+            formErrors={formErrors}
+            error={error}
+            setErrorSubmit={setErrorSubmit}
+            name="phone"
+            label="phone number"
+            autoComplete='user-phone'
+          />
+          <InputForm
+            type={"password"}
+            formValues={formValues}
+            setFormValues={setFormValues}
+            setFormErrors={setFormErrors}
+            setError={setError}
+            formErrors={formErrors}
+            error={error}
+            setErrorSubmit={setErrorSubmit}
+            name="password"
+            label="password"
+            autoComplete='user-password'
+          />
+    
+          <InputForm
+            type={"password"}
+            formValues={formValues}
+            setFormValues={setFormValues}
+            setFormErrors={setFormErrors}
+            setError={setError}
+            formErrors={formErrors}
+            error={error}
+            setErrorSubmit={setErrorSubmit}
+            name="confirmPassword"
+            label="Confirm password"
+            autoComplete = 'user-confirmPassword'
+          />
+      
           <Button
             fullWidth
             size="large"

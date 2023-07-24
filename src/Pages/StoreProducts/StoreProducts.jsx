@@ -37,14 +37,17 @@ function StoreProducts() {
       dispatch(addProductToCart(product));
     }
   };
-
   useEffect(() => {
     const productsRequest = async () => {
       try {
         const request = await fetch(`https://dummyjson.com/products?limit=100`);
         const res = await request.json();
         localStorage.setItem("allProducts", JSON.stringify(res.products));
-        return res.products; // Retorna los productos para asignarlos a allProducts
+        const productsWithQuantity = res.products.map((product) => ({
+          ...product,
+          quantity: Number(1),
+        }));
+        return productsWithQuantity;
       } catch (error) {
         throw new Error(`Something went wrong | Error: ${error}`);
       }
@@ -69,7 +72,6 @@ function StoreProducts() {
     }
   }, [categorie, allProducts]);
 
-  
   return (
     <>
       <Box sx={{ mt: 5, display: "flex", justifyContent: "center" }}>

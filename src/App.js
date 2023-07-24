@@ -3,7 +3,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Home from "./Pages/Home/Home";
-import Cart from "./Pages/Cart/Cart";
+import CartPage from "./Pages/Cart/CartPage";
 import Navbar from "./Components/Navbar";
 import ProductDescription from "./Pages/ProductDescription/ProductDescription";
 import StoreProducts from "./Pages/StoreProducts/StoreProducts";
@@ -29,6 +29,7 @@ function App() {
   const dispatch = useDispatch();
   const auth = getAuth();
   const [userId, setUserId] = useState("");
+  // const [documentExist,setDocumentExist] = useState(false)
   const totalCount = useSelector(selectTotalCount);
   const productsCartList = useSelector(selectProductsCartList);
   const userData = useSelector(selectUser);
@@ -69,7 +70,7 @@ function App() {
           })
           .catch((error) => {
             const errorMessage = error.message;
-            console.log(errorMessage);
+            console.error(errorMessage);
           });
       }, 3600000);
     };
@@ -118,7 +119,7 @@ function App() {
             path="/description/:title"
             element={<ProductDescription />}
           />
-          <Route exact path="/cart" element={<Cart />} />
+          <Route exact path="/cart" element={<CartPage />} />
           <Route exact path="/loginPage" element={<LoginPage />} />
           <Route exact path="/signUp" element={<SignUpPage />} />
           <Route
