@@ -53,7 +53,6 @@ function FullScreenUserAccount({ userAccountOpen, setUserAccountOpen }) {
   const [succesChanges, setSuccesChange] = useState(false);
   const [errorChanges, setErrorChanges] = useState(false);
   const alertBox = useRef(null);
-  const alertBox2 = useRef(null);
 
   const userId = useSelector(selectUser)?.uid;
   const getExtendedDataStorage = useSelector(selectUserExtendedData);
@@ -93,7 +92,7 @@ function FullScreenUserAccount({ userAccountOpen, setUserAccountOpen }) {
   const handleClickOutSideBoxAlert = (event) => {
     if (alertBox.current && !alertBox.current.contains(event.target)) {
       setAlertChanges(false);
-      setErrorChanges(false)
+      setErrorChanges(false);
     }
   };
   const handleClose = () => {
