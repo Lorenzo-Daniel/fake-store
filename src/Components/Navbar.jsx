@@ -194,7 +194,7 @@ function Navbar() {
               className="bg-dark border-0"
               noWrap
               sx={{ display: { sm: "block" } }}
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/store/all products")}
             >
               Fake Store
             </Typography>

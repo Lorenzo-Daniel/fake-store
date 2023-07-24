@@ -60,7 +60,13 @@ export const cartSlice = createSlice({
     removeAllProductFromCart: (state) => {
       state.totalCount = 0;
       state.productsList = [];
-    }
+    },
+    updateTotalCounterCart: (state, action) => {
+      state.totalCount = action.payload;
+    },
+    updateCartProductsList: (state, action) => {
+      state.productsList = action.payload;
+    },
   },
 });
 

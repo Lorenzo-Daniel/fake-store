@@ -1,29 +1,29 @@
-import "./App.css";
 import "bootstrap/dist/css/bootstrap.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useEffect, useState } from "react";
-import Home from "./Pages/Home/Home";
-import CartPage from "./Pages/Cart/CartPage";
-import Navbar from "./Components/Navbar";
-import ProductDescription from "./Pages/ProductDescription/ProductDescription";
-import StoreProducts from "./Pages/StoreProducts/StoreProducts";
-import LoginPage from "./Pages/LoginPage/auth/LoginPage";
-import SignUpPage from "./Pages/SignUpPage/SignUpPage";
-import RecoverPasswordPage from "./Pages/RecoverPassword/RecoverPasswordPage";
-import { useDispatch, useSelector } from "react-redux";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import "./App.css";
+import Navbar from "./Components/Navbar";
+import CartPage from "./Pages/Cart Page/Cart/CartPage";
+import Home from "./Pages/Home/Home";
+import LoginPage from "./Pages/LoginPage/auth/LoginPage";
+import ProductDescription from "./Pages/ProductDescription/ProductDescription";
+import RecoverPasswordPage from "./Pages/RecoverPassword/RecoverPasswordPage";
+import SignUpPage from "./Pages/SignUpPage/SignUpPage";
+import StoreProducts from "./Pages/StoreProducts/StoreProducts";
 import { checkAndHandleCartDocument } from "./helpers/firebaseHelpers/firestoreHelpers";
 
-import { getFirestore, doc, getDoc } from "firebase/firestore";
-import { logout } from "./Reducers/userSlice";
-import { selectUser } from "./Reducers/userSlice";
+import { doc, getDoc, getFirestore } from "firebase/firestore";
 import {
-  selectTotalCount,
-  selectProductsCartList,
   removeAllProductFromCart,
+  selectProductsCartList,
+  selectTotalCount,
   updateCartProductsList,
   updateTotalCounterCart,
 } from "./Reducers/cartSlice";
+import { logout, selectUser } from "./Reducers/userSlice";
+import PayementMethodsPage from "./Pages/Cart Page/Payement methods/PayementMethodsPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -43,7 +43,6 @@ function App() {
         dispatch(updateCartProductsList(userData.cart.productsCartList));
         dispatch(updateTotalCounterCart(userData.cart.totalCount));
       } else {
-        // El documento no existe, haz otra cosa
         console.error("El documento no existe");
       }
     } catch (error) {
@@ -116,12 +115,13 @@ function App() {
           <Route exact path="/store/:categorie" element={<StoreProducts />} />
           <Route
             exact
-            path="/description/:title"
+            path="/product-description/:title"
             element={<ProductDescription />}
           />
           <Route exact path="/cart" element={<CartPage />} />
           <Route exact path="/loginPage" element={<LoginPage />} />
           <Route exact path="/signUp" element={<SignUpPage />} />
+          <Route exact path="/payement-methods" element={<PayementMethodsPage />} />
           <Route
             exact
             path="/recover-password"

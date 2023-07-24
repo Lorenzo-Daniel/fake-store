@@ -52,7 +52,6 @@ export const handleBlur = (
   if (validate) {
     const errorMessage = validate(value, formValues);
     setError(true);
-    console.log(errorMessage);
     setFormErrors({ [name]: errorMessage });
   }
 };

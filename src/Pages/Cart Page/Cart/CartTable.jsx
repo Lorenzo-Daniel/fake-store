@@ -1,31 +1,33 @@
-import React, { useState, useEffect } from "react";
+import { Add, DeleteForever, Remove } from "@mui/icons-material";
 import {
-  addQuantityProduct,
-  removeQuantityProduct,
-} from "../../Reducers/cartSlice";
-import { DeleteForever, Add, Remove } from "@mui/icons-material";
-import {
+  Box,
+  Button,
+  Container,
+  Divider,
+  Grid,
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Button,
-  Paper,
-  Box,
   Typography,
-  Divider,
-  Grid,
-  Container,
 } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import {
+  addQuantityProduct,
+  removeQuantityProduct,
+} from "../../../Reducers/cartSlice";
+
+import { Link } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
 import {
+  removeAllProductFromCart,
   removeProductFromCart,
   selectProductsCartList,
-  removeAllProductFromCart,
-} from "../../Reducers/cartSlice";
+} from "../../../Reducers/cartSlice";
 
 function CartTable() {
   const dispatch = useDispatch();
@@ -33,16 +35,15 @@ function CartTable() {
   const [subTotal, setSubTotal] = useState("");
   const handleRemoveProduct = (productId) =>
     dispatch(removeProductFromCart(productId));
-
-  const checkOut = () => {
-    const algo = productsInCart[0];
-    console.log(algo.quantity * algo.price);
-    const totalSum = productsInCart.reduce(
-      (acc, product) => acc + product.price * product.quantity,
-      0
-    );
-    console.log(totalSum);
-  };
+  // const checkOut = () => {
+  //   const algo = productsInCart[0];
+  //   console.log(algo.quantity * algo.price);
+  //   const totalSum = productsInCart.reduce(
+  //     (acc, product) => acc + product.price * product.quantity,
+  //     0
+  //   );
+  //   console.log(totalSum);
+  // };
 
   useEffect(() => {
     if (productsInCart.length > 0) {
@@ -82,7 +83,19 @@ function CartTable() {
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
                     <TableCell component="th" scope="row">
-                      {product.title}
+                      <Box>
+                        <Link
+                          to={`/product-description/${product.title}`}
+                          className="nav-link"
+                        >
+                          {product.title}{" "}
+                          <img
+                            src={product.thumbnail}
+                            alt={product.title}
+                            width={"60px"}
+                          />
+                        </Link>
+                      </Box>
                     </TableCell>
                     <TableCell align="right">$ {product.price}</TableCell>
                     <TableCell align="right">{product.stock}</TableCell>
@@ -141,10 +154,12 @@ function CartTable() {
             </Box>
           </Container>
           <Divider />
-          <Box display={"flex"} justifyContent={"end"} mt={5}>
+          <Box display={"flex"} justifyContent={"end"} my={5}>
             <Box display={"flex"} flexDirection={"column"} rowGap={2}>
-              <Button variant="outlined" onClick={() => checkOut()}>
-                checkout
+              <Button variant="outlined">
+                <Link to={"/payement-methods"} className="nav-link">
+                  checkout
+                </Link>
               </Button>
               <Button
                 variant="outlined"
@@ -162,7 +177,7 @@ function CartTable() {
             <Typography variant="h4" textAlign={"center"}>
               Your cart is empty!
             </Typography>
-            <Box mt={5}>
+            <Box my={5}>
               <img
                 src="/assets/illustrations/illustration_empty_cart.jpg"
                 alt="empty-cart"

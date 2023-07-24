@@ -1,5 +1,5 @@
 import { styled } from "@mui/material/styles";
-import useResponsive from "../../hooks/useResponsive";
+import useResponsive from "../../../hooks/useResponsive";
 
 import CartTable from "./CartTable";
 //-------------------------------------------------------------------
@@ -37,7 +37,7 @@ function Cart() {
           <StyledSection sx={{ height: "100vh" }}>
             <img
               src="/assets/illustrations/illustration_cart.jpg"
-              alt="login"
+              alt="cart-page"
             />
           </StyledSection>
         )}
