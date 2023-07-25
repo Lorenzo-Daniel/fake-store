@@ -13,14 +13,16 @@ import {
   TableHead,
   TableRow,
   Typography,
+  Alert,Tab,Tabs
 } from "@mui/material";
+
 import React, { useEffect, useState } from "react";
 import {
   addQuantityProduct,
   removeQuantityProduct,
 } from "../../../Reducers/cartSlice";
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -29,22 +31,32 @@ import {
   selectProductsCartList,
 } from "../../../Reducers/cartSlice";
 
+import { selectUserIsLogeedIn } from "../../../Reducers/userSlice";
+
 function CartTable() {
   const dispatch = useDispatch();
   const productsInCart = useSelector(selectProductsCartList);
+  
   const [subTotal, setSubTotal] = useState("");
-  const handleRemoveProduct = (productId) =>
+  const [necesaryLogginWarning, setNecesaryLogginWarning] = useState(false);
+  const userIsLoggedIn = useSelector(selectUserIsLogeedIn);
+  const handleRemoveProduct = (productId) => {
     dispatch(removeProductFromCart(productId));
-  // const checkOut = () => {
-  //   const algo = productsInCart[0];
-  //   console.log(algo.quantity * algo.price);
-  //   const totalSum = productsInCart.reduce(
-  //     (acc, product) => acc + product.price * product.quantity,
-  //     0
-  //   );
-  //   console.log(totalSum);
-  // };
+  };
+  const navigate = useNavigate();
+  const [value, setValue] = useState(0);
 
+  const checkoutHandler = () => {
+    if (!userIsLoggedIn) {
+      setNecesaryLogginWarning((prev) => !prev);
+    } else {
+      navigate("/payement-methods");
+    }
+  };
+  const handleChange = () => {
+    setValue(prev => prev === 0 ? 1 : 0);
+  
+  };
   useEffect(() => {
     if (productsInCart.length > 0) {
       const totalSum = productsInCart.reduce(
@@ -55,21 +67,30 @@ function CartTable() {
     }
   }, [productsInCart, subTotal]);
 
-  console.log(subTotal);
   return (
     <Box>
       <Box>
-        <Typography variant="h3" mt={2}>
+        <Typography variant="h4" mt={2}>
           Cart
         </Typography>
       </Box>
+      <Box sx={{ width: '100%' }}>
+      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+        <Tabs value={value} onChange={handleChange} >
+          <Tab label="Item One"  />
+          <Tab label="Item Two"  />
+        </Tabs>
+      </Box>
+    </Box>
       {productsInCart.length > 0 ? (
         <TableContainer sx={{ width: "100%" }}>
           <Table aria-label="simple table">
             <TableHead>
               <TableRow>
                 <TableCell>Product</TableCell>
-                <TableCell align="right">Price</TableCell>
+                <TableCell align="right" sx={{ minWidth: "80px" }}>
+                  Price
+                </TableCell>
                 <TableCell align="right">Stock</TableCell>
                 <TableCell align="right">Quantity</TableCell>
                 <TableCell align="right"></TableCell>
@@ -156,11 +177,10 @@ function CartTable() {
           <Divider />
           <Box display={"flex"} justifyContent={"end"} my={5}>
             <Box display={"flex"} flexDirection={"column"} rowGap={2}>
-              <Button variant="outlined">
-                <Link to={"/payement-methods"} className="nav-link">
-                  checkout
-                </Link>
+              <Button variant="outlined" onClick={checkoutHandler}>
+                checkout
               </Button>
+
               <Button
                 variant="outlined"
                 color="error"
@@ -170,6 +190,26 @@ function CartTable() {
               </Button>
             </Box>
           </Box>
+          {necesaryLogginWarning && (
+            <Alert
+              severity="warning"
+              sx={{ display: "flex", flexDirection: "column" }}
+            >
+              <Typography variant="span">
+                You must be logged in to continue.
+              </Typography>
+              <br />
+              <Typography variant="span">
+                You have an account?
+                <Button variant="text" onClick={()=>navigate('/loginPage')}>sing in</Button>
+              </Typography>
+              <br />
+              <Typography variant="span">
+                You dont have an account?
+                <Button variant="text" onClick={()=>navigate('/signUp')}>sing Up</Button>
+              </Typography>
+            </Alert>
+          )}
         </TableContainer>
       ) : (
         <Grid container mt={5}>

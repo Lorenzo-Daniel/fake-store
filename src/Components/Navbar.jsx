@@ -2,9 +2,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import TemporaryDrawer from "./TemporaryDrawer";
-import FullScreenUserMessage from "./FullScreenUserMessage";
-import FullScreenUserAccount from "./FullScreenUserAccount";
-
 
 import {
   selectUserIsLogeedIn,
@@ -44,7 +41,6 @@ function Navbar() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
   const [allCategories, setAllCategories] = useState([]);
-  const [userMessageOpen,setUserMessageOpen] = useState(false)
   const totalCount = useSelector(selectTotalCount);
   const userData = useSelector(selectUser);
   const productsCartList = useSelector(selectProductsCartList);
@@ -52,7 +48,6 @@ function Navbar() {
   const auth = getAuth();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const[userAccountOpen, setUserAccountOpen] = useState(false)
 
   const CategoryRequest = async () => {
     try {
@@ -106,6 +101,7 @@ function Navbar() {
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
+  
 
   const renderMenu = (
     <Menu
@@ -125,7 +121,7 @@ function Navbar() {
       {userIsLogged ? (
         <div>
           <MenuItem divider>{userData.email}</MenuItem>
-          <MenuItem divider onClick={()=>setUserAccountOpen(true)}>
+          <MenuItem divider onClick={()=>navigate('/user-account')}>
             My account
           </MenuItem>
           <MenuItem onClick={handleLogout}>Logout</MenuItem>
@@ -155,26 +151,26 @@ function Navbar() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem divider>
+      <MenuItem divider  onClick={()=>navigate('/user-account')}>
         <IconButton
           size="large"
           aria-label="account of current user"
           aria-haspopup="true"
           color={userIsLogged ? "primary" : "inherit"}
-          onClick={handleProfileMenuOpen}
+         
         >
           <AccountCircle />
         </IconButton>
         <p>Profile</p>
       </MenuItem>
-      <MenuItem>
+          
+      <MenuItem onClick={()=>navigate('/user-messages')}>
         <IconButton
           size="large"
           aria-label="show 17 new notifications"
           color="inherit"
-          onClick={()=>setUserMessageOpen(true)}
         >
-          <Badge badgeContent={0} color="error">
+          <Badge badgeContent={4} color="error">
             <NotificationsIcon />
           </Badge>
         </IconButton>
@@ -200,7 +196,7 @@ function Navbar() {
             </Typography>
           </Button>
           <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ display: { md: "flex" } }}>
+          <Box sx={{ display: { md: "flex" } }} >
             <IconButton
               onClick={() => navigate("/cart")}
               size="large"
@@ -216,9 +212,9 @@ function Navbar() {
               size="large"
               aria-label="show 17 new notifications"
               color="inherit"
-              onClick={()=>setUserMessageOpen(true)}
+              onClick={()=>navigate('/user-messages')}
             >
-              <Badge badgeContent={0} color="error">
+              <Badge badgeContent={4} color="error">
                 <NotificationsIcon />
               </Badge>
             </IconButton>
@@ -247,8 +243,6 @@ function Navbar() {
       </AppBar>
       {renderMobileMenu}
       {renderMenu}
-      <FullScreenUserMessage userMessageOpen={userMessageOpen} setUserMessageOpen = {setUserMessageOpen}/>
-      <FullScreenUserAccount userAccountOpen={userAccountOpen} setUserAccountOpen = {setUserAccountOpen}/>
     </Box>
   );
 }

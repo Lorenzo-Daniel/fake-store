@@ -12,9 +12,12 @@ import ProductDescription from "./Pages/ProductDescription/ProductDescription";
 import RecoverPasswordPage from "./Pages/RecoverPassword/RecoverPasswordPage";
 import SignUpPage from "./Pages/SignUpPage/SignUpPage";
 import StoreProducts from "./Pages/StoreProducts/StoreProducts";
+import UserAccount from "./Pages/User account/UserAccount";
 import { checkAndHandleCartDocument } from "./helpers/firebaseHelpers/firestoreHelpers";
 
 import { doc, getDoc, getFirestore } from "firebase/firestore";
+import PayementMethodsPage from "./Pages/Cart Page/Payement methods/PayementMethodsPage";
+import UserMessage from "./Pages/UserMessages/UserMessage";
 import {
   removeAllProductFromCart,
   selectProductsCartList,
@@ -23,7 +26,7 @@ import {
   updateTotalCounterCart,
 } from "./Reducers/cartSlice";
 import { logout, selectUser } from "./Reducers/userSlice";
-import PayementMethodsPage from "./Pages/Cart Page/Payement methods/PayementMethodsPage";
+import CreditCardPage from "./Pages/Cart Page/Cerdit card/CreditCardPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -122,6 +125,10 @@ function App() {
           <Route exact path="/loginPage" element={<LoginPage />} />
           <Route exact path="/signUp" element={<SignUpPage />} />
           <Route exact path="/payement-methods" element={<PayementMethodsPage />} />
+          <Route exact path="/user-messages" element={<UserMessage/>} />
+          <Route exact path="/user-account" element={<UserAccount/>} />
+          <Route exact path="/credit-card-form" element={<CreditCardPage/>} />
+
           <Route
             exact
             path="/recover-password"

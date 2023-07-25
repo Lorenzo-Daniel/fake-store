@@ -2,42 +2,66 @@
 import CreditCardIcon from "@mui/icons-material/CreditCard";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
-// import { Link } from "react-router-dom";
-import { Box, Typography, Paper, Grid } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { Box, Typography, Grid, Button } from "@mui/material";
+
+
 function PayementMethods() {
+  const navigate = useNavigate();
+
   return (
     <Box>
       <Typography variant="h4" mt={4}>
         Payement Methods
       </Typography>
-      <Grid container spacing={5} mt={5}>
-        <Grid item xs={12}>
-          <Paper
-            elevation={3}
-            sx={{ p: 5, display: "flex", justifyContent: "space-between" }}
+      <Grid container spacing={2} mt={5}>
+        <Grid item xs={12} lg={8}>
+          <Button
+            sx={{
+              width: "100%",
+              padding: "35px",
+              display: "flex",
+              justifyContent: "space-between",
+              backgroundColor: "#e8f4ff7d",
+              color: "#545050",
+              alignItems: "center",
+            }}
+            onClick={() => {
+             navigate('/shipping-service')
+            }}
           >
             <Box>
               <AttachMoneyIcon />
               <Typography variant="span" mt={4}>
-                Pay Cash
+                Cash
               </Typography>
             </Box>
             <AccountBalanceIcon />
-          </Paper>
+          </Button>
         </Grid>
-        <Grid item xs={12}>
-          <Paper
-            elevation={3}
-            sx={{ p: 5, display: "flex", justifyContent: "space-between" }}
+        <Grid item xs={12} lg={8}>
+          <Button
+            sx={{
+              width: "100%",
+              padding: "35px",
+              display: "flex",
+              justifyContent: "space-between",
+              backgroundColor: "#e8f4ff7d",
+              color: "#545050",
+              alignItems: "center",
+            }}
+            onClick={() => {
+             navigate('/credit-card-form')
+            }}
           >
             <Box>
               <CreditCardIcon />
               <Typography variant="span" mt={4} ml={1}>
-                Pay with Credit Card
+                Credit Card
               </Typography>
             </Box>
             <AccountBalanceIcon />
-          </Paper>
+          </Button>
         </Grid>
       </Grid>
     </Box>

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { handleBlur, handleChange } from "../../helpers/formHelpers";
 import Iconify from "../Iconify/Iconify";
-
 import {
   IconButton,
   InputAdornment,
@@ -73,7 +72,7 @@ function InputForm({
         }
       />
       <Typography variant="caption" color={"error"} sx={{ mt: 1 }}>
-        {error && formErrors[name]}
+        {error &&  formErrors[name]}
       </Typography>
     </Box>
   );

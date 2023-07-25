@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { selectProductsCartList } from "../../Reducers/cartSlice";
 import {
@@ -16,7 +16,9 @@ import {
   Grid,
   Box,
 } from "@mui/material";
+
 import { Delete, ShoppingCartCheckoutTwoTone } from "@mui/icons-material";
+
 
 function StoreProducts() {
   const [allProducts, setAllProducts] = useState([]);
@@ -91,11 +93,13 @@ function StoreProducts() {
         {productsInStore.map((product) => (
           <Grid key={product.id} item xs={11} sm={5} md={4} lg={3}>
             <Card>
-              <CardMedia
-                sx={{ height: 250 }}
-                image={product.thumbnail}
-                title={product.title}
-              />
+              <Link to={`/product-description/${product.title}`}>
+                <CardMedia
+                  sx={{ height: 250 }}
+                  image={product.thumbnail}
+                  title={product.title}
+                />
+              </Link>
               <CardContent>
                 <Typography gutterBottom variant="h6" component="div">
                   {product.title}
@@ -109,7 +113,9 @@ function StoreProducts() {
                 <Button
                   variant="contained"
                   size="small"
-                  onClick={() => navigate(`/description/${product.title}`)}
+                  onClick={() =>
+                    navigate(`/product-description/${product.title}`)
+                  }
                 >
                   Learn More
                 </Button>

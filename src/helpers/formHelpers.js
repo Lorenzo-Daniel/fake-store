@@ -36,6 +36,27 @@ export const validationConfig = {
       : value.length < 9
       ? "Phone number must be at least 9 characters"
       : "",
+  cardNumber: (value) =>
+    value.length === 0
+      ? "*This field is required"
+      : value.length < 8
+      ? "Card number must be at least 8 characters"
+      : "",
+  creditCardExpirationDate: (value) => {
+    const today = new Date().getTime();
+    console.log(today);
+    const enteredValue = new Date(value).getTime()
+    console.log(today);
+    if (enteredValue <= today) {
+      return ("*Your credit card is expired");
+    }if(!value ){
+     return"*This field is required"
+    }
+  },
+  crediCardSecurityCode: (value) => 
+  value.length !== 4 && 
+  'Secutiry code must be 4 characters'
+  
 };
 
 export const handleBlur = (
@@ -67,7 +88,6 @@ export const handleChange = (e, setError, setFormValues, errorSubmit) => {
     return prevValues;
   });
 };
-
 
 export const onSubmitFormValidtionHelper = (e, formValues, formErrors) => {
   e.preventDefault();
