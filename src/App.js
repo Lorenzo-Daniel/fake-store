@@ -18,12 +18,11 @@ import { checkAndHandleCartDocument } from "./helpers/firebaseHelpers/firestoreH
 import { doc, getDoc, getFirestore } from "firebase/firestore";
 import PayementMethodsPage from "./Pages/Cart Page/Payement methods/PayementMethodsPage";
 import UserMessage from "./Pages/UserMessages/UserMessage";
+import { addSavedProductToCart } from "./Reducers/savedCart";
 import {
   removeAllProductFromCart,
   selectProductsCartList,
   selectTotalCount,
-  updateCartProductsList,
-  updateTotalCounterCart,
 } from "./Reducers/cartSlice";
 import { logout, selectUser } from "./Reducers/userSlice";
 import CreditCardPage from "./Pages/Cart Page/Cerdit card/CreditCardPage";
@@ -32,19 +31,21 @@ function App() {
   const dispatch = useDispatch();
   const auth = getAuth();
   const [userId, setUserId] = useState("");
-  // const [documentExist,setDocumentExist] = useState(false)
   const totalCount = useSelector(selectTotalCount);
   const productsCartList = useSelector(selectProductsCartList);
   const userData = useSelector(selectUser);
   const db = getFirestore();
+  const [isCharged, setIsCharged] = useState(false);
 
   const checkIfDocumentExists = async (userId) => {
     try {
       const userDoc = await getDoc(doc(db, "cartProducts", userId));
       if (userDoc.exists()) {
-        const userData = userDoc.data();
-        dispatch(updateCartProductsList(userData.cart.productsCartList));
-        dispatch(updateTotalCounterCart(userData.cart.totalCount));
+        if (!isCharged) {
+          const userData = userDoc.data();
+          dispatch(addSavedProductToCart(userData.cart.productsCartList));
+          setIsCharged(true);
+        }
       } else {
         console.error("El documento no existe");
       }
@@ -124,10 +125,14 @@ function App() {
           <Route exact path="/cart" element={<CartPage />} />
           <Route exact path="/loginPage" element={<LoginPage />} />
           <Route exact path="/signUp" element={<SignUpPage />} />
-          <Route exact path="/payement-methods" element={<PayementMethodsPage />} />
-          <Route exact path="/user-messages" element={<UserMessage/>} />
-          <Route exact path="/user-account" element={<UserAccount/>} />
-          <Route exact path="/credit-card-form" element={<CreditCardPage/>} />
+          <Route
+            exact
+            path="/payement-methods"
+            element={<PayementMethodsPage />}
+          />
+          <Route exact path="/user-messages" element={<UserMessage />} />
+          <Route exact path="/user-account" element={<UserAccount />} />
+          <Route exact path="/credit-card-form" element={<CreditCardPage />} />
 
           <Route
             exact

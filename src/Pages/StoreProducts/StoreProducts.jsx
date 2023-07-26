@@ -28,7 +28,7 @@ function StoreProducts() {
   const dispatch = useDispatch();
   const { categorie } = useParams("allProducts");
 
-  const handleAddRemoveProductToCart = (productId) => {
+  const handleAddRemoveProductFromCart = (productId) => {
     const product = allProducts.find((product) => product.id === productId);
     const findProduct = productsInCart.find(
       (product) => product.id === productId
@@ -39,6 +39,8 @@ function StoreProducts() {
       dispatch(addProductToCart(product));
     }
   };
+
+
   useEffect(() => {
     const productsRequest = async () => {
       try {
@@ -127,7 +129,7 @@ function StoreProducts() {
                       ? "error"
                       : "primary"
                   }
-                  onClick={() => handleAddRemoveProductToCart(product.id)}
+                  onClick={() => handleAddRemoveProductFromCart(product.id)}
                 >
                   {productsInCart.find((pdt) => pdt.id === product.id) ? (
                     <Box>

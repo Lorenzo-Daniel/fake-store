@@ -113,7 +113,7 @@ function UserAccount() {
       document.removeEventListener("mousedown", handleClickOutSideBoxAlert);
     };
     // eslint-disable-next-line
-  }, []);
+  }, [getExtendedDataStorage,userExtendedData]);
   return (
     <div>
       <Dialog
@@ -135,11 +135,9 @@ function UserAccount() {
             <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
               My Account
             </Typography>
-            {/* <Button autoFocus color="inherit" onClick={handleClose}>
-              save
-            </Button> */}
           </Toolbar>
         </AppBar>
+
         <Box sx={{ maxWidth: "300px" }} ref={alertBox}>
           <List>
             <ListItem>

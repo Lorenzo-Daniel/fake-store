@@ -21,7 +21,11 @@ export const cartSlice = createSlice({
       const productIndex = state.productsList.findIndex(
         (pdt) => pdt.id === action.payload
       );
-      const updatedProduct = { ...product, quantity: product.quantity + 1,stock:product.stock - 1 };
+      const updatedProduct = {
+        ...product,
+        quantity: product.quantity + 1,
+        stock: product.stock - 1,
+      };
 
       const updatedCart = [
         ...state.productsList.slice(0, productIndex),
@@ -35,13 +39,17 @@ export const cartSlice = createSlice({
         (pdt) => pdt.id === action.payload
       );
 
-      if(product.quantity < 2) {
-        return
+      if (product.quantity < 2) {
+        return;
       }
       const productIndex = state.productsList.findIndex(
         (pdt) => pdt.id === action.payload
       );
-      const updatedProduct = { ...product, quantity: product.quantity - 1,stock:product.stock - 1};
+      const updatedProduct = {
+        ...product,
+        quantity: product.quantity - 1,
+        stock: product.stock - 1,
+      };
 
       const updatedCart = [
         ...state.productsList.slice(0, productIndex),
@@ -61,11 +69,19 @@ export const cartSlice = createSlice({
       state.totalCount = 0;
       state.productsList = [];
     },
-    updateTotalCounterCart: (state, action) => {
-      state.totalCount = action.payload;
-    },
-    updateCartProductsList: (state, action) => {
-      state.productsList = action.payload;
+    forwardProductToCart: (state, action) => {
+      const productToAdd = action.payload;
+      const findProductIndex = state.productsList.findIndex(
+        (product) => product.id === productToAdd.id
+      );
+      if (findProductIndex !== -1) {
+        state.productsList[findProductIndex].quantity += 1;
+      } else {
+        state.productsList = [
+          ...state.productsList,
+          { ...productToAdd, quantity: 1 },
+        ];
+      }
     },
   },
 });
@@ -78,6 +94,7 @@ export const {
   updateCartProductsList,
   addQuantityProduct,
   removeQuantityProduct,
+  forwardProductToCart
 } = cartSlice.actions;
 export const selectTotalCount = (state) =>
   state.rootReducer.cartState.totalCount;

@@ -13,6 +13,9 @@ import {
   removeAllProductFromCart,
   selectProductsCartList,
 } from "../Reducers/cartSlice";
+
+import { selectProductsSavedCartList } from "../Reducers/savedCart";
+
 import { checkAndHandleCartDocument } from "../helpers/firebaseHelpers/firestoreHelpers";
 //----------------------------------------------------------------------------
 
@@ -44,11 +47,15 @@ function Navbar() {
   const totalCount = useSelector(selectTotalCount);
   const userData = useSelector(selectUser);
   const productsCartList = useSelector(selectProductsCartList);
+  const productsSavedCartList = useSelector(selectProductsSavedCartList);
   const userIsLogged = useSelector(selectUserIsLogeedIn);
   const auth = getAuth();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+const carts = [...productsCartList ,...productsSavedCartList]
+
+console.log(carts);
   const CategoryRequest = async () => {
     try {
       const request = await fetch(`https://dummyjson.com/products/categories`);
@@ -101,7 +108,6 @@ function Navbar() {
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
-  
 
   const renderMenu = (
     <Menu
@@ -121,7 +127,7 @@ function Navbar() {
       {userIsLogged ? (
         <div>
           <MenuItem divider>{userData.email}</MenuItem>
-          <MenuItem divider onClick={()=>navigate('/user-account')}>
+          <MenuItem divider onClick={() => navigate("/user-account")}>
             My account
           </MenuItem>
           <MenuItem onClick={handleLogout}>Logout</MenuItem>
@@ -151,31 +157,38 @@ function Navbar() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem divider  onClick={()=>navigate('/user-account')}>
+      {/* <MenuItem divider >
         <IconButton
           size="large"
           aria-label="account of current user"
           aria-haspopup="true"
           color={userIsLogged ? "primary" : "inherit"}
-         
+          onClick={()=>navigate('/user-account')}
         >
           <AccountCircle />
         </IconButton>
         <p>Profile</p>
-      </MenuItem>
-          
-      <MenuItem onClick={()=>navigate('/user-messages')}>
-        <IconButton
-          size="large"
-          aria-label="show 17 new notifications"
-          color="inherit"
-        >
-          <Badge badgeContent={4} color="error">
-            <NotificationsIcon />
-          </Badge>
-        </IconButton>
-        <p>Notifications</p>
-      </MenuItem>
+      </MenuItem> */}
+      {userIsLogged ? (
+        <div>
+          <MenuItem divider>{userData.email}</MenuItem>
+
+          <MenuItem divider onClick={() => navigate("/user-account")}>
+            My account
+          </MenuItem>
+          <MenuItem divider onClick={() => navigate("/user-messages")}>
+            Notifications
+            <Badge badgeContent={2} color="error" sx={{ mb: 3, ml: 1 }}></Badge>
+          </MenuItem>
+            <MenuItem onClick={handleLogout}>Logout</MenuItem>
+        </div>
+      ) : (
+        <div>
+          <MenuItem divider>You are not logged in </MenuItem>
+          <MenuItem onClick={() => navigate("/loginPage")}>Login</MenuItem>
+          <MenuItem onClick={() => navigate("/SignUp")}>Register</MenuItem>
+        </div>
+      )}
     </Menu>
   );
 
@@ -196,7 +209,7 @@ function Navbar() {
             </Typography>
           </Button>
           <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ display: { md: "flex" } }} >
+          <Box sx={{ display: { md: "flex" } }}>
             <IconButton
               onClick={() => navigate("/cart")}
               size="large"
@@ -212,7 +225,7 @@ function Navbar() {
               size="large"
               aria-label="show 17 new notifications"
               color="inherit"
-              onClick={()=>navigate('/user-messages')}
+              onClick={() => navigate("/user-messages")}
             >
               <Badge badgeContent={4} color="error">
                 <NotificationsIcon />
@@ -223,7 +236,7 @@ function Navbar() {
               size="large"
               edge="end"
               onClick={handleProfileMenuOpen}
-              color={userIsLogged ? "primary" : "inherit" }
+              color={userIsLogged ? "primary" : "inherit"}
             >
               <AccountCircle />
             </IconButton>
