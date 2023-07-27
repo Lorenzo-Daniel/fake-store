@@ -14,7 +14,7 @@ import {
   selectProductsCartList,
 } from "../Reducers/cartSlice";
 
-import { selectProductsSavedCartList } from "../Reducers/savedCart";
+// import { selectProductsSavedCartList } from "../Reducers/savedCart";
 
 import { checkAndHandleCartDocument } from "../helpers/firebaseHelpers/firestoreHelpers";
 //----------------------------------------------------------------------------
@@ -47,15 +47,22 @@ function Navbar() {
   const totalCount = useSelector(selectTotalCount);
   const userData = useSelector(selectUser);
   const productsCartList = useSelector(selectProductsCartList);
-  const productsSavedCartList = useSelector(selectProductsSavedCartList);
+  // const productsSavedCartList = useSelector(selectProductsSavedCartList);
   const userIsLogged = useSelector(selectUserIsLogeedIn);
   const auth = getAuth();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+// const [newSavedProducts,setNewSavedProducts] = useState([])
+// const productsCartListIds = productsCartList.map((pdt)=> pdt.id)  
+// const productsSavedCartListIds = productsSavedCartList.map((pdt)=>pdt.id)
+// const uniqueIdsArray = [...new Set([...productsCartListIds, ...productsSavedCartListIds])];
+// console.log(uniqueIdsArray);
 
-const carts = [...productsCartList ,...productsSavedCartList]
+// const getLS = JSON.parse(localStorage.getItem('allProducts'))
 
-console.log(carts);
+// console.log(productsCartListIds);
+// console.log(productsSavedCartListIds);
+
   const CategoryRequest = async () => {
     try {
       const request = await fetch(`https://dummyjson.com/products/categories`);
@@ -70,7 +77,6 @@ console.log(carts);
       .then(() => {
         checkAndHandleCartDocument(
           userData?.uid,
-          totalCount,
           productsCartList,
           userData
         );
