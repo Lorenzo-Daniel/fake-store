@@ -14,18 +14,21 @@ import SignUpPage from "./Pages/SignUpPage/SignUpPage";
 import StoreProducts from "./Pages/StoreProducts/StoreProducts";
 import UserAccount from "./Pages/User account/UserAccount";
 import { checkAndHandleCartDocument } from "./helpers/firebaseHelpers/firestoreHelpers";
-
 import { doc, getDoc, getFirestore } from "firebase/firestore";
+import CreditCardPage from "./Pages/Cart Page/Cerdit card/CreditCardPage";
 import PayementMethodsPage from "./Pages/Cart Page/Payement methods/PayementMethodsPage";
 import UserMessage from "./Pages/UserMessages/UserMessage";
-import { addSavedProductToCart } from "./Reducers/savedCart";
 import {
   removeAllProductFromCart,
   selectProductsCartList,
   selectTotalCount,
 } from "./Reducers/cartSlice";
+import {
+  addSavedProductToCart,
+  documentIsCharged,
+  selectIsCharged,
+} from "./Reducers/savedCartSlice";
 import { logout, selectUser } from "./Reducers/userSlice";
-import CreditCardPage from "./Pages/Cart Page/Cerdit card/CreditCardPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -35,20 +38,17 @@ function App() {
   const productsCartList = useSelector(selectProductsCartList);
   const userData = useSelector(selectUser);
   const db = getFirestore();
-  const [isCharged, setIsCharged] = useState(false);
-
+  const isCharged = useSelector(selectIsCharged);
   const checkIfDocumentExists = async (userId) => {
     try {
-      const userDoc = await getDoc(doc(db, "cartProducts", userId));
-      if (userDoc.exists()) {
-        if (!isCharged) {
+        const userDoc = await getDoc(doc(db, "cartProducts", userId));
+        if (userDoc.exists()) {
           const userData = userDoc.data();
+          dispatch(documentIsCharged(true));
           dispatch(addSavedProductToCart(userData.cart.productsCartList));
-          setIsCharged(true);
+        } else {
+          console.error("El documento no existe");
         }
-      } else {
-        console.error("El documento no existe");
-      }
     } catch (error) {
       console.error("Error al verificar el documento:", error);
     }
@@ -91,8 +91,10 @@ function App() {
     const onAuthStateChangedListener = onAuthStateChanged(auth, (user) => {
       if (user) {
         setUserId(user.uid);
-        checkIfDocumentExists(user.uid);
         resetSignoutTimer();
+        if (!isCharged) {
+        checkIfDocumentExists(user.uid);
+      } 
       } else {
         setUserId("");
       }
@@ -108,7 +110,7 @@ function App() {
       window.removeEventListener("scroll", handleUserActivity);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [auth, userId]);
+  }, [auth, userId, isCharged]);
 
   return (
     <div>

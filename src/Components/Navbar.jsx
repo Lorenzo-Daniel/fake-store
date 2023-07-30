@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import TemporaryDrawer from "./TemporaryDrawer";
+import {getDoc,doc,getFirestore} from 'firebase/firestore'
 
 import {
   selectUserIsLogeedIn,
@@ -14,7 +15,10 @@ import {
   selectProductsCartList,
 } from "../Reducers/cartSlice";
 
-// import { selectProductsSavedCartList } from "../Reducers/savedCart";
+import {
+  removeAllProductFromSavedCart,
+  documentIsCharged,
+} from "../Reducers/savedCartSlice";
 
 import { checkAndHandleCartDocument } from "../helpers/firebaseHelpers/firestoreHelpers";
 //----------------------------------------------------------------------------
@@ -47,21 +51,12 @@ function Navbar() {
   const totalCount = useSelector(selectTotalCount);
   const userData = useSelector(selectUser);
   const productsCartList = useSelector(selectProductsCartList);
-  // const productsSavedCartList = useSelector(selectProductsSavedCartList);
   const userIsLogged = useSelector(selectUserIsLogeedIn);
   const auth = getAuth();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-// const [newSavedProducts,setNewSavedProducts] = useState([])
-// const productsCartListIds = productsCartList.map((pdt)=> pdt.id)  
-// const productsSavedCartListIds = productsSavedCartList.map((pdt)=>pdt.id)
-// const uniqueIdsArray = [...new Set([...productsCartListIds, ...productsSavedCartListIds])];
-// console.log(uniqueIdsArray);
-
-// const getLS = JSON.parse(localStorage.getItem('allProducts'))
-
-// console.log(productsCartListIds);
-// console.log(productsSavedCartListIds);
+  const db = getFirestore()
+  const [messagesCount,setMessageCount]= useState(1)
 
   const CategoryRequest = async () => {
     try {
@@ -72,15 +67,19 @@ function Navbar() {
       throw new Error(`Something went wrong | Error : ${error}`);
     }
   };
+
   const handleLogout = () => {
     signOut(auth)
       .then(() => {
         checkAndHandleCartDocument(
           userData?.uid,
+          totalCount,
           productsCartList,
           userData
         );
         dispatch(removeAllProductFromCart());
+        dispatch(removeAllProductFromSavedCart());
+        dispatch(documentIsCharged(false));
         dispatch(logout());
       })
       .catch((error) => {
@@ -89,11 +88,34 @@ function Navbar() {
       });
   };
 
+  const checkIfDocumentExists = async (auth) => {
+    if (!auth.currentUser) {
+      return; 
+    }
+  
+    try {
+      const userId = auth.currentUser.uid;
+      const userDoc = await getDoc(doc(db, "cartProducts", userId));
+      if (userDoc.exists()) {
+        if(userDoc.data().cart.totalCount > 0){
+          setMessageCount(2)
+        }
+      }else {
+        setMessageCount(1)
+        console.log(userDoc.length);
+      }
+    } catch (error) {
+      console.error("Error al verificar el documento:", error);
+    }
+  };
+
   useEffect(() => {
     setAllCategories(
       JSON.parse(localStorage.getItem("categoriesList")) || CategoryRequest()
     );
-  }, []);
+    checkIfDocumentExists(auth)
+    // eslint-disable-next-line 
+  }, [auth,messagesCount]);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -163,18 +185,6 @@ function Navbar() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      {/* <MenuItem divider >
-        <IconButton
-          size="large"
-          aria-label="account of current user"
-          aria-haspopup="true"
-          color={userIsLogged ? "primary" : "inherit"}
-          onClick={()=>navigate('/user-account')}
-        >
-          <AccountCircle />
-        </IconButton>
-        <p>Profile</p>
-      </MenuItem> */}
       {userIsLogged ? (
         <div>
           <MenuItem divider>{userData.email}</MenuItem>
@@ -184,9 +194,9 @@ function Navbar() {
           </MenuItem>
           <MenuItem divider onClick={() => navigate("/user-messages")}>
             Notifications
-            <Badge badgeContent={2} color="error" sx={{ mb: 3, ml: 1 }}></Badge>
+            <Badge badgeContent={messagesCount} color="error" sx={{ mb: 3, ml: 1 }}></Badge>
           </MenuItem>
-            <MenuItem onClick={handleLogout}>Logout</MenuItem>
+          <MenuItem onClick={handleLogout}>Logout</MenuItem>
         </div>
       ) : (
         <div>
@@ -233,7 +243,7 @@ function Navbar() {
               color="inherit"
               onClick={() => navigate("/user-messages")}
             >
-              <Badge badgeContent={4} color="error">
+              <Badge badgeContent={messagesCount} color="error">
                 <NotificationsIcon />
               </Badge>
             </IconButton>

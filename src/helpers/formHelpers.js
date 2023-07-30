@@ -44,19 +44,17 @@ export const validationConfig = {
       : "",
   creditCardExpirationDate: (value) => {
     const today = new Date().getTime();
-    console.log(today);
     const enteredValue = new Date(value).getTime()
-    console.log(today);
     if (enteredValue <= today) {
       return ("*Your credit card is expired");
     }if(!value ){
-     return"*This field is required"
+     return "*This field is required"
     }
   },
   crediCardSecurityCode: (value) => 
-  value.length !== 4 && 
+  value.length !== 4 ? 
   'Secutiry code must be 4 characters'
-  
+  : ''
 };
 
 export const handleBlur = (

@@ -6,12 +6,12 @@ import { persistReducer } from 'redux-persist';
 import thunk from 'redux-thunk'
 import  cartSlice from '../Reducers/cartSlice';
 import userSlice from '../Reducers/userSlice';
-import  savedCartSlice from '../Reducers/savedCart';
+import  savedCartSlice from '../Reducers/savedCartSlice';
 
 const persistConfig = {
   key:'root',
   storage,
-  whitelist: ['cartState','userState','savedCartSlice']
+  whitelist: ['cartState','userState','savedCartState']
 }
 
 

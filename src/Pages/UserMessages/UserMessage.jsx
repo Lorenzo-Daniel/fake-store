@@ -1,6 +1,8 @@
-import React, { useState, forwardRef } from "react";
+import React, { useState, forwardRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { getAuth } from "firebase/auth";
+import { getDoc, doc, getFirestore } from "firebase/firestore";
+// import { selectUser } from "../../Reducers/userSlice";
 import {
   Dialog,
   ListItemText,
@@ -17,14 +19,40 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 
 const Transition = forwardRef(function Transition(props, ref) {
-  
-  return <Slide  direction="up" ref={ref} {...props} />;
+  return <Slide direction="up" ref={ref} {...props} />;
 });
 
 function UserMessage() {
-  const [open, setOpen] = useState(true);
   const navigate = useNavigate();
- 
+  const auth = getAuth();
+  const db = getFirestore();
+  const [open, setOpen] = useState(true);
+  const [productsInCart, setProductsInCart] = useState(null);
+
+  const checkIfDocumentExists = async () => {
+    if (!auth.currentUser) {
+      return;
+    }
+    try {
+      const userId = auth.currentUser.uid;
+      const userDoc = await getDoc(doc(db, "cartProducts", userId));
+      if (userDoc.exists()) {
+        if (userDoc.data().cart.totalCount > 0) {
+          setProductsInCart({
+            title: "Finish your purchase!",
+            text: "In your last session, you left products in your cart! Watch your saved products!",
+          });
+        }
+      }
+    } catch (error) {
+      console.error("Error al verificar el documento:", error);
+    }
+  };
+
+  useEffect(() => {
+    checkIfDocumentExists();
+     // eslint-disable-next-line 
+  }, [auth,]);
 
   const handleClose = () => {
     setOpen(false);
@@ -61,14 +89,19 @@ function UserMessage() {
         </AppBar>
         <Box>
           <List>
-            <ListItem button>
-              <ListItemText primary="Phone ringtone" secondary="Discount!!" />
-            </ListItem>
+            {productsInCart && (
+              <ListItem button>
+                <ListItemText
+                  primary={productsInCart.title}
+                  secondary={productsInCart.text}
+                  onClick={()=>navigate('/cart')}
+                />
+              </ListItem>
+            )}
             <Divider />
-            <ListItem button>
+            <ListItem button    >
               <ListItemText
-                primary="Default notification ringtone"
-                secondary="Tethys"
+                primary="Welcome to Fake Store!"
               />
             </ListItem>
           </List>

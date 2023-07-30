@@ -74,6 +74,7 @@ export const cartSlice = createSlice({
       const findProductIndex = state.productsList.findIndex(
         (product) => product.id === productToAdd.id
       );
+      state.totalCount += 1
       if (findProductIndex !== -1) {
         state.productsList[findProductIndex].quantity += 1;
       } else {

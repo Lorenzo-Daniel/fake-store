@@ -1,34 +1,35 @@
 import {
-    Alert,
-    Box,
-    Button,
-    Container,
-    Stack,
-    Typography
+  Alert,
+  Box,
+  Button,
+  Container,
+  Stack,
+  Typography,
 } from "@mui/material";
 import React, { useState } from "react";
 import InputForm from "../../../Components/Form Componenets/InputForm";
 import { onSubmitFormValidtionHelper } from "../../../helpers/formHelpers";
-// import { useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 
 function CreditCardForm() {
+  const navigate = useNavigate();
   const [error, setError] = useState(false);
   const [errorSubmit, setErrorSubmit] = useState(false);
-
   const [formValues, setFormValues] = useState({
-    cardNumber: "",
+    creditCardNumber: "",
     firstName: "",
     lastName: "",
     creditCardExpirationDate: "",
     crediCardSecurityCode: "",
   });
   const [formErrors, setFormErrors] = useState({
-    cardNumber: "",
+    creditCardNumber: "",
     firstName: "",
     lastName: "",
     creditCardExpirationDate: "",
     crediCardSecurityCode: "",
   });
+
   const handleSubmit = (e) => {
     const { updatedFormErrors, hasErrors } = onSubmitFormValidtionHelper(
       e,
@@ -37,11 +38,13 @@ function CreditCardForm() {
     );
 
     if (hasErrors) {
-      console.log("Something went wrong, try again.");
+      console.error("Something went wrong, try again.");
       setError(true);
       setFormErrors(updatedFormErrors);
       setErrorSubmit("All fields are required");
       return;
+    } else {
+      navigate("/mailing");
     }
   };
 
@@ -89,9 +92,9 @@ function CreditCardForm() {
               formErrors={formErrors}
               error={error}
               setErrorSubmit={setErrorSubmit}
-              name="CreditCardnumber"
+              name="creditCardNumber"
               label={"Credit card number"}
-              autoComplete="user-creditCardExpirationDate"
+              autoComplete="user-creditCardNumber"
             />
             <InputForm
               type={"date"}

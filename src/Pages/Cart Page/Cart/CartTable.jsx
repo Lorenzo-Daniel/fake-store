@@ -34,7 +34,7 @@ import {
   selectProductsSavedCartList,
   removeProductFromSavedCart,
   removeAllProductFromSavedCart,
-} from "../../../Reducers/savedCart";
+} from "../../../Reducers/savedCartSlice";
 import { Link, useNavigate } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -55,9 +55,11 @@ function CartTable() {
   const [subTotal, setSubTotal] = useState("");
   const [necesaryLogginWarning, setNecesaryLogginWarning] = useState(false);
   const [value, setValue] = useState(0);
-  const [savedCartList, setSavedCartList] = useState([]);
+  // const [savedCartList, setSavedCartList] = useState([]);
   const [showCarts, setShowCarts] = useState(true);
-  const selectSavedCartList = useSelector(selectProductsSavedCartList);
+  const savedCartList = useSelector(selectProductsSavedCartList);
+
+  
   const handleRemoveProduct = (productId) => {
     dispatch(removeProductFromCart(productId));
   };
@@ -65,8 +67,8 @@ function CartTable() {
   const handleForwardProductToCart = (productId) => {
     const getLS = JSON.parse(localStorage.getItem("allProducts"));
     const findProduct = getLS.find((product) => product.id === productId);
-    dispatch(forwardProductToCart(findProduct));
     dispatch(removeProductFromSavedCart(productId));
+    dispatch(forwardProductToCart(findProduct));
   };
 
   const checkoutHandler = () => {
@@ -91,9 +93,9 @@ function CartTable() {
         0
       );
       setSubTotal(totalSum);
-      setSavedCartList(selectSavedCartList);
     }
-  }, [productsInCart, subTotal, selectSavedCartList]);
+    // setSavedCartList(selectSavedCartList);
+  }, [productsInCart, subTotal, savedCartList]);
 
   return (
     <Box>
