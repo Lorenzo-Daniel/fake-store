@@ -18,11 +18,9 @@ export const savedCartSlice = createSlice({
       state.productsList = state.productsList.filter(
         (product) => product.id !== productId
       );
-      state.isCharged = true;
     },
     removeAllProductFromSavedCart: (state) => {
       state.productsList = [];
-      state.isCharged = true;
     },
     documentIsCharged: (state, action) => {
       state.isCharged = action.payload;

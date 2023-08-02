@@ -3,7 +3,7 @@ import CreditCardIcon from "@mui/icons-material/CreditCard";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import { useNavigate } from "react-router-dom";
-import { Box, Typography, Grid, Button } from "@mui/material";
+import { Box, Typography, Grid, Button,Divider } from "@mui/material";
 
 
 function PayementMethods() {
@@ -11,9 +11,10 @@ function PayementMethods() {
 
   return (
     <Box>
-      <Typography variant="h4" mt={4}>
+      <Typography variant="h4" my={4}>
         Payement Methods
       </Typography>
+      <Divider/>
       <Grid container spacing={2} mt={5}>
         <Grid item xs={12} lg={8}>
           <Button

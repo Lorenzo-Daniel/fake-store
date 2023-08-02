@@ -29,7 +29,8 @@ import {
   selectIsCharged,
 } from "./Reducers/savedCartSlice";
 import { logout, selectUser } from "./Reducers/userSlice";
-
+import ShippingServicePage from "./Pages/Cart Page/ShippingService/ShippingServicePage";
+import PurchaseSummaryPage from "./Pages/Cart Page/PurchaseSummary/PurchaseSummaryPage";
 function App() {
   const dispatch = useDispatch();
   const auth = getAuth();
@@ -41,14 +42,14 @@ function App() {
   const isCharged = useSelector(selectIsCharged);
   const checkIfDocumentExists = async (userId) => {
     try {
-        const userDoc = await getDoc(doc(db, "cartProducts", userId));
-        if (userDoc.exists()) {
-          const userData = userDoc.data();
-          dispatch(documentIsCharged(true));
-          dispatch(addSavedProductToCart(userData.cart.productsCartList));
-        } else {
-          console.error("El documento no existe");
-        }
+      const userDoc = await getDoc(doc(db, "cartProducts", userId));
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        dispatch(documentIsCharged(true));
+        dispatch(addSavedProductToCart(userData.cart.productsCartList));
+      } else {
+        console.error("El documento no existe");
+      }
     } catch (error) {
       console.error("Error al verificar el documento:", error);
     }
@@ -93,8 +94,8 @@ function App() {
         setUserId(user.uid);
         resetSignoutTimer();
         if (!isCharged) {
-        checkIfDocumentExists(user.uid);
-      } 
+          checkIfDocumentExists(user.uid);
+        }
       } else {
         setUserId("");
       }
@@ -135,6 +136,8 @@ function App() {
           <Route exact path="/user-messages" element={<UserMessage />} />
           <Route exact path="/user-account" element={<UserAccount />} />
           <Route exact path="/credit-card-form" element={<CreditCardPage />} />
+          <Route exact path="/shipping-service" element={<ShippingServicePage />} />
+          <Route exact path="/purchase-summary" element={<PurchaseSummaryPage />} />
 
           <Route
             exact

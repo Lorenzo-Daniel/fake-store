@@ -74,6 +74,59 @@ export const checkAndHandleCartDocument = async (
   }
 };
 
+// MANEJAR PURCHASE ORDER ---------------------------------------------------------
+export const checkAndHandlePurchaseOrderDocument = async (
+  formValues,
+  user,
+  db,
+  productsCartList,
+  setPurchaseOrderState,
+  dispatch,
+) => {
+  try {
+    const purchaseOrderDocRef = doc(db, "purchase-orders", user.uid);
+    const purchaseOrderDoc = await getDoc(purchaseOrderDocRef);
+    const date = new Date().toDateString();
+    const userEmail = user.email;
+    const totalPrice = productsCartList.reduce(
+      (acc, product) => acc + product.price * product.quantity,
+      0
+    );
+    if (purchaseOrderDoc.exists()) {
+      const purchaseOrdersData = await purchaseOrderDoc.data().orders;
+      const newPurchaseOrder = {
+        reference: {
+          date: date,
+          userEmail: userEmail,
+        },
+        formValues,
+        productsCartList,
+        totalPrice,
+      };
+      const newPurchaseOrdersData = [...purchaseOrdersData, newPurchaseOrder];
+      await updateDoc(purchaseOrderDocRef, { orders: newPurchaseOrdersData });
+      dispatch(setPurchaseOrderState(newPurchaseOrder))
+    } else {
+      const newPurchaseOrder = {
+        reference: {
+          date: date,
+          userEmail: userEmail,
+        },
+        formValues,
+        productsCartList,
+        totalPrice,
+      };
+      await setDoc(purchaseOrderDocRef, { orders: [newPurchaseOrder] });
+      dispatch(setPurchaseOrderState(newPurchaseOrder))
+    }
+  } catch (error) {
+    console.error(
+      "Error al verificar y manejar el documento en purchase-orders",
+      error
+    );
+  }
+};
+
 // ACTUALIZAR VALOR DE UNA UNICA CLAVE DE OBJETO EN DOCUMNETO
 
 export const updateValueInObjectDoc = async (
@@ -91,12 +144,10 @@ export const updateValueInObjectDoc = async (
       [key]: newValue,
     });
     setAlertChanges(false);
-    setSuccesChange(
-      "Your phone number was updated successfully"
-    );
+    setSuccesChange("Your phone number was updated successfully");
     console.log("actualizado correctamente.");
   } catch (error) {
-    setAlertToShow()
+    setAlertToShow();
     console.error("Error al actualizar la email en objeto: ", error);
   }
 };
@@ -114,7 +165,7 @@ export const updateUserPhone = (
   setSuccesChange
 ) => {
   if (newValue < 9) {
-  alert("Your phone number must be at least 9 digits long.")
+    alert("Your phone number must be at least 9 digits long.");
     console.log("El número de teléfono debe tener al menos 9 dígitos.");
     return;
   } else {

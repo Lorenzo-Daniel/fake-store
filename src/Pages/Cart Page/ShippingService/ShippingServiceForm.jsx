@@ -1,35 +1,44 @@
 import {
   Alert,
-  Box,
+  Divider,
   Button,
   Container,
   Stack,
-  Divider,
   Typography,
 } from "@mui/material";
 import React, { useState } from "react";
 import InputForm from "../../../Components/Form Componenets/InputForm";
 import { onSubmitFormValidtionHelper } from "../../../helpers/formHelpers";
 import { useNavigate } from "react-router";
+import { getFirestore } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+import { checkAndHandlePurchaseOrderDocument } from "../../../helpers/firebaseHelpers/firestoreHelpers";
+import { selectProductsCartList ,setPurchaseOrder} from "../../../Reducers/cartSlice";
+import { useDispatch ,useSelector} from "react-redux";
 
-function CreditCardForm() {
+
+function ShippingServiceForm() {
   const navigate = useNavigate();
+  const dispatch = useDispatch()
+  const user = getAuth().currentUser;
+  const db = getFirestore();
+  const cartList = useSelector(selectProductsCartList);
   const [error, setError] = useState(false);
   const [errorSubmit, setErrorSubmit] = useState(false);
   const [formValues, setFormValues] = useState({
-    creditCardNumber: "",
-    firstName: "",
-    lastName: "",
-    creditCardExpirationDate: "",
-    crediCardSecurityCode: "",
+    address: "",
+    city: "",
+    name: "",
   });
   const [formErrors, setFormErrors] = useState({
-    creditCardNumber: "",
-    firstName: "",
-    lastName: "",
-    creditCardExpirationDate: "",
-    crediCardSecurityCode: "",
+    address: "",
+    city: "",
+    name: "",
   });
+  
+  
+
+
 
   const handleSubmit = (e) => {
     const { updatedFormErrors, hasErrors } = onSubmitFormValidtionHelper(
@@ -45,16 +54,19 @@ function CreditCardForm() {
       setErrorSubmit("All fields are required");
       return;
     } else {
-      navigate("/shipping-service");
+      checkAndHandlePurchaseOrderDocument(formValues, user, db, cartList,setPurchaseOrder,dispatch);
+
+      navigate("/purchase-summary");
     }
   };
 
   return (
-    <Box>
+    <>
       <Typography variant="h4" my={4}>
-        Credit Card
+        Shipping data
       </Typography>
-<Divider/>
+
+      <Divider />
       <Container sx={{ mt: 5 }}>
         <form onSubmit={handleSubmit}>
           <Stack spacing={3}>
@@ -67,9 +79,23 @@ function CreditCardForm() {
               formErrors={formErrors}
               error={error}
               setErrorSubmit={setErrorSubmit}
-              name="firstName"
-              label="First name"
-              autoComplete="user-crdit-card-name"
+              name="address"
+              label="Address"
+              autoComplete="off"
+            />
+
+            <InputForm
+              type={"text"}
+              formValues={formValues}
+              setFormValues={setFormValues}
+              setFormErrors={setFormErrors}
+              setError={setError}
+              formErrors={formErrors}
+              error={error}
+              setErrorSubmit={setErrorSubmit}
+              name="city"
+              label={"City"}
+              autoComplete="user-city"
             />
             <InputForm
               type={"text"}
@@ -80,47 +106,9 @@ function CreditCardForm() {
               formErrors={formErrors}
               error={error}
               setErrorSubmit={setErrorSubmit}
-              name="lastName"
-              label="Last name"
-              autoComplete='off'
-            />
-            <InputForm
-              type={"password"}
-              formValues={formValues}
-              setFormValues={setFormValues}
-              setFormErrors={setFormErrors}
-              setError={setError}
-              formErrors={formErrors}
-              error={error}
-              setErrorSubmit={setErrorSubmit}
-              name="creditCardNumber"
-              label={"Credit card number"}
-              autoComplete="user-creditCardNumber"
-            />
-            <InputForm
-              type={"date"}
-              formValues={formValues}
-              setFormValues={setFormValues}
-              setFormErrors={setFormErrors}
-              setError={setError}
-              formErrors={formErrors}
-              error={error}
-              setErrorSubmit={setErrorSubmit}
-              name="creditCardExpirationDate"
-              autoComplete="user-creditCardExpirationDate"
-            />
-            <InputForm
-              type={"password"}
-              formValues={formValues}
-              setFormValues={setFormValues}
-              setFormErrors={setFormErrors}
-              setError={setError}
-              formErrors={formErrors}
-              error={error}
-              setErrorSubmit={setErrorSubmit}
-              name="crediCardSecurityCode"
-              label="Security code"
-              autoComplete="user-crediCardSecurityCode"
+              name="name"
+              label="Name"
+              autoComplete="user-name"
             />
             <Button
               fullWidth
@@ -139,8 +127,8 @@ function CreditCardForm() {
           </Stack>
         </form>
       </Container>
-    </Box>
+    </>
   );
 }
 
-export default CreditCardForm;
+export default ShippingServiceForm;

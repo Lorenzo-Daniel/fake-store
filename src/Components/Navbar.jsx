@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import TemporaryDrawer from "./TemporaryDrawer";
-import {getDoc,doc,getFirestore} from 'firebase/firestore'
+import { getDoc, doc, getFirestore } from "firebase/firestore";
 
 import {
   selectUserIsLogeedIn,
@@ -13,6 +13,7 @@ import {
   selectTotalCount,
   removeAllProductFromCart,
   selectProductsCartList,
+  removePurchaseOrder,
 } from "../Reducers/cartSlice";
 
 import {
@@ -55,8 +56,9 @@ function Navbar() {
   const auth = getAuth();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const db = getFirestore()
-  const [messagesCount,setMessageCount]= useState(1)
+  const db = getFirestore();
+  const [messagesCount, setMessageCount] = useState(0);
+  const [messageRead, setMessageRead] = useState(false);
 
   const CategoryRequest = async () => {
     try {
@@ -80,6 +82,7 @@ function Navbar() {
         dispatch(removeAllProductFromCart());
         dispatch(removeAllProductFromSavedCart());
         dispatch(documentIsCharged(false));
+        dispatch(removePurchaseOrder());
         dispatch(logout());
       })
       .catch((error) => {
@@ -88,21 +91,26 @@ function Navbar() {
       });
   };
 
+  const handleMessages = () => {
+    navigate("/user-messages");
+    setMessageRead(true);
+  };
   const checkIfDocumentExists = async (auth) => {
     if (!auth.currentUser) {
-      return; 
+      return;
     }
-  
     try {
-      const userId = auth.currentUser.uid;
-      const userDoc = await getDoc(doc(db, "cartProducts", userId));
+      if (messageRead) {
+        setMessageCount(0);
+      }
+      const user = auth.currentUser;
+      const userDoc = await getDoc(doc(db, "cartProducts", user.uid));
       if (userDoc.exists()) {
-        if(userDoc.data().cart.totalCount > 0){
-          setMessageCount(2)
+        if (userDoc.data().cart.totalCount > 0) {
+          setMessageCount(2);
+        } else {
+          setMessageCount(1);
         }
-      }else {
-        setMessageCount(1)
-        console.log(userDoc.length);
       }
     } catch (error) {
       console.error("Error al verificar el documento:", error);
@@ -113,9 +121,9 @@ function Navbar() {
     setAllCategories(
       JSON.parse(localStorage.getItem("categoriesList")) || CategoryRequest()
     );
-    checkIfDocumentExists(auth)
-    // eslint-disable-next-line 
-  }, [auth,messagesCount]);
+    checkIfDocumentExists(auth);
+    // eslint-disable-next-line
+  }, [auth, messagesCount]);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -192,9 +200,13 @@ function Navbar() {
           <MenuItem divider onClick={() => navigate("/user-account")}>
             My account
           </MenuItem>
-          <MenuItem divider onClick={() => navigate("/user-messages")}>
+          <MenuItem divider onClick={handleMessages}>
             Notifications
-            <Badge badgeContent={messagesCount} color="error" sx={{ mb: 3, ml: 1 }}></Badge>
+            <Badge
+              badgeContent={messagesCount}
+              color="error"
+              sx={{ mb: 3, ml: 1 }}
+            ></Badge>
           </MenuItem>
           <MenuItem onClick={handleLogout}>Logout</MenuItem>
         </div>
@@ -241,7 +253,7 @@ function Navbar() {
               size="large"
               aria-label="show 17 new notifications"
               color="inherit"
-              onClick={() => navigate("/user-messages")}
+              onClick={handleMessages}
             >
               <Badge badgeContent={messagesCount} color="error">
                 <NotificationsIcon />

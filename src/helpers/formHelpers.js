@@ -36,7 +36,7 @@ export const validationConfig = {
       : value.length < 9
       ? "Phone number must be at least 9 characters"
       : "",
-  cardNumber: (value) =>
+  creditCardNumber: (value) =>
     value.length === 0
       ? "*This field is required"
       : value.length < 8
@@ -44,17 +44,19 @@ export const validationConfig = {
       : "",
   creditCardExpirationDate: (value) => {
     const today = new Date().getTime();
-    const enteredValue = new Date(value).getTime()
+    const enteredValue = new Date(value).getTime();
     if (enteredValue <= today) {
-      return ("*Your credit card is expired");
-    }if(!value ){
-     return "*This field is required"
+      return "*Your credit card is expired";
+    }
+    if (!value) {
+      return "*This field is required";
     }
   },
-  crediCardSecurityCode: (value) => 
-  value.length !== 4 ? 
-  'Secutiry code must be 4 characters'
-  : ''
+  crediCardSecurityCode: (value) =>
+    value.length !== 4 ? "Secutiry code must be 4 characters" : "",
+  address: (value) => value.length === 0 ? "*This field is required" : '',
+  city: (value) => value.length === 0 ? "*This field is required" : '',
+  name: (value) => value.length === 0 ? "*This field is required" : '',
 };
 
 export const handleBlur = (

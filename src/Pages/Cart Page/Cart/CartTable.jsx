@@ -237,7 +237,7 @@ function CartTable() {
               {necesaryLogginWarning && (
                 <Alert
                   severity="warning"
-                  sx={{ display: "flex", flexDirection: "column" }}
+                  sx={{ display: "flex", flexDirection: "column",mb:5 }}
                 >
                   <Typography variant="span">
                     You must be logged in to continue.
