@@ -89,7 +89,7 @@ export const cartSlice = createSlice({
       state.purchaseOrderData = action.payload;
     },
    removePurchaseOrder: (state) => {
-      state.purchaseOrderData = null;
+      state.purchaseOrderData =null;
     },
   },
 });

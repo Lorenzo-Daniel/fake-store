@@ -10,19 +10,16 @@ import React, { useState } from "react";
 import InputForm from "../../../Components/Form Componenets/InputForm";
 import { onSubmitFormValidtionHelper } from "../../../helpers/formHelpers";
 import { useNavigate } from "react-router";
-import { getFirestore } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
-import { checkAndHandlePurchaseOrderDocument } from "../../../helpers/firebaseHelpers/firestoreHelpers";
-import { selectProductsCartList ,setPurchaseOrder} from "../../../Reducers/cartSlice";
-import { useDispatch ,useSelector} from "react-redux";
-
+import {
+  selectProductsCartList,
+  setPurchaseOrder,
+} from "../../../Reducers/cartSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 function ShippingServiceForm() {
   const navigate = useNavigate();
-  const dispatch = useDispatch()
-  const user = getAuth().currentUser;
-  const db = getFirestore();
-  const cartList = useSelector(selectProductsCartList);
+  const dispatch = useDispatch();
+  const productsCartList = useSelector(selectProductsCartList);
   const [error, setError] = useState(false);
   const [errorSubmit, setErrorSubmit] = useState(false);
   const [formValues, setFormValues] = useState({
@@ -35,10 +32,6 @@ function ShippingServiceForm() {
     city: "",
     name: "",
   });
-  
-  
-
-
 
   const handleSubmit = (e) => {
     const { updatedFormErrors, hasErrors } = onSubmitFormValidtionHelper(
@@ -54,8 +47,20 @@ function ShippingServiceForm() {
       setErrorSubmit("All fields are required");
       return;
     } else {
-      checkAndHandlePurchaseOrderDocument(formValues, user, db, cartList,setPurchaseOrder,dispatch);
+      const totalPrice = productsCartList.reduce(
+        (acc, product) => acc + product.price * product.quantity,
+        0
+      );
+      const orderNumber = (Math.random() * (1000 * 1000000)).toFixed();
 
+      dispatch(
+        setPurchaseOrder({
+          formValues,
+          productsCartList,
+          totalPrice,
+          orderNumber,
+        })
+      );
       navigate("/purchase-summary");
     }
   };

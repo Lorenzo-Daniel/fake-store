@@ -8,18 +8,25 @@ import {
 } from "firebase/firestore";
 
 // OBTENER DOCUMENTO POR ID DE USUARIO ------------------------------------
-export const getUserIdDocument = async (userId, setUserData) => {
-  try {
-    const db = getFirestore();
-    const userSnapshot = await getDoc(doc(db, "users", userId));
-    if (userSnapshot.exists()) {
-      const userData = userSnapshot.data();
-      setUserData(userData);
-    } else {
-      console.log("El usuario no existe en la base de datos.");
+export const getUserIdDocument = async (
+  auth,
+  db,
+  dispatch,
+  setUserExtendedData
+) => {
+  if (auth) {
+    try {
+      const userId = auth?.currentUser.uid;                  
+      const userSnapshot = await getDoc(doc(db, "users", userId));
+      if (userSnapshot.exists()) {
+        const userData = userSnapshot.data();
+        dispatch(setUserExtendedData(userData));
+      } else {
+        console.log("El usuario no existe en la base de datos.");
+      }
+    } catch (error) {
+      console.error("Error al obtener el documento del usuario:", error);
     }
-  } catch (error) {
-    console.error("Error al obtener el documento del usuario:", error);
   }
 };
 
@@ -76,22 +83,15 @@ export const checkAndHandleCartDocument = async (
 
 // MANEJAR PURCHASE ORDER ---------------------------------------------------------
 export const checkAndHandlePurchaseOrderDocument = async (
-  formValues,
   user,
   db,
-  productsCartList,
-  setPurchaseOrderState,
-  dispatch,
+  purchaseOrder
 ) => {
   try {
     const purchaseOrderDocRef = doc(db, "purchase-orders", user.uid);
     const purchaseOrderDoc = await getDoc(purchaseOrderDocRef);
     const date = new Date().toDateString();
     const userEmail = user.email;
-    const totalPrice = productsCartList.reduce(
-      (acc, product) => acc + product.price * product.quantity,
-      0
-    );
     if (purchaseOrderDoc.exists()) {
       const purchaseOrdersData = await purchaseOrderDoc.data().orders;
       const newPurchaseOrder = {
@@ -99,25 +99,19 @@ export const checkAndHandlePurchaseOrderDocument = async (
           date: date,
           userEmail: userEmail,
         },
-        formValues,
-        productsCartList,
-        totalPrice,
+        purchaseOrder,
       };
       const newPurchaseOrdersData = [...purchaseOrdersData, newPurchaseOrder];
       await updateDoc(purchaseOrderDocRef, { orders: newPurchaseOrdersData });
-      dispatch(setPurchaseOrderState(newPurchaseOrder))
     } else {
       const newPurchaseOrder = {
         reference: {
           date: date,
           userEmail: userEmail,
         },
-        formValues,
-        productsCartList,
-        totalPrice,
+        purchaseOrder,
       };
       await setDoc(purchaseOrderDocRef, { orders: [newPurchaseOrder] });
-      dispatch(setPurchaseOrderState(newPurchaseOrder))
     }
   } catch (error) {
     console.error(
@@ -137,7 +131,8 @@ export const updateValueInObjectDoc = async (
   newValue,
   setAlertToShow,
   setAlertChanges,
-  setSuccesChange
+  setSuccesChange,
+  setErrorChanges
 ) => {
   try {
     await updateDoc(doc(db, collection, userId), {
@@ -147,7 +142,8 @@ export const updateValueInObjectDoc = async (
     setSuccesChange("Your phone number was updated successfully");
     console.log("actualizado correctamente.");
   } catch (error) {
-    setAlertToShow();
+    setAlertToShow(false);
+    setErrorChanges('something went wrong ,try again')
     console.error("Error al actualizar la email en objeto: ", error);
   }
 };
@@ -162,11 +158,12 @@ export const updateUserPhone = (
   newValue,
   setAlertToShow,
   setAlertChanges,
-  setSuccesChange
+  setSuccesChange,
+  setErrorChanges
 ) => {
   if (newValue < 9) {
     alert("Your phone number must be at least 9 digits long.");
-    console.log("El número de teléfono debe tener al menos 9 dígitos.");
+   
     return;
   } else {
     updateValueInObjectDoc(
@@ -176,7 +173,9 @@ export const updateUserPhone = (
       key,
       newValue,
       setAlertToShow,
-      setAlertChanges
+      setAlertChanges,
+      setSuccesChange,
+      setErrorChanges
     );
   }
 };

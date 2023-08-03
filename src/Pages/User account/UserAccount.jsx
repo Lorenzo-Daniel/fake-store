@@ -47,15 +47,13 @@ const Transition = forwardRef(function Transition(props, ref) {
 //-------------------------------------------------------------------
 function UserAccount() {
   const [open, setOpen] = useState(true);
-  const [userExtendedData, setUserExtenderData] = useState(null);
   const [alertChanges, setAlertChanges] = useState(false);
   const [alertToShow, setAlertToShow] = useState();
-  const [succesChanges, setSuccesChange] = useState(false);
-  const [errorChanges, setErrorChanges] = useState(false);
+  const [successChanges, setSuccesChange] = useState(false);
+  const [errorChanges, setErrorChanges] = useState('');
   const alertBox = useRef(null);
-
   const userId = useSelector(selectUser)?.uid;
-  const getExtendedDataStorage = useSelector(selectUserExtendedData);
+  const userExtendedData = useSelector(selectUserExtendedData);
   const [newEmail, setNewEmail] = useState("");
   const [newPhone, setNewPhone] = useState("");
   const dispatch = useDispatch();
@@ -102,10 +100,9 @@ function UserAccount() {
   };
 
   useEffect(() => {
-    if (!getExtendedDataStorage) {
+    if (!userExtendedData) {
       if (userId) {
-        getUserIdDocument(userId, setUserExtenderData);
-        dispatch(setUserExtendedData(userExtendedData));
+        getUserIdDocument(auth,db, dispatch,setUserExtendedData);
       }
     }
     document.addEventListener("mousedown", handleClickOutSideBoxAlert);
@@ -113,7 +110,7 @@ function UserAccount() {
       document.removeEventListener("mousedown", handleClickOutSideBoxAlert);
     };
     // eslint-disable-next-line
-  }, [getExtendedDataStorage,userExtendedData]);
+  }, [userExtendedData]);
   return (
     <div>
       <Dialog
@@ -146,20 +143,20 @@ function UserAccount() {
             <Divider />
             <ListItem>
               <ListItemText
-                primary="Fisrta name"
-                secondary={getExtendedDataStorage?.firstName}
+                primary="First name"
+                secondary={userExtendedData?.firstName}
               />
             </ListItem>
             <ListItem>
               <ListItemText
                 primary="Last name"
-                secondary={getExtendedDataStorage?.lastName}
+                secondary={userExtendedData?.lastName}
               />
             </ListItem>
             <ListItem>
               <ListItemText
                 primary="Phone Number"
-                secondary={getExtendedDataStorage?.phone}
+                secondary={userExtendedData?.phone}
               />
               <Button
                 sx={{ p: 1 }}
@@ -175,7 +172,7 @@ function UserAccount() {
             <ListItem>
               <ListItemText
                 primary="Email Address"
-                secondary={getExtendedDataStorage?.email}
+                secondary={userExtendedData?.email}
               />
               <Button
                 sx={{ p: 1 }}
@@ -331,9 +328,9 @@ function UserAccount() {
             </Alert>
           )}
           <Box ref={alertBox}>
-            {succesChanges && (
+            {successChanges && (
               <Alert sx={{ p: 4 }} severity="success">
-                {succesChanges}
+                {successChanges}
               </Alert>
             )}
             {errorChanges && (

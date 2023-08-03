@@ -14,6 +14,7 @@ import {
   removeAllProductFromCart,
   selectProductsCartList,
   removePurchaseOrder,
+  selectPurchaseOrder,
 } from "../Reducers/cartSlice";
 
 import {
@@ -42,6 +43,7 @@ import {
 import { ShoppingCartSharp, AccountCircle } from "@mui/icons-material";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
+import PopUpModal from "./popUpModal/PopUpModal";
 
 //-----------------------------------------------------------------------
 
@@ -53,13 +55,15 @@ function Navbar() {
   const userData = useSelector(selectUser);
   const productsCartList = useSelector(selectProductsCartList);
   const userIsLogged = useSelector(selectUserIsLogeedIn);
+  const purchseOrder = useSelector(selectPurchaseOrder);
   const auth = getAuth();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const db = getFirestore();
   const [messagesCount, setMessageCount] = useState(0);
   const [messageRead, setMessageRead] = useState(false);
-
+  const [showModal, setShowModal] = useState(false);
+  const [confirmLogout, setConfirmLogout] = useState(false);
   const CategoryRequest = async () => {
     try {
       const request = await fetch(`https://dummyjson.com/products/categories`);
@@ -70,31 +74,42 @@ function Navbar() {
     }
   };
 
+  console.log(confirmLogout);
+
   const handleLogout = () => {
-    signOut(auth)
-      .then(() => {
-        checkAndHandleCartDocument(
-          userData?.uid,
-          totalCount,
-          productsCartList,
-          userData
-        );
-        dispatch(removeAllProductFromCart());
-        dispatch(removeAllProductFromSavedCart());
-        dispatch(documentIsCharged(false));
-        dispatch(removePurchaseOrder());
-        dispatch(logout());
-      })
-      .catch((error) => {
-        const errorMessage = error.message;
-        console.log(errorMessage);
-      });
+    if (purchseOrder && !confirmLogout) {
+      setShowModal(true);
+      return;
+    } else {
+      signOut(auth)
+        .then(() => {
+          checkAndHandleCartDocument(
+            userData?.uid,
+            totalCount,
+            productsCartList,
+            userData
+          );
+          navigate("/");
+          dispatch(removeAllProductFromCart());
+          dispatch(removeAllProductFromSavedCart());
+          dispatch(documentIsCharged(false));
+          dispatch(removePurchaseOrder());
+          dispatch(logout());
+        })
+        .catch((error) => {
+          const errorMessage = error.message;
+          console.log(errorMessage);
+        });
+    }
   };
 
   const handleMessages = () => {
     navigate("/user-messages");
     setMessageRead(true);
   };
+
+
+
   const checkIfDocumentExists = async (auth) => {
     if (!auth.currentUser) {
       return;
@@ -222,6 +237,13 @@ function Navbar() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
+      {showModal && (
+        <PopUpModal
+          setConfirmLogout={setConfirmLogout}
+          showModal={showModal}
+          setShowModal={setShowModal}
+        />
+      )}
       <AppBar position="static">
         <Toolbar className="bg-dark">
           <TemporaryDrawer allCategories={allCategories} />

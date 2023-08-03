@@ -9,9 +9,8 @@ import {
 // DELETE ACCOUNT ------------------------
 export const deleteAccount = (
   dispatch,
-  setAlertToShow,
   setAlertChanges,
-  setSuccesChange,
+  setSuccessChange,
   setErrorChanges,
   auth,
   db
@@ -23,10 +22,11 @@ export const deleteAccount = (
       .then(() => {
         deleteDocFromCollection(db, "cartProducts", user.uid);
         deleteDocFromCollection(db, "users", user.uid);
+        deleteDocFromCollection(db,'purchase-orders',user.uid)
         dispatch(removeAllProductFromCart());
         dispatch(logout());
         setAlertChanges(false);
-        setSuccesChange(
+        setSuccessChange(
            "Your account was permanently deleted");
         console.log("La cuenta del usuario se eliminó correctamente.");
       })
@@ -37,7 +37,7 @@ export const deleteAccount = (
         console.error("Error al eliminar la cuenta del usuario:", error);
       });
   } else {
-    setAlertChanges(false)
+    setSuccessChange(false)
     setErrorChanges( "There is no registered user" );
     console.error("No hay un usuario autenticado.");
   }
@@ -50,6 +50,7 @@ export const updateUserEmail = (
   newEmail,
   setAlertToShow,
   setAlertChanges,
+  setErrorChanges,
   db,
   newValue,
   key,
@@ -76,9 +77,10 @@ export const updateUserEmail = (
         })
         .catch((error) => {
           console.error("Error al actualizar el email: ", newEmail, error);
-          alert(`Error al actualizar el email:  ${newEmail} ${error}`);
+         setErrorChanges('something went wrong')
         });
     } else {
+      setErrorChanges("There is no registered user")
       console.error("No hay un usuario autenticado.");
     }
   }
