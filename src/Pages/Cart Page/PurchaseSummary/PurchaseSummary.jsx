@@ -42,7 +42,6 @@ function PurchaseSummary() {
   const db = getFirestore();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  console.log(purchaseOrder);
 
   const handlePurchaseFinish = () => {
     checkAndHandlePurchaseOrderDocument(auth?.currentUser, db, purchaseOrder);

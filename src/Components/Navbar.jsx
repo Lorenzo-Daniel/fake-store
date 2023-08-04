@@ -74,7 +74,6 @@ function Navbar() {
     }
   };
 
-  console.log(confirmLogout);
 
   const handleLogout = () => {
     if (purchseOrder && !confirmLogout) {

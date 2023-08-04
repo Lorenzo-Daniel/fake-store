@@ -30,6 +30,29 @@ export const getUserIdDocument = async (
   }
 };
 
+// OBTENER DOCUMENTO POR ID DE USUARIO ------------------------------------
+export const getUserIdPurchaseDocument = async (
+  auth,
+  db,
+  dispatch,
+  setHistoryOrders
+) => {
+  if (auth) {
+    try {
+      const userId = auth?.currentUser.uid;                  
+      const userSnapshot = await getDoc(doc(db, "purchase-orders", userId));
+      if (userSnapshot.exists()) {
+        const historyOrdersData = userSnapshot.data();
+        dispatch(setHistoryOrders(historyOrdersData));
+      } else {
+        console.log("El usuario no existe en la base de datos.");
+      }
+    } catch (error) {
+      console.error("Error al obtener el documento del usuario:", error);
+    }
+  }
+};
+
 //ELIMINAR DOC DE COLLECTION ----------------------------------------------
 export const deleteDocFromCollection = async (db, collection, userId) => {
   try {

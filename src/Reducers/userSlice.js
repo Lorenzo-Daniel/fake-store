@@ -4,6 +4,7 @@ const initialState = {
   isLoggedIn: false,
   userData: null,
   extendedUserData: null,
+  historyOrders : []
 };
 
 const userSlice = createSlice({
@@ -18,6 +19,7 @@ const userSlice = createSlice({
       state.user = null;
       state.userData = null;
       state.extendedUserData = null;
+      state.historyOrders= null
     },
     setUser: (state, action) => {
       state.userData = action.payload;
@@ -25,12 +27,16 @@ const userSlice = createSlice({
     setUserExtendedData: (state, action) => {
       state.extendedUserData = action.payload;
     },
+    setHistoryOrders :(state,action)=> {
+      state.historyOrders = action.payload
+    }
   },
 });
 
-export const { login, logout, setUser, setUserExtendedData } = userSlice.actions;
+export const { login, logout, setUser, setUserExtendedData,setHistoryOrders } = userSlice.actions;
 export const selectUserIsLogeedIn = (state) => state.rootReducer.userState.isLoggedIn;
 export const selectUserExtendedData = (state) => state.rootReducer.userState.extendedUserData;
 export const selectUser = (state) => state.rootReducer.userState.userData;
+export const selectHistoryOrders = (state) => state.rootReducer.userState.historyOrders;
 
 export default userSlice.reducer;
