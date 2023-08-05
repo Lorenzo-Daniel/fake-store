@@ -47,7 +47,7 @@ function TemporaryDrawer({ allCategories }) {
           </ListItemButton>
         </ListItem>
         <Divider />
-        {allCategories.map((text, index) => (
+        {allCategories?.map((text, index) => (
           <ListItem key={text} disablePadding>
             <ListItemButton>
               <ListItemText
