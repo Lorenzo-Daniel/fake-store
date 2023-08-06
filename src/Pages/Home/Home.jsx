@@ -4,21 +4,11 @@ import { Button, Box } from "@mui/material";
 
 function Home() {
   const navigate = useNavigate();
- 
 
   return (
     <>
-      <Box
-        sx={{
-          position: "relative",
-        }}
-      >
-        <Box
-          sx={{
-            position: "relative",
-            height: "100vh",
-          }}
-        ></Box>
+      <Box sx={{ position: "relative" }}>
+        <Box sx={{ position: "relative", height: "100vh" }} />
         <Button
           sx={{
             backgroundColor: "#bdcffa",

@@ -6,22 +6,22 @@ import {
 } from "@mui/icons-material";
 
 import {
+  Alert,
   Box,
   Button,
   Container,
   Divider,
   Grid,
   Paper,
+  Tab,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Typography,
-  Alert,
-  Tab,
   Tabs,
+  Typography,
 } from "@mui/material";
 
 import React, { useEffect, useState } from "react";
@@ -30,19 +30,21 @@ import {
   removeQuantityProduct,
 } from "../../../Reducers/cartSlice";
 
-import {
-  selectProductsSavedCartList,
-  removeProductFromSavedCart,
-  removeAllProductFromSavedCart,
-} from "../../../Reducers/savedCartSlice";
 import { Link, useNavigate } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
+
 import {
+  removeAllProductFromSavedCart,
+  removeProductFromSavedCart,
+  selectProductsSavedCartList,
+} from "../../../Reducers/savedCartSlice";
+
+import {
+  forwardProductToCart,
   removeAllProductFromCart,
   removeProductFromCart,
   selectProductsCartList,
-  forwardProductToCart,
 } from "../../../Reducers/cartSlice";
 
 import { selectUserIsLogeedIn } from "../../../Reducers/userSlice";
@@ -94,7 +96,6 @@ function CartTable() {
       );
       setSubTotal(totalSum);
     }
-    // setSavedCartList(selectSavedCartList);
   }, [productsInCart, subTotal, savedCartList]);
 
   return (

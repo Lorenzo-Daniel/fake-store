@@ -1,19 +1,28 @@
-import React, { useState, useEffect } from "react";
+import { Delete, ShoppingCartCheckoutTwoTone } from "@mui/icons-material";
+
+import { Box, Button, Grid, Typography } from "@mui/material";
+
+import React, { useEffect, useState } from "react";
+
+import { useDispatch, useSelector } from "react-redux";
+
 import { useParams } from "react-router";
-import { Navigation, Pagination } from "swiper/modules";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { useSelector, useDispatch } from "react-redux";
+
 import { useNavigate } from "react-router-dom";
-import { selectProductsCartList } from "../../Reducers/cartSlice";
+
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import { Button, Box, Grid, Typography } from "@mui/material";
-import { ShoppingCartCheckoutTwoTone, Delete } from "@mui/icons-material";
+import { Navigation, Pagination } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
+
 import {
-  removeProductFromCart,
   addProductToCart,
+  removeProductFromCart,
+  selectProductsCartList,
 } from "../../Reducers/cartSlice";
+
+//---------------------------------------------------------------------
 
 function ProductDescription() {
   const [product, setProduct] = useState({});
@@ -47,7 +56,6 @@ function ProductDescription() {
 
   return (
     <>
-      {/* className="d-flex flex-column mt-4 mb-5 m-auto col-sm-10 col-md-8" */}
       <Grid container>
         <Grid item xs={12} sm={10} md={8} margin={"auto"}>
           <Box mt={5}>
@@ -81,7 +89,6 @@ function ProductDescription() {
                 {product.brand}
               </Typography>
               <hr className="m-auto mb-4" />
-              {/* className="w-75 m-auto d-md-flex justify-content-between align-items-center mt-4" */}
               <Box
                 display={"flex"}
                 justifyContent={{ sm: "space-between" }}

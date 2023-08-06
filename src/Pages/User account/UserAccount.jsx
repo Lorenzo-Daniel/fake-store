@@ -1,6 +1,11 @@
+import { CalendarToday, ExpandMore, Home } from "@mui/icons-material";
+
 import CloseIcon from "@mui/icons-material/Close";
-import { ExpandMore, CalendarToday, Home } from "@mui/icons-material";
+
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Alert,
   AppBar,
   Box,
@@ -10,49 +15,52 @@ import {
   IconButton,
   List,
   ListItem,
+  ListItemButton,
   ListItemText,
   Slide,
-  TextField,
   Toolbar,
   Typography,
-  ListItemButton,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
 } from "@mui/material";
-//-----------------------------------------------------------
-import React, { forwardRef, useEffect, useRef, useState } from "react";
-//-----------------------------------------------------------
-import { useDispatch, useSelector } from "react-redux";
-//------------------------------------------------------------
-import { useNavigate } from "react-router-dom";
 import { getAuth } from "firebase/auth";
+
 import { getFirestore } from "firebase/firestore";
-//------------------------------------------------------------
+
+import React, { forwardRef, useEffect, useRef, useState } from "react";
+
+import { useDispatch, useSelector } from "react-redux";
+
+import { useNavigate } from "react-router-dom";
+
 import {
+  selectHistoryOrders,
   selectUser,
   selectUserExtendedData,
-  setUserExtendedData,
   setHistoryOrders,
-  selectHistoryOrders,
+  setUserExtendedData,
 } from "../../Reducers/userSlice";
-//--------------------------------------------------------------
+
+import Form from "../../Components/FormGroup";
 
 import {
   deleteAccount,
   updateUserEmail,
 } from "../../helpers/firebaseHelpers/authHelpers";
+
 import {
   getUserIdDocument,
-  updateUserPhone,
   getUserIdPurchaseDocument,
+  updateValueInObjectDoc,
 } from "../../helpers/firebaseHelpers/firestoreHelpers";
-//--------------------------------------------------------------
+
+import { onSubmitFormValidtionHelper } from "../../helpers/formHelpers";
+
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 //-------------------------------------------------------------------
+
+
 function UserAccount() {
   const alertBox = useRef(null);
   const db = getFirestore();
@@ -65,14 +73,52 @@ function UserAccount() {
   const [open, setOpen] = useState(true);
   const [alertChanges, setAlertChanges] = useState(false);
   const [alertToShow, setAlertToShow] = useState();
-  const [successChanges, setSuccesChange] = useState(false);
-  const [errorChanges, setErrorChanges] = useState("");
-  const [newEmail, setNewEmail] = useState("");
-  const [newPhone, setNewPhone] = useState("");
   const [showOrders, setShowOrders] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [onErrorSubmit, setOnErrorSubmit] = useState(false);
+  const [formValuesEmail, setFormValuesEmail] = useState({ email: "" });
+  const [formErrorsEmail, setFormErrorsEmail] = useState({ email: "" });
+  const [formValuesPhone, setFormValuesPhone] = useState({ phone: "" });
+  const [formErrorsPhone, setFormErrorsPhone] = useState({ phone: "" });
+  const [onSuccessSumbit, setOnSuccessSumbit] = useState("");
+
+  console.log(formValuesPhone);
+  console.log(formErrorsPhone);
+
+  const formDataPhone = {
+    setFormValues: setFormValuesPhone,
+    setFormErrors: setFormErrorsPhone,
+    formValues: formValuesPhone,
+    formErrors: formErrorsPhone,
+  };
+
+  const inputsDataPhone = [
+    {
+      type: "text",
+      name: "phone",
+      label: "Enter you new Phone number",
+    },
+  ];
+
+  const formDataEmail = {
+    setFormValues: setFormValuesEmail,
+    setFormErrors: setFormErrorsEmail,
+    formValues: formValuesEmail,
+    formErrors: formErrorsEmail,
+  };
+
+  const inputsDataEmail = [
+    {
+      type: "text",
+      name: "email",
+      label: "Enter you new email",
+    },
+  ];
 
   const handleAlertModificationAccount = (name) => {
     setAlertChanges(true);
+    setOnErrorSubmit(false);
+    setOnSuccessSumbit(false);
     switch (name) {
       case "changeEmail":
         setAlertToShow({
@@ -100,7 +146,8 @@ function UserAccount() {
   const handleClickOutSideBoxAlert = (event) => {
     if (alertBox.current && !alertBox.current.contains(event.target)) {
       setAlertChanges(false);
-      setErrorChanges(false);
+      setOnErrorSubmit(false);
+      setOnSuccessSumbit(false);
     }
   };
   const handleClose = () => {
@@ -121,8 +168,100 @@ function UserAccount() {
     };
     // eslint-disable-next-line
   }, [userExtendedData]);
+
+  const onSubmitHandlerPhone = (e) => {
+    const { updatedFormErrors, hasErrors } = onSubmitFormValidtionHelper(
+      e,
+      formValuesPhone,
+      formErrorsPhone
+    );
+
+    if (hasErrors) {
+      setFormErrorsPhone(updatedFormErrors);
+      return;
+    }
+    updateValueInObjectDoc(
+      db,
+      userId,
+      "users",
+      "phone",
+      formValuesPhone.phone,
+      setOnErrorSubmit,
+      setOnSuccessSumbit,
+      setIsLoading
+    )
+      .then(() => {
+        setAlertToShow(false);
+        setAlertChanges(false);
+      })
+      .catch((error) => {
+        setOnErrorSubmit("something went wrong ,try again");
+        console.error("Error al actualizar phone en objeto: ", error);
+      });
+  };
+
+  const onSubmitHandlerEmail = (e) => {
+    const { updatedFormErrors, hasErrors } = onSubmitFormValidtionHelper(
+      e,
+      formValuesEmail,
+      formErrorsEmail
+    );
+
+    if (hasErrors) {
+      setFormErrorsEmail(updatedFormErrors);
+      return;
+    }
+    updateUserEmail(
+      db,
+      auth,
+      formValuesEmail.email,
+      "email",
+      setOnSuccessSumbit,
+      setOnErrorSubmit,
+      setIsLoading,
+      "users",
+      "cartProducts"
+    )
+      .then(() => {
+        setAlertToShow(false);
+        setAlertChanges(false);
+      })
+      .catch((error) => {
+        setAlertToShow(false);
+        setAlertChanges(false);
+        setOnErrorSubmit("something went wrong ,try again");
+        console.error("Error al actualizar phone en objeto: ", error);
+      });
+  };
+  const buttonsGroup = (
+    <Box>
+      <Button
+        sx={{ p: 1 }}
+        size="small"
+        color="warning"
+        disabled={isLoading ? true : false}
+        type="submit"
+      >
+        <Typography variant="subtitle" fontSize={"10px"}>
+          {isLoading ? "updating... " : "update"}
+        </Typography>
+      </Button>
+
+      <Button
+        sx={{ p: 1 }}
+        size="small"
+        color="warning"
+        onClick={() => setAlertChanges(false)}
+      >
+        <Typography variant="subtitle" fontSize={"10px"}>
+          close
+        </Typography>
+      </Button>
+    </Box>
+  );
+
   return (
-    <div>
+    <>
       <Dialog
         fullScreen
         open={open}
@@ -131,12 +270,7 @@ function UserAccount() {
       >
         <AppBar sx={{ position: "relative", backgroundColor: "#212529" }}>
           <Toolbar>
-            <IconButton
-              edge="start"
-              color="inherit"
-              onClick={handleClose}
-              aria-label="close"
-            >
+            <IconButton edge="start" color="inherit" onClick={handleClose}>
               <CloseIcon />
             </IconButton>
             <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
@@ -202,7 +336,9 @@ function UserAccount() {
                 <ListItemText
                   primary="My orders"
                   secondary={
-                    historyOrders ? "See orders" : "You dont have previous orders"
+                    historyOrders
+                      ? "See orders"
+                      : "You dont have previous orders"
                   }
                 />
               </ListItemButton>
@@ -234,20 +370,22 @@ function UserAccount() {
                       sx={{ p: 1 }}
                       size="small"
                       color="error"
+                      disabled={isLoading ? true : false}
+                      variant="text"
                       onClick={() =>
                         deleteAccount(
-                          dispatch,
-                          setAlertToShow,
-                          setAlertChanges,
-                          setSuccesChange,
-                          setErrorChanges,
                           auth,
-                          db
+                          db,
+                          dispatch,
+                          setAlertChanges,
+                          setOnSuccessSumbit,
+                          setOnErrorSubmit,
+                          setIsLoading
                         )
                       }
                     >
                       <Typography variant="subtitle" fontSize={"10px"}>
-                        delete account
+                        {isLoading ? "deleting account..." : "delete account"}
                       </Typography>
                     </Button>
                     <Button
@@ -262,105 +400,37 @@ function UserAccount() {
                     </Button>
                   </Box>
                 )}
-                {alertToShow.changeEmail && (
-                  <form
-                    onSubmit={(e) =>
-                      updateUserEmail(
-                        e,
-                        auth,
-                        newEmail,
-                        setAlertToShow,
-                        setAlertChanges,
-                        setSuccesChange,
-                        setErrorChanges,
-                        db,
-                        newEmail,
-                        "email",
-                        "users",
-                        "cartProducts"
-                      )
-                    }
-                  >
-                    <TextField
-                      sx={{ mt: 1 }}
-                      placeholder="Enter your new email "
-                      onChange={(e) => setNewEmail(e.target.value)}
-                    />
-
-                    <Button
-                      sx={{ p: 1 }}
-                      size="small"
-                      type="submit"
-                      color="warning"
-                    >
-                      <Typography variant="subtitle" fontSize={"10px"}>
-                        update
-                      </Typography>
-                    </Button>
-                    <Button
-                      sx={{ p: 1 }}
-                      size="small"
-                      color="warning"
-                      onClick={() => setAlertChanges(false)}
-                    >
-                      <Typography variant="subtitle" fontSize={"10px"}>
-                        close
-                      </Typography>
-                    </Button>
-                  </form>
-                )}
                 {alertToShow.changePhone && (
-                  <Box>
-                    <TextField
-                      sx={{ mt: 1 }}
-                      onChange={(e) => setNewPhone(e.target.value)}
-                      placeholder="Enter your new number"
+                  <Box mt={2}>
+                    <Form
+                      formData={formDataPhone}
+                      inputsData={inputsDataPhone}
+                      onSubmit={onSubmitHandlerPhone}
+                      children={buttonsGroup}
                     />
-                    <Button
-                      sx={{ p: 1 }}
-                      size="small"
-                      color="warning"
-                      onClick={() =>
-                        updateUserPhone(
-                          db,
-                          userId,
-                          "users",
-                          "phone",
-                          newPhone,
-                          setAlertToShow,
-                          setAlertChanges,
-                          setSuccesChange,
-                          setErrorChanges
-                        )
-                      }
-                    >
-                      <Typography variant="subtitle" fontSize={"10px"}>
-                        update
-                      </Typography>
-                    </Button>
-                    <Button
-                      sx={{ p: 1 }}
-                      size="small"
-                      color="warning"
-                      onClick={() => setAlertChanges(false)}
-                    >
-                      <Typography variant="subtitle" fontSize={"10px"}>
-                        close
-                      </Typography>
-                    </Button>
+                  </Box>
+                )}
+                {alertToShow.changeEmail && (
+                  <Box mt={2}>
+                    <Form
+                      formData={formDataEmail}
+                      inputsData={inputsDataEmail}
+                      onSubmit={onSubmitHandlerEmail}
+                      children={buttonsGroup}
+                    />
                   </Box>
                 )}
               </Alert>
             )}
             <Box ref={alertBox}>
-              {successChanges && (
+              {onSuccessSumbit && (
                 <Alert sx={{ p: 4 }} severity="success">
-                  {successChanges}
+                  {onSuccessSumbit}
                 </Alert>
               )}
-              {errorChanges && (
+              {onErrorSubmit && (
                 <Alert sx={{ p: 4 }} severity="error">
-                  {errorChanges}
+                  {onErrorSubmit}
                 </Alert>
               )}
             </Box>
@@ -399,31 +469,33 @@ function UserAccount() {
                           flexDirection={"column"}
                           rowGap={2}
                         >
-                          {order.purchaseOrder.productsCartList.map((pdt) => {
-                            return (
-                              <Box display={"flex"}>
-                                <img
-                                  src={pdt.thumbnail}
-                                  alt={pdt.title}
-                                  width={"60px"}
-                                  height={"40px"}
-                                />
-                                <Box
-                                  display={"flex"}
-                                  flexDirection={"column"}
-                                  alignItems={"start"}
-                                  ml={2}
-                                >
-                                  <Typography variant="span">
-                                    {pdt.title}
-                                  </Typography>
-                                  <Typography variant="span">
-                                    ${pdt.price}
-                                  </Typography>
+                          {order.purchaseOrder.productsCartList.map(
+                            (pdt, index) => {
+                              return (
+                                <Box display={"flex"} key={index}>
+                                  <img
+                                    src={pdt.thumbnail}
+                                    alt={pdt.title}
+                                    width={"60px"}
+                                    height={"40px"}
+                                  />
+                                  <Box
+                                    display={"flex"}
+                                    flexDirection={"column"}
+                                    alignItems={"start"}
+                                    ml={2}
+                                  >
+                                    <Typography variant="span">
+                                      {pdt.title}
+                                    </Typography>
+                                    <Typography variant="span">
+                                      ${pdt.price}
+                                    </Typography>
+                                  </Box>
                                 </Box>
-                              </Box>
-                            );
-                          })}
+                              );
+                            }
+                          )}
                           <Typography variant="span">
                             Total Price : $ {order.purchaseOrder.totalPrice}
                           </Typography>
@@ -433,14 +505,12 @@ function UserAccount() {
                   );
                 })}
               </List>
-              <Button onClick={()=>setShowOrders(false)}>
-                Back
-              </Button>
+              <Button onClick={() => setShowOrders(false)}>Back</Button>
             </Box>
           </Box>
         )}
       </Dialog>
-    </div>
+    </>
   );
 }
 

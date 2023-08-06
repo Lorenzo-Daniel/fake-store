@@ -15,36 +15,36 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-//-----------------------------------------------------------
+
 import React, { forwardRef, useEffect, useRef, useState } from "react";
-//-----------------------------------------------------------
+
 import { useDispatch, useSelector } from "react-redux";
-//------------------------------------------------------------
 
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
-//------------------------------------------------------------
+
 import {
   selectUser,
   selectUserExtendedData,
   setUserExtendedData,
 } from "../Reducers/userSlice";
-//--------------------------------------------------------------
 
 import {
   deleteAccount,
   updateUserEmail,
 } from "../helpers/firebaseHelpers/authHelpers";
+
 import {
   getUserIdDocument,
   updateUserPhone,
 } from "../helpers/firebaseHelpers/firestoreHelpers";
+
 //--------------------------------------------------------------
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
-
 //-------------------------------------------------------------------
+
 function FullScreenUserAccount({ userAccountOpen, setUserAccountOpen }) {
   const [open, setOpen] = useState(false);
   const [userExtendedData, setUserExtenderData] = useState(null);

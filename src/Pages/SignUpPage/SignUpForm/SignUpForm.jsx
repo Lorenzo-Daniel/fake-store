@@ -1,34 +1,31 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
+
 import { useDispatch } from "react-redux";
+
 import { Link, useNavigate } from "react-router-dom";
+
 import { login, setUser } from "../../../Reducers/userSlice";
-//------------------------------------------------------------
 
-import {
-  onSubmitFormValidtionHelper
-} from "../../../helpers/formHelpers";
+import { onSubmitFormValidtionHelper } from "../../../helpers/formHelpers";
 
-//-------------------------------------------------------------------
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+
 import { doc, getFirestore, setDoc } from "firebase/firestore";
 
-//-------------------------------------------------------------------
-import {
-  Alert,
-  Button,
-  Stack,
-} from "@mui/material";
-import InputForm from "../../../Components/Form Componenets/InputForm";
+import { Alert, Button, Stack } from "@mui/material";
+
+import Form from "../../../Components/FormGroup";
+import ModalForm from "../../../Components/Modal/ModalForm";
 
 //--------------------------------------------------------------------------
+
 function SignUpForm() {
   const navigate = useNavigate();
-  const [error, setError] = useState(false);
-  const [errorSubmit, setErrorSubmit] = useState("");
-  const [signUpSuccess, setsignUpSuccess] = useState(false);
+  const [onErrorSubmit, setOnErrorSubmit] = useState(false);
+  const [onSuccessSubmit, setOnSuccessSubmit] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const auth = getAuth();
-  const formRef = useRef();
   const dispatch = useDispatch();
 
   const [formValues, setFormValues] = useState({
@@ -47,6 +44,51 @@ function SignUpForm() {
     confirmPassword: "",
     phone: "",
   });
+  const inputsData = [
+    {
+      type: "text",
+      name: "firstName",
+      label: "First name",
+      autoComplete: "off",
+    },
+    {
+      type: "text",
+      name: "lastName",
+      label: "Last name",
+      autoComplete: "off",
+    },
+    {
+      type: "email",
+      name: "email",
+      label: "Email",
+      autoComplete: "off",
+    },
+    {
+      type: "text",
+      name: "phone",
+      label: "Phone number",
+      autoComplete: "off",
+    },
+    {
+      type: "password",
+      name: "password",
+      label: "Password",
+      autoComplete: "off",
+    },
+    {
+      type: "password",
+      name: "confirmPassword",
+      label: "Confirm password",
+      autoComplete: "off",
+    },
+  ];
+
+  const formData = {
+    setFormValues: setFormValues,
+    setFormErrors: setFormErrors,
+    formValues: formValues,
+    formErrors: formErrors,
+  };
 
   const handleFisrestoreAdd = async (formValues, userId) => {
     try {
@@ -57,40 +99,44 @@ function SignUpForm() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const onSubmitHandler = (e) => {
     const { updatedFormErrors, hasErrors } = onSubmitFormValidtionHelper(
       e,
       formValues,
       formErrors
     );
 
+    setIsLoading(true);
     if (hasErrors) {
-      console.log("Something went wrong, try again.");
-      setError(true);
       setFormErrors(updatedFormErrors);
+      setIsLoading(false);
       return;
     }
+    setIsLoading(true);
     createUserWithEmailAndPassword(auth, formValues.email, formValues.password)
       .then((userCredential) => {
         const user = userCredential.user;
         setIsLoading(true);
         handleFisrestoreAdd(formValues, user.uid);
         setTimeout(() => {
-          setsignUpSuccess(true);
+          setOnSuccessSubmit(true);
+          setShowModal(true);
           setIsLoading(false);
-          formRef.current.reset();
           dispatch(setUser(user));
           dispatch(login());
         }, 2000);
         setTimeout(() => {
-          setsignUpSuccess(false);
+          setOnSuccessSubmit(false);
+          setShowModal(false);
           navigate("/store/all products");
         }, 4000);
       })
       .catch((error) => {
-        setErrorSubmit(
+        setShowModal(true);
+        setOnErrorSubmit(
           "Something went wrong when submitting the form. Check if you already have an account with this user"
         );
+        setIsLoading(false);
         console.error(error.code);
         console.error(error.message);
       });
@@ -98,123 +144,54 @@ function SignUpForm() {
 
   //----------------------------------------------------------------------
 
+  const buttonSubmit = (
+    <Button
+      disabled={isLoading ? true : false}
+      fullWidth
+      size="large"
+      type="submit"
+      variant="outlined"
+    >
+      {isLoading ? "Sign Up..." : "sing up"}
+    </Button>
+  );
+  const stack = (
+    <Stack>
+      {onErrorSubmit && (
+        <Alert sx={{ p: 5 }} severity="error">
+          {onErrorSubmit}
+          <Button variant={"text"} onClick={() => setShowModal(false)}>
+            Back
+          </Button>
+          <br />
+          {onErrorSubmit.includes("have an account") && (
+            <Link
+              to={"/recover-password"}
+              variant="subtitle2"
+              underline="hover"
+            >
+              Forgot password?
+            </Link>
+          )}
+        </Alert>
+      )}
+      {onSuccessSubmit && (
+        <Alert sx={{ p: 5 }} severity="success">
+          SIGN UP SUCCESSFULL!
+        </Alert>
+      )}
+    </Stack>
+  );
+
   return (
     <>
-      <form onSubmit={handleSubmit} ref={formRef}>
-        <Stack spacing={3}>
-          <InputForm
-            type={"text"}
-            formValues={formValues}
-            setFormValues={setFormValues}
-            setFormErrors={setFormErrors}
-            setError={setError}
-            formErrors={formErrors}
-            error={error}
-            setErrorSubmit={setErrorSubmit}
-            name="firstName"
-            label="First name"
-            autoComplete="user-name"
-          />
-
-          <InputForm
-            type={"text"}
-            formValues={formValues}
-            setFormValues={setFormValues}
-            setFormErrors={setFormErrors}
-            setError={setError}
-            formErrors={formErrors}
-            error={error}
-            setErrorSubmit={setErrorSubmit}
-            name="lastName"
-            label="Last name"
-            autoComplete="user-lastName"
-          />
-       
-          <InputForm
-            type={"text"}
-            formValues={formValues}
-            setFormValues={setFormValues}
-            setFormErrors={setFormErrors}
-            setError={setError}
-            formErrors={formErrors}
-            error={error}
-            setErrorSubmit={setErrorSubmit}
-            name="email"
-            label="Email address"
-            autoComplete = 'user-email'
-          />
-          <InputForm
-            type={"phone"}
-            formValues={formValues}
-            setFormValues={setFormValues}
-            setFormErrors={setFormErrors}
-            setError={setError}
-            formErrors={formErrors}
-            error={error}
-            setErrorSubmit={setErrorSubmit}
-            name="phone"
-            label="phone number"
-            autoComplete='user-phone'
-          />
-          <InputForm
-            type={"password"}
-            formValues={formValues}
-            setFormValues={setFormValues}
-            setFormErrors={setFormErrors}
-            setError={setError}
-            formErrors={formErrors}
-            error={error}
-            setErrorSubmit={setErrorSubmit}
-            name="password"
-            label="password"
-            autoComplete='user-password'
-          />
-    
-          <InputForm
-            type={"password"}
-            formValues={formValues}
-            setFormValues={setFormValues}
-            setFormErrors={setFormErrors}
-            setError={setError}
-            formErrors={formErrors}
-            error={error}
-            setErrorSubmit={setErrorSubmit}
-            name="confirmPassword"
-            label="Confirm password"
-            autoComplete = 'user-confirmPassword'
-          />
-      
-          <Button
-            fullWidth
-            size="large"
-            type="submit"
-            variant="outlined"
-            sx={{ mt: 4 }}
-          >
-            {isLoading ? "Sign Up..." : "Sign Up"}
-          </Button>
-          {errorSubmit && (
-            <Alert sx={{ p: 5 }} severity="error">
-              {errorSubmit}
-              <br />
-              {errorSubmit.includes("have an account") && (
-                <Link
-                  to={"/recover-password"}
-                  variant="subtitle2"
-                  underline="hover"
-                >
-                  Forgot password?
-                </Link>
-              )}
-            </Alert>
-          )}
-          {signUpSuccess && (
-            <Alert sx={{ p: 5 }} severity="success">
-              SIGN UP SUCCESSFULL!
-            </Alert>
-          )}
-        </Stack>
-      </form>
+      <Form
+        formData={formData}
+        inputsData={inputsData}
+        onSubmit={onSubmitHandler}
+        children={buttonSubmit}
+      />
+      <ModalForm children={stack} showModal={showModal} />
     </>
   );
 }

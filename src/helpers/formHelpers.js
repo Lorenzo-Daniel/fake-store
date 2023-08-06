@@ -50,43 +50,19 @@ export const validationConfig = {
     }
     if (!value) {
       return "*This field is required";
-    }
+    }else{return ''}
+
   },
-  crediCardSecurityCode: (value) =>
+  creditCardSecurityCode: (value) =>
     value.length !== 4 ? "Secutiry code must be 4 characters" : "",
-  address: (value) => value.length === 0 ? "*This field is required" : '',
-  city: (value) => value.length === 0 ? "*This field is required" : '',
-  name: (value) => value.length === 0 ? "*This field is required" : '',
-};
-
-export const handleBlur = (
-  e,
-  validationConfig,
-  setFormErrors,
-  setFormValues,
-  setError,
-  formValues
-) => {
-  const { name, value } = e.target;
-  const validate = validationConfig[name];
-  setFormValues((prevValues) => ({ ...prevValues, [name]: value }));
-  if (validate) {
-    const errorMessage = validate(value, formValues);
-    setError(true);
-    setFormErrors({ [name]: errorMessage });
-  }
-};
-
-export const handleChange = (e, setError, setFormValues, errorSubmit) => {
-  const { name, value } = e.target;
-  setError(false);
-  errorSubmit("");
-  setFormValues((prevValues) => {
-    if (prevValues[name] !== value) {
-      return { ...prevValues, [name]: value };
-    }
-    return prevValues;
-  });
+  address: (value) => (value.length === 0 ? "*This field is required" : ""),
+  city: (value) => (value.length === 0 ? "*This field is required" : ""),
+  postalCode: (value) =>
+    value.length === 0
+      ? "*This field is required"
+      : value.length < 4
+      ? "Postal code must be at least 4characters"
+      : "",
 };
 
 export const onSubmitFormValidtionHelper = (e, formValues, formErrors) => {
@@ -107,6 +83,5 @@ export const onSubmitFormValidtionHelper = (e, formValues, formErrors) => {
   const hasErrors = Object.values(updatedFormErrors).some(
     (error) => error !== ""
   );
-
   return { updatedFormErrors: updatedFormErrors, hasErrors };
 };

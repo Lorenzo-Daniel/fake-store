@@ -1,40 +1,49 @@
 import {
-  Divider,
-  Container,
-  Typography,
+  Alert,
   Box,
   Button,
-  Alert,
+  Container,
+  Divider,
+  Typography,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
 } from "@mui/material";
+
 import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
 import {
-  selectPurchaseOrder,
-  removePurchaseOrder,
-  setPurchaseOrder,
   removeAllProductFromCart,
+  removePurchaseOrder,
+  selectPurchaseOrder,
+  setPurchaseOrder,
 } from "../../../Reducers/cartSlice";
-import { useSelector, useDispatch } from "react-redux";
+
 import {
   selectUserExtendedData,
   setUserExtendedData,
 } from "../../../Reducers/userSlice";
+
 import {
-  getUserIdDocument,
   checkAndHandlePurchaseOrderDocument,
+  getUserIdDocument,
 } from "../../../helpers/firebaseHelpers/firestoreHelpers";
 
+import HomeIcon from "@mui/icons-material/Home";
+import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import LocationCityIcon from "@mui/icons-material/LocationCity";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
-import HomeIcon from "@mui/icons-material/Home";
 import PersonIcon from "@mui/icons-material/Person";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
 import PhoneAndroidIcon from "@mui/icons-material/PhoneAndroid";
+
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { useNavigate } from "react-router";
+
+//----------------------------------------------------------------------------------------
+
 function PurchaseSummary() {
   const purchaseOrder = useSelector(selectPurchaseOrder);
   const userExtendedData = useSelector(selectUserExtendedData);
@@ -44,8 +53,15 @@ function PurchaseSummary() {
   const navigate = useNavigate();
 
   const handlePurchaseFinish = () => {
+    const deliveryDate = new Date();
+    deliveryDate.setDate(deliveryDate.getDate() + 1);
     checkAndHandlePurchaseOrderDocument(auth?.currentUser, db, purchaseOrder);
-    dispatch(setPurchaseOrder(purchaseOrder.orderNumber));
+    dispatch(
+      setPurchaseOrder({
+        orderNumber: purchaseOrder?.orderNumber,
+        deliveryDate: deliveryDate.toDateString(),
+      })
+    );
     dispatch(removeAllProductFromCart());
   };
 
@@ -64,11 +80,7 @@ function PurchaseSummary() {
       {purchaseOrder?.formValues ? (
         <Container sx={{ mt: 5 }}>
           <Box display={"flex"} flexDirection={"column"} rowGap={5}>
-            <Box
-              sx={{
-                padding: "15px",
-              }}
-            >
+            <Box sx={{ padding: "15px" }}>
               <List
                 sx={{
                   width: "100%",
@@ -99,9 +111,17 @@ function PurchaseSummary() {
                 </ListItem>
                 <ListItem disablePadding>
                   <ListItemIcon>
-                    <HomeIcon />
+                    <LocalShippingIcon />
                   </ListItemIcon>
                   <ListItemText primary={purchaseOrder?.formValues.address} />
+                </ListItem>
+                <ListItem disablePadding>
+                  <ListItemIcon>
+                    <HomeIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={`P.C: ${purchaseOrder?.formValues.postalCode}`}
+                  />
                 </ListItem>
                 <ListItem disablePadding>
                   <ListItemIcon>
@@ -111,18 +131,13 @@ function PurchaseSummary() {
                 </ListItem>
               </List>
             </Box>
-            <Box
-              sx={{
-                padding: "15px",
-              }}
-            >
+            <Box sx={{ padding: "15px" }}>
               <List
                 sx={{
                   width: "100%",
                   maxWidth: 360,
                   bgcolor: "background.paper",
                 }}
-                aria-label="contacts"
               >
                 {purchaseOrder?.productsCartList.map((product) => {
                   return (
@@ -147,14 +162,27 @@ function PurchaseSummary() {
                 Total Price : $ {purchaseOrder?.totalPrice}
               </Typography>
             </Box>
-            <Button variant="outlined" onClick={() => handlePurchaseFinish()}>
-              Finish
-            </Button>
+            <Box display={"flex"} padding={2} maxWidth={"300px"}>
+              <Button
+                variant="outlined"
+                fullWidth
+                onClick={() => handlePurchaseFinish()}
+              >
+                Finish
+              </Button>
+            </Box>
           </Box>
         </Container>
       ) : (
         <Alert severity="success">
-          your purchase was successful. your order number is: {purchaseOrder}
+          {`     
+
+your purchase has been completed successfully!! Your purchase order number is:
+${purchaseOrder?.orderNumber}`}{" "}
+          <br />{" "}
+          {`The merchandise will be delivered on 
+          ${purchaseOrder?.deliveryDate}, between 9:00 a.m. and 2:00 p.m. Thank
+          you for choosing us!!`}
           <Button
             variant="text"
             onClick={() => {

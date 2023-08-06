@@ -1,6 +1,9 @@
 import { deleteUser, updateEmail } from "firebase/auth";
-import { logout } from "../../Reducers/userSlice";
+
 import { removeAllProductFromCart } from "../../Reducers/cartSlice";
+
+import { logout } from "../../Reducers/userSlice";
+
 import {
   deleteDocFromCollection,
   updateValueInObjectDoc,
@@ -8,82 +11,91 @@ import {
 
 // DELETE ACCOUNT ------------------------
 export const deleteAccount = (
+  auth,
+  db,
   dispatch,
   setAlertChanges,
-  setSuccessChange,
-  setErrorChanges,
-  auth,
-  db
+  setOnSuccessSumbit,
+  setOnErrorSubmit,
+  setIsLoading
 ) => {
   const user = auth.currentUser;
-
   if (user) {
+    setIsLoading(true);
     deleteUser(user)
       .then(() => {
         deleteDocFromCollection(db, "cartProducts", user.uid);
         deleteDocFromCollection(db, "users", user.uid);
-        deleteDocFromCollection(db,'purchase-orders',user.uid)
+        deleteDocFromCollection(db, "purchase-orders", user.uid);
         dispatch(removeAllProductFromCart());
         dispatch(logout());
         setAlertChanges(false);
-        setSuccessChange(
-           "Your account was permanently deleted");
-        console.log("La cuenta del usuario se eliminó correctamente.");
+        setOnSuccessSumbit("Your account was permanently deleted");
+        setIsLoading(false);
       })
       .catch((error) => {
-        setErrorChanges( "Something went wrong when trying to delete your account, please try again",
+        setIsLoading(false);
+        setAlertChanges(false);
+        setOnErrorSubmit(
+          "Something went wrong while deleting your account. You may need to close and reopen your session to perform this operation, please log out, log in again and try again."
         );
-        setAlertChanges(false)
         console.error("Error al eliminar la cuenta del usuario:", error);
       });
   } else {
-    setSuccessChange(false)
-    setErrorChanges( "There is no registered user" );
-    console.error("No hay un usuario autenticado.");
+    setOnErrorSubmit("");
   }
 };
 
 // UPDATE EMAIL -----------------------------------------------------------
-export const updateUserEmail = (
-  e,
-  auth,
-  newEmail,
-  setAlertToShow,
-  setAlertChanges,
-  setErrorChanges,
+export const updateUserEmail = async (
   db,
+  auth,
   newValue,
   key,
+  setOnSuccessSumbit,
+  setOnErrorSubmit,
+  setIsLoading,
   userCol,
   cartCol
 ) => {
-  e.preventDefault();
-  const regExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   const user = auth.currentUser;
-  if (!regExp.test(newEmail)) {
-    alert("Please enter a valid email");
-    return;
+  setIsLoading(true);
+  if (user) {
+    await updateEmail(user, newValue)
+      .then(() => {
+        updateValueInObjectDoc(
+          db,
+          user.uid,
+          userCol,
+          key,
+          newValue,
+          setOnErrorSubmit,
+          setOnSuccessSumbit,
+          setIsLoading
+        );
+        updateValueInObjectDoc(
+          db,
+          user.uid,
+          cartCol,
+          key,
+          newValue,
+          setOnErrorSubmit,
+          setOnSuccessSumbit,
+          setIsLoading
+        );
+        setOnSuccessSumbit(`Your ${key} was successfully updated`);
+        console.log("Email actualizado correctamente.");
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error al actualizar el email: ", newValue, error);
+        setOnErrorSubmit(
+          `There was an error updating your ${key},Please close and reopen your session and try again`
+        );
+        setIsLoading(false);
+      });
   } else {
-    if (user) {
-      updateEmail(user, newEmail)
-        .then(() => {
-          setAlertChanges(false);
-          updateValueInObjectDoc(db, user.uid, userCol, key, newValue);
-          updateValueInObjectDoc(db, user.uid, cartCol, key, newValue);
-          setAlertToShow({
-            updatedEmail: "Your email was updated successfully",
-          });
-          console.log("Email actualizado correctamente.");
-        })
-        .catch((error) => {
-          console.error("Error al actualizar el email: ", newEmail, error);
-         setErrorChanges('something went wrong')
-        });
-    } else {
-      setErrorChanges("There is no registered user")
-      console.error("No hay un usuario autenticado.");
-    }
+    setOnErrorSubmit("There is no registered user");
+    console.error("No hay un usuario autenticado.");
   }
 };
-
-

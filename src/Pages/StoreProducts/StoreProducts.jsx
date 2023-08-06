@@ -1,23 +1,28 @@
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import { selectProductsCartList } from "../../Reducers/cartSlice";
 import {
-  addProductToCart,
-  removeProductFromCart,
-} from "../../Reducers/cartSlice";
-import {
+  Box,
   Button,
   Card,
   CardActions,
   CardContent,
   CardMedia,
-  Typography,
   Grid,
-  Box,
+  Typography,
 } from "@mui/material";
 
+import React, { useEffect, useState } from "react";
+
+import { useDispatch, useSelector } from "react-redux";
+
+import { Link, useNavigate, useParams } from "react-router-dom";
+
+import {
+  addProductToCart,
+  removeProductFromCart, selectProductsCartList
+} from "../../Reducers/cartSlice";
+
 import { Delete, ShoppingCartCheckoutTwoTone } from "@mui/icons-material";
+
+//-----------------------------------------------------------------------------------
 
 
 function StoreProducts() {

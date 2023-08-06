@@ -3,27 +3,48 @@ import {
   getAuth,
   sendPasswordResetEmail,
 } from "firebase/auth";
+
 import { useState } from "react";
 
-//-------------------------------------------------------------------
-import { Alert, Stack, Button } from "@mui/material";
+import { Alert, Box, Button, Stack, Typography } from "@mui/material";
 
-// ----------------------------------------------------------------------
+import { Link } from "react-router-dom";
+import Form from "../../Components/FormGroup";
+
+import ModalForm from "../../Components/Modal/ModalForm";
+
 import { onSubmitFormValidtionHelper } from "../../helpers/formHelpers";
-// ----------------------------------------------------------------------
 
-import InputForm from "../../Components/Form Componenets/InputForm";
 function RecoverPasswordForm() {
+  const [onErrorSubmit, setOnErrorSubmit] = useState(false);
+  const [onSuccessSubmit, setOnSuccessSubmit] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(false);
-  const [errorSubmit, setErrorSubmit] = useState("");
-  const [successSubmit, setSuccessSubmit] = useState("");
-  const [formValues, setFormValues] = useState({ email: "" });
-  const [formErrors, setFormErrors] = useState({ email: "" });
-
+  const [showModal, setShowModal] = useState(false);
   const auth = getAuth();
 
-  const handleSubmit = (e) => {
+  const [formValues, setFormValues] = useState({
+    email: "",
+  });
+  const [formErrors, setFormErrors] = useState({
+    email: "",
+  });
+  const inputsData = [
+    {
+      type: "text",
+      name: "email",
+      label: "Enter your email",
+      autoComplete: "off",
+    },
+  ];
+
+  const formData = {
+    setFormValues: setFormValues,
+    setFormErrors: setFormErrors,
+    formValues: formValues,
+    formErrors: formErrors,
+  };
+
+  const onSubmitHandler = (e) => {
     const { updatedFormErrors, hasErrors } = onSubmitFormValidtionHelper(
       e,
       formValues,
@@ -31,8 +52,6 @@ function RecoverPasswordForm() {
     );
 
     if (hasErrors) {
-      console.log("Something went wrong, try again.");
-      setError(true);
       setFormErrors(updatedFormErrors);
       return;
     }
@@ -40,58 +59,81 @@ function RecoverPasswordForm() {
     setIsLoading(true);
     fetchSignInMethodsForEmail(auth, formValues.email).then((signInMethods) => {
       if (signInMethods.length === 0) {
-        setErrorSubmit("The user is not registered");
+        setOnErrorSubmit("The user is not registered");
         setIsLoading(false);
+        setShowModal(true);
+        return;
       } else {
         sendPasswordResetEmail(auth, formValues.email)
           .then(() => {
-            setSuccessSubmit(
+            setShowModal(true);
+            setOnSuccessSubmit(
               "We have sent you a message to your email, check your inbox"
             );
+            setOnErrorSubmit(false);
             setIsLoading(false);
           })
           .catch((error) => {
-            setErrorSubmit("Something went wrong with the shipment, try again");
+            setShowModal(true);
+            setOnErrorSubmit(
+              "Something went wrong with the shipment, try again"
+            );
             setIsLoading(false);
-
             console.error(error);
           });
       }
     });
   };
 
+  const buttonSubmit = (
+    <Box sx={{ mt: 2 }}>
+      <Typography>
+        We will send you a link to your email to recover your password
+      </Typography>
+      <Box display={"flex"} justifyContent={"end"}>
+        <Button size="small" type="submit" variant="text">
+          {isLoading ? "sending..." : "send email"}
+        </Button>
+      </Box>
+    </Box>
+  );
+
+  const stack = (
+    <Stack>
+      {onErrorSubmit && (
+        <Alert sx={{ p: 5 }} severity="error">
+          {onErrorSubmit}
+          <Button variant={"text"} onClick={() => setShowModal(false)}>
+            Back
+          </Button>
+        </Alert>
+      )}
+      {onSuccessSubmit && (
+        <Alert sx={{ p: 5 }} severity="success">
+          {onSuccessSubmit}
+          <Link
+            to={"/loginPage"}
+            variant={"text"}
+            className="ms-2"
+            onClick={() => {
+              setShowModal(false);
+            }}
+          >
+            Ok!
+          </Link>
+        </Alert>
+      )}
+    </Stack>
+  );
   return (
     <>
-      <form onSubmit={handleSubmit}>
-        <Stack spacing={3}>
-          <InputForm
-            type={"text"}
-            formValues={formValues}
-            setFormValues={setFormValues}
-            setFormErrors={setFormErrors}
-            setError={setError}
-            formErrors={formErrors}
-            error={error}
-            setErrorSubmit={setErrorSubmit}
-            name="email"
-            label="Email address"
-            autoComplete="user-email"
-          />
-          <Button fullWidth size="large" type="submit" variant="outlined">
-            {isLoading ? "sending..." : "send email"}
-          </Button>
-          {errorSubmit && (
-            <Alert sx={{ p: 5 }} severity="error">
-              {errorSubmit}
-            </Alert>
-          )}
-          {successSubmit && (
-            <Alert sx={{ p: 5 }} severity="success">
-              {successSubmit}
-            </Alert>
-          )}
-        </Stack>
-      </form>
+      <Form
+        formData={formData}
+        inputsData={inputsData}
+        onSubmit={onSubmitHandler}
+        children={buttonSubmit}
+      />
+      <ModalForm children={stack} showModal={showModal} />
     </>
   );
 }

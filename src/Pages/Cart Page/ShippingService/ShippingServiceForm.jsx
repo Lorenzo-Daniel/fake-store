@@ -1,39 +1,61 @@
-import {
-  Alert,
-  Divider,
-  Button,
-  Container,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Button, Container, Divider, Typography } from "@mui/material";
+
 import React, { useState } from "react";
-import InputForm from "../../../Components/Form Componenets/InputForm";
-import { onSubmitFormValidtionHelper } from "../../../helpers/formHelpers";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
+import Form from "../../../Components/FormGroup";
+
 import {
   selectProductsCartList,
   setPurchaseOrder,
 } from "../../../Reducers/cartSlice";
-import { useDispatch, useSelector } from "react-redux";
+
+import { onSubmitFormValidtionHelper } from "../../../helpers/formHelpers";
 
 function ShippingServiceForm() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const productsCartList = useSelector(selectProductsCartList);
-  const [error, setError] = useState(false);
-  const [errorSubmit, setErrorSubmit] = useState(false);
   const [formValues, setFormValues] = useState({
     address: "",
     city: "",
-    name: "",
+    postalCode: "",
   });
   const [formErrors, setFormErrors] = useState({
     address: "",
     city: "",
-    name: "",
+    postalCode: "",
   });
 
-  const handleSubmit = (e) => {
+  const inputsData = [
+    {
+      type: "text",
+      name: "address",
+      label: "Address",
+      autoComplete: "off",
+    },
+    {
+      type: "text",
+      name: "postalCode",
+      label: "Postal code",
+      autoComplete: "off",
+    },
+    {
+      type: "text",
+      name: "city",
+      label: "City",
+      autoComplete: "off",
+    },
+  ];
+
+  const formData = {
+    setFormValues: setFormValues,
+    setFormErrors: setFormErrors,
+    formValues: formValues,
+    formErrors: formErrors,
+  };
+
+  const onSubmitHandler = (e) => {
     const { updatedFormErrors, hasErrors } = onSubmitFormValidtionHelper(
       e,
       formValues,
@@ -41,10 +63,7 @@ function ShippingServiceForm() {
     );
 
     if (hasErrors) {
-      console.error("Something went wrong, try again.");
-      setError(true);
       setFormErrors(updatedFormErrors);
-      setErrorSubmit("All fields are required");
       return;
     } else {
       const totalPrice = productsCartList.reduce(
@@ -65,72 +84,24 @@ function ShippingServiceForm() {
     }
   };
 
+  const buttonSubmit = (
+    <Button fullWidth size="large" type="submit" variant="outlined">
+      continue
+    </Button>
+  );
   return (
     <>
       <Typography variant="h4" my={4}>
         Shipping data
       </Typography>
-
       <Divider />
       <Container sx={{ mt: 5 }}>
-        <form onSubmit={handleSubmit}>
-          <Stack spacing={3}>
-            <InputForm
-              type={"text"}
-              formValues={formValues}
-              setFormValues={setFormValues}
-              setFormErrors={setFormErrors}
-              setError={setError}
-              formErrors={formErrors}
-              error={error}
-              setErrorSubmit={setErrorSubmit}
-              name="address"
-              label="Address"
-              autoComplete="off"
-            />
-
-            <InputForm
-              type={"text"}
-              formValues={formValues}
-              setFormValues={setFormValues}
-              setFormErrors={setFormErrors}
-              setError={setError}
-              formErrors={formErrors}
-              error={error}
-              setErrorSubmit={setErrorSubmit}
-              name="city"
-              label={"City"}
-              autoComplete="user-city"
-            />
-            <InputForm
-              type={"text"}
-              formValues={formValues}
-              setFormValues={setFormValues}
-              setFormErrors={setFormErrors}
-              setError={setError}
-              formErrors={formErrors}
-              error={error}
-              setErrorSubmit={setErrorSubmit}
-              name="name"
-              label="Name"
-              autoComplete="user-name"
-            />
-            <Button
-              fullWidth
-              size="large"
-              type="submit"
-              variant="outlined"
-              sx={{ mt: 4 }}
-            >
-              Continue
-            </Button>
-            {errorSubmit && (
-              <Alert sx={{ p: 5 }} severity="error">
-                {errorSubmit}
-              </Alert>
-            )}
-          </Stack>
-        </form>
+        <Form
+          formData={formData}
+          inputsData={inputsData}
+          onSubmit={onSubmitHandler}
+          children={buttonSubmit}
+        />
       </Container>
     </>
   );

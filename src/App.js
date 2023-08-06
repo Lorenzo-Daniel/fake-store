@@ -1,11 +1,22 @@
 import "bootstrap/dist/css/bootstrap.css";
+
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+
+import { doc, getDoc, getFirestore } from "firebase/firestore";
+
 import { useEffect, useState } from "react";
+
 import { useDispatch, useSelector } from "react-redux";
+
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+
 import "./App.css";
 import Navbar from "./Components/Navbar";
 import CartPage from "./Pages/Cart Page/Cart/CartPage";
+import CreditCardPage from "./Pages/Cart Page/Cerdit card/CreditCardPage";
+import PayementMethodsPage from "./Pages/Cart Page/Payement methods/PayementMethodsPage";
+import PurchaseSummaryPage from "./Pages/Cart Page/PurchaseSummary/PurchaseSummaryPage";
+import ShippingServicePage from "./Pages/Cart Page/ShippingService/ShippingServicePage";
 import Home from "./Pages/Home/Home";
 import LoginPage from "./Pages/LoginPage/auth/LoginPage";
 import ProductDescription from "./Pages/ProductDescription/ProductDescription";
@@ -13,24 +24,26 @@ import RecoverPasswordPage from "./Pages/RecoverPassword/RecoverPasswordPage";
 import SignUpPage from "./Pages/SignUpPage/SignUpPage";
 import StoreProducts from "./Pages/StoreProducts/StoreProducts";
 import UserAccount from "./Pages/User account/UserAccount";
-import { checkAndHandleCartDocument } from "./helpers/firebaseHelpers/firestoreHelpers";
-import { doc, getDoc, getFirestore } from "firebase/firestore";
-import CreditCardPage from "./Pages/Cart Page/Cerdit card/CreditCardPage";
-import PayementMethodsPage from "./Pages/Cart Page/Payement methods/PayementMethodsPage";
 import UserMessage from "./Pages/UserMessages/UserMessage";
+
 import {
   removeAllProductFromCart,
   selectProductsCartList,
   selectTotalCount,
 } from "./Reducers/cartSlice";
+
 import {
   addSavedProductToCart,
   documentIsCharged,
   selectIsCharged,
 } from "./Reducers/savedCartSlice";
+
 import { logout, selectUser } from "./Reducers/userSlice";
-import ShippingServicePage from "./Pages/Cart Page/ShippingService/ShippingServicePage";
-import PurchaseSummaryPage from "./Pages/Cart Page/PurchaseSummary/PurchaseSummaryPage";
+
+import { checkAndHandleCartDocument } from "./helpers/firebaseHelpers/firestoreHelpers";
+
+//------------------------------------------------------------------------------------
+
 function App() {
   const dispatch = useDispatch();
   const auth = getAuth();
@@ -136,8 +149,16 @@ function App() {
           <Route exact path="/user-messages" element={<UserMessage />} />
           <Route exact path="/user-account" element={<UserAccount />} />
           <Route exact path="/credit-card-form" element={<CreditCardPage />} />
-          <Route exact path="/shipping-service" element={<ShippingServicePage />} />
-          <Route exact path="/purchase-summary" element={<PurchaseSummaryPage />} />
+          <Route
+            exact
+            path="/shipping-service"
+            element={<ShippingServicePage />}
+          />
+          <Route
+            exact
+            path="/purchase-summary"
+            element={<PurchaseSummaryPage />}
+          />
 
           <Route
             exact

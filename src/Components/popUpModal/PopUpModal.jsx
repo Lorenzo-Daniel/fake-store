@@ -21,7 +21,7 @@ const style = {
   },
 };
 
-function PopUpModal({setConfirmLogout,showModal,setShowModal,handleLogout}) {
+function PopUpModal({setConfirmLogout,showModal,setShowModal}) {
   const [open, setOpen] = useState(showModal);
   const handleClose = () =>{
     setOpen(false);
@@ -35,7 +35,6 @@ function PopUpModal({setConfirmLogout,showModal,setShowModal,handleLogout}) {
 
   return (
     <div>
-     
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"

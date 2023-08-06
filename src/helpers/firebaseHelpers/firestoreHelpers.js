@@ -16,7 +16,7 @@ export const getUserIdDocument = async (
 ) => {
   if (auth) {
     try {
-      const userId = auth?.currentUser.uid;                  
+      const userId = auth?.currentUser.uid;
       const userSnapshot = await getDoc(doc(db, "users", userId));
       if (userSnapshot.exists()) {
         const userData = userSnapshot.data();
@@ -30,7 +30,7 @@ export const getUserIdDocument = async (
   }
 };
 
-// OBTENER DOCUMENTO POR ID DE USUARIO ------------------------------------
+// OBTENER DOCUMENT PURCHASE ORDERS DE USUARIO ------------------------------------
 export const getUserIdPurchaseDocument = async (
   auth,
   db,
@@ -39,7 +39,7 @@ export const getUserIdPurchaseDocument = async (
 ) => {
   if (auth) {
     try {
-      const userId = auth?.currentUser.uid;                  
+      const userId = auth?.currentUser.uid;
       const userSnapshot = await getDoc(doc(db, "purchase-orders", userId));
       if (userSnapshot.exists()) {
         const historyOrdersData = userSnapshot.data();
@@ -152,53 +152,22 @@ export const updateValueInObjectDoc = async (
   collection,
   key,
   newValue,
-  setAlertToShow,
-  setAlertChanges,
-  setSuccesChange,
-  setErrorChanges
+  setOnErrorSubmit,
+  setOnSuccessSumbit,
+  setIsLoading
 ) => {
-  try {
-    await updateDoc(doc(db, collection, userId), {
-      [key]: newValue,
+  setIsLoading(true)
+  await updateDoc(doc(db, collection, userId), {
+    [key]: newValue,
+  })
+    .then(() => {
+      setOnSuccessSumbit(`Your ${key} was successfully updated`)
+      setIsLoading(false)
+    })
+    .catch((error) => {
+      console.error(`updated ${key} error : ${error}`);
+      setOnErrorSubmit(`There was an error updating your ${key}`);
+      setIsLoading(false)
+
     });
-    setAlertChanges(false);
-    setSuccesChange("Your phone number was updated successfully");
-    console.log("actualizado correctamente.");
-  } catch (error) {
-    setAlertToShow(false);
-    setErrorChanges('something went wrong ,try again')
-    console.error("Error al actualizar la email en objeto: ", error);
-  }
-};
-
-//UPDATE PHONE ----------------------------------------------------
-
-export const updateUserPhone = (
-  db,
-  userId,
-  collection,
-  key,
-  newValue,
-  setAlertToShow,
-  setAlertChanges,
-  setSuccesChange,
-  setErrorChanges
-) => {
-  if (newValue < 9) {
-    alert("Your phone number must be at least 9 digits long.");
-   
-    return;
-  } else {
-    updateValueInObjectDoc(
-      db,
-      userId,
-      collection,
-      key,
-      newValue,
-      setAlertToShow,
-      setAlertChanges,
-      setSuccesChange,
-      setErrorChanges
-    );
-  }
 };

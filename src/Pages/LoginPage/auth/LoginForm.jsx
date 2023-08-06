@@ -3,12 +3,7 @@ import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { login, setUser } from "../../../Reducers/userSlice";
 
-//------------------------------------------------------------
-
-import {
-  onSubmitFormValidtionHelper,
-} from "../../../helpers/formHelpers";
-//-------------------------------------------------------------
+import { onSubmitFormValidtionHelper } from "../../../helpers/formHelpers";
 
 import {
   fetchSignInMethodsForEmail,
@@ -16,20 +11,42 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 
-import { Alert, Box, Button, Stack } from "@mui/material";
-import InputForm from "../../../Components/Form Componenets/InputForm";
-//-------------------------------------------------------------------------------
+import { Alert, Box, Button, Stack, Typography } from "@mui/material";
+
+import Form from "../../../Components/FormGroup";
+
+//-----------------------------------------------------------
+
 
 function LoginForm() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(false);
-  const [errorSubmit, setErrorSubmit] = useState(false);
+  const [onErrorSubmit, setOnErrorSubmit] = useState(false);
   const [formValues, setFormValues] = useState({ email: "", password: "" });
   const [formErrors, setFormErrors] = useState({ email: "", password: "" });
-  const [success, setSuccess] = useState("");
+  const [onSuccessSumbit, setOnSuccessSumbit] = useState("");
   const auth = getAuth();
   const dispatch = useDispatch();
+
+  const formData = {
+    setFormValues: setFormValues,
+    setFormErrors: setFormErrors,
+    formValues: formValues,
+    formErrors: formErrors,
+  };
+
+  const inputsData = [
+    {
+      type: "text",
+      name: "email",
+      label: "Email",
+    },
+    {
+      type: "password",
+      name: "password",
+      label: "Password",
+    },
+  ];
 
   const onSubmitHandler = (e) => {
     const { updatedFormErrors, hasErrors } = onSubmitFormValidtionHelper(
@@ -38,16 +55,16 @@ function LoginForm() {
       formErrors
     );
 
+    setIsLoading(true);
     if (hasErrors) {
-      console.log("Something went wrong, try again.");
-      setError(true);
       setFormErrors(updatedFormErrors);
+      setIsLoading(false);
       return;
     }
     setIsLoading(true);
     fetchSignInMethodsForEmail(auth, formValues.email).then((signInMethods) => {
       if (signInMethods.length === 0) {
-        setErrorSubmit("The user is not registered");
+        setOnErrorSubmit("The user is not registered");
         setIsLoading(false);
       } else {
         signInWithEmailAndPassword(auth, formValues.email, formValues.password)
@@ -56,7 +73,8 @@ function LoginForm() {
             const user = userCredential.user;
             dispatch(setUser(user));
             dispatch(login());
-            setSuccess("successfully logged in");
+            setOnErrorSubmit("");
+            setOnSuccessSumbit("successfully logged in");
             setTimeout(() => {
               navigate("/store/all products");
             }, 1000);
@@ -64,78 +82,53 @@ function LoginForm() {
           .catch((error) => {
             setIsLoading(false);
             console.error(error.message);
-            setErrorSubmit(
+            setOnErrorSubmit(
               "something went wrong; Check that the username and password are correct and try again"
             );
-            setError(true);
           });
       }
     });
   };
 
+  const button = (
+    <Stack spacing={1}>
+      <Box display={"flex"} justifyContent={"flex-end"}>
+        <Button size="small" onClick={() => navigate("/recover-password")}>
+          <Typography variant="span" color={"primary"}>
+            Forgot your Password?
+          </Typography>
+        </Button>
+      </Box>
+      <Button fullWidth size="large" type="submit" variant="outlined">
+        {isLoading ? "Sign in..." : "sing in"}
+      </Button>
+    </Stack>
+  );
   return (
     <>
-      <form onSubmit={(e) => onSubmitHandler(e)}>
-        <Stack spacing={3}>
-          <InputForm
-            type={"text"}
-            formValues={formValues}
-            setFormValues={setFormValues}
-            setFormErrors={setFormErrors}
-            setError={setError}
-            formErrors={formErrors}
-            error={error}
-            setErrorSubmit={setErrorSubmit}
-            name="email"
-            label="Email address"
-            autoComplete="user-email"
-          />
-          <InputForm
-            type={"text"}
-            formValues={formValues}
-            setFormValues={setFormValues}
-            setFormErrors={setFormErrors}
-            setError={setError}
-            formErrors={formErrors}
-            error={error}
-            setErrorSubmit={setErrorSubmit}
-            name="password"
-            label="Password"
-            autoComplete="user-password"
-          />
-        </Stack>
-
-        <Stack
-          direction="row"
-          alignItems="center"
-          justifyContent="end"
-          sx={{ my: 2 }}
-        >
-          <Link to={"/recover-password"} variant="subtitle2" underline="hover">
-            Forgot password?
-          </Link>
-        </Stack>
-
-        <Button fullWidth size="large" type="submit" variant="outlined">
-          {isLoading ? "Sign in..." : "sign in"}
-        </Button>
-      </form>
-      {success && (
+      <Form
+        formData={formData}
+        inputsData={inputsData}
+        onSubmit={onSubmitHandler}
+        children={button}
+      />
+      {onSuccessSumbit && (
         <Box mt={2} display={"flex"} justifyContent={"center"}>
           <Alert sx={{ py: 2, width: "100%" }} severity="success">
-            {success}
+            {onSuccessSumbit}
           </Alert>
         </Box>
       )}
-      {errorSubmit && (
+      {onErrorSubmit && (
         <Box mt={2} display={"flex"} alignItems={"center"}>
           <Alert
             severity="error"
             sx={{ mt: 1, width: "100%", display: "flex", alignItems: "center" }}
           >
-            {errorSubmit}
-            {errorSubmit === "The user is not registered" && (
-              <Link to="/signUp" className="btn text-success">
+            {onErrorSubmit}
+
+            {onErrorSubmit === "The user is not registered" && (
+              <Link to="/signUp" className="btn text-primary">
                 Register
               </Link>
             )}

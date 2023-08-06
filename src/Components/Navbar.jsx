@@ -1,49 +1,49 @@
+import { doc, getDoc, getFirestore } from "firebase/firestore";
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
 import TemporaryDrawer from "./TemporaryDrawer";
-import { getDoc, doc, getFirestore } from "firebase/firestore";
 
 import {
-  selectUserIsLogeedIn,
-  logout,
-  selectUser,
-} from "../Reducers/userSlice";
-import {
-  selectTotalCount,
   removeAllProductFromCart,
-  selectProductsCartList,
   removePurchaseOrder,
+  selectProductsCartList,
   selectPurchaseOrder,
+  selectTotalCount,
 } from "../Reducers/cartSlice";
 
 import {
-  removeAllProductFromSavedCart,
+  logout,
+  selectUser,
+  selectUserIsLogeedIn,
+} from "../Reducers/userSlice";
+
+import {
   documentIsCharged,
+  removeAllProductFromSavedCart,
 } from "../Reducers/savedCartSlice";
 
-import { checkAndHandleCartDocument } from "../helpers/firebaseHelpers/firestoreHelpers";
-//----------------------------------------------------------------------------
 
 import { getAuth, signOut } from "firebase/auth";
+import { checkAndHandleCartDocument } from "../helpers/firebaseHelpers/firestoreHelpers";
 
-//-------------------------------------------------------------------
 import {
   AppBar,
-  Box,
-  Toolbar,
-  IconButton,
-  Typography,
   Badge,
-  MenuItem,
+  Box,
   Button,
+  IconButton,
   Menu,
+  MenuItem,
+  Toolbar,
+  Typography,
 } from "@mui/material";
-//--------------------------------------------------------------------
-import { ShoppingCartSharp, AccountCircle } from "@mui/icons-material";
-import NotificationsIcon from "@mui/icons-material/Notifications";
+
+import { AccountCircle, ShoppingCartSharp } from "@mui/icons-material";
 import MoreIcon from "@mui/icons-material/MoreVert";
+import NotificationsIcon from "@mui/icons-material/Notifications";
 import PopUpModal from "./popUpModal/PopUpModal";
+
 
 //-----------------------------------------------------------------------
 
@@ -64,16 +64,18 @@ function Navbar() {
   const [messageRead, setMessageRead] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [confirmLogout, setConfirmLogout] = useState(false);
-  const CategoryRequest = async () => {
-    try {
-      const request = await fetch(`https://dummyjson.com/products/categories`);
-      const res = await request.json();
-      localStorage.setItem("categoriesList", JSON.stringify(res));
-    } catch (error) {
-      throw new Error(`Something went wrong | Error : ${error}`);
-    }
-  };
 
+  const CategoryRequest = async () => {
+    let res;
+    if (localStorage.getItem("categoriesList")) {
+      res = JSON.parse(localStorage.getItem("categoriesList"));
+    } else {
+      const request = await fetch(`https://dummyjson.com/products/categories`);
+      res = await request.json();
+      localStorage.setItem("categoriesList", JSON.stringify(res));
+    }
+    return res;
+  };
 
   const handleLogout = () => {
     if (purchseOrder && !confirmLogout) {
@@ -97,7 +99,7 @@ function Navbar() {
         })
         .catch((error) => {
           const errorMessage = error.message;
-          console.log(errorMessage);
+          console.error(errorMessage);
         });
     }
   };
@@ -106,8 +108,6 @@ function Navbar() {
     navigate("/user-messages");
     setMessageRead(true);
   };
-
-
 
   const checkIfDocumentExists = async (auth) => {
     if (!auth.currentUser) {
@@ -132,9 +132,16 @@ function Navbar() {
   };
 
   useEffect(() => {
-    setAllCategories(
-      JSON.parse(localStorage.getItem("categoriesList")) || CategoryRequest()
-    );
+    const fetchData = async () => {
+      try {
+        const categoriesData = await CategoryRequest();
+        setAllCategories(categoriesData);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
     checkIfDocumentExists(auth);
     // eslint-disable-next-line
   }, [auth, messagesCount]);

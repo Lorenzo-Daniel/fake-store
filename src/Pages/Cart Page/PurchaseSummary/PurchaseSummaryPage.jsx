@@ -1,9 +1,9 @@
-import useResponsive from "../../../hooks/useResponsive";
 import { Container, Typography } from "@mui/material";
 import {
-  StyledSection,
   StyledRoot,
+  StyledSection,
 } from "../../../helpers/Layout-helper/layout";
+import useResponsive from "../../../hooks/useResponsive";
 import PurchaseSummary from "./PurchaseSummary";
 
 function PurchaseSummaryPage() {
