@@ -1,4 +1,4 @@
-import { Button, Container, Divider, Typography } from "@mui/material";
+import { Button, Container } from "@mui/material";
 
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -91,11 +91,7 @@ function ShippingServiceForm() {
   );
   return (
     <>
-      <Typography variant="h4" my={4}>
-        Shipping data
-      </Typography>
-      <Divider />
-      <Container sx={{ mt: 5 }}>
+       <Container sx={{ mt: 5 }}>
         <Form
           formData={formData}
           inputsData={inputsData}

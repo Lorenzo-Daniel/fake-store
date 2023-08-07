@@ -1,9 +1,10 @@
 import useResponsive from "../../../hooks/useResponsive";
-import { Container, Typography } from "@mui/material";
+import { Container, Typography, Divider } from "@mui/material";
 
 import {
   StyledSection,
   StyledRoot,
+  StyledContent,
 } from "../../../helpers/Layout-helper/layout";
 
 import ShippingServiceForm from "./ShippingServiceForm";
@@ -14,8 +15,8 @@ function ShippingServicePage() {
     <>
       <StyledRoot>
         {mdUp && (
-          <StyledSection sx={{ height: "100vh" }}>
-            <Typography variant="h4" mt={4} textAlign={"center"}>
+          <StyledSection>
+            <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
               Shipping Service
             </Typography>
             <img
@@ -24,8 +25,15 @@ function ShippingServicePage() {
             />
           </StyledSection>
         )}
-        <Container>
-          <ShippingServiceForm />
+
+        <Container maxWidth="sm">
+          <StyledContent>
+            <Typography variant="h4" gutterBottom>
+              Shipping data
+            </Typography>
+            <Divider sx={{ mb: 5 }} />
+            <ShippingServiceForm />
+          </StyledContent>
         </Container>
       </StyledRoot>
     </>

@@ -1,6 +1,6 @@
-import { CalendarToday, ExpandMore, Home } from "@mui/icons-material";
-
+import { CalendarToday, ExpandMore } from "@mui/icons-material";
 import CloseIcon from "@mui/icons-material/Close";
+import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 
 import {
   Accordion,
@@ -59,7 +59,6 @@ const Transition = forwardRef(function Transition(props, ref) {
 });
 
 //-------------------------------------------------------------------
-
 
 function UserAccount() {
   const alertBox = useRef(null);
@@ -330,7 +329,7 @@ function UserAccount() {
                 </Button>
               </ListItem>
               <ListItemButton
-                disabled={historyOrders && false}
+                disabled={!historyOrders ? true : false}
                 onClick={() => setShowOrders(true)}
               >
                 <ListItemText
@@ -457,7 +456,7 @@ function UserAccount() {
                           {order.reference.date}
                         </Typography>
                         <Typography sx={{ color: "text.secondary", mb: 1 }}>
-                          <Home sx={{ mr: 2 }} />
+                          <LocalShippingIcon sx={{ mr: 2 }} />
                           {order.purchaseOrder.formValues.address}
                         </Typography>
                         <Divider />

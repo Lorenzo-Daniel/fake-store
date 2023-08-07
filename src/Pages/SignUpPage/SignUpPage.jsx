@@ -1,6 +1,7 @@
 import {
   Container,
   Typography,
+  Divider
 } from "@mui/material";
 import useResponsive from "../../hooks/useResponsive";
 import SignUpForm from "./SignUpForm/SignUpForm";
@@ -31,7 +32,7 @@ function SignUpPage() {
             <Typography  variant="h4" gutterBottom>
               Sign up
             </Typography>
-           
+           <Divider sx={{mb:5}}/>
             <SignUpForm />
           </StyledContent>
         </Container>
