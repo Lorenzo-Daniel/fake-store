@@ -17,24 +17,31 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 
 import {
   addProductToCart,
-  removeProductFromCart, selectProductsCartList
+  removeProductFromCart,
+  selectProductsCartList,
 } from "../../Reducers/cartSlice";
 
+import {
+  setAllProducts,
+  selectAllProducts,
+} from "../../Reducers/productsSlice ";
 import { Delete, ShoppingCartCheckoutTwoTone } from "@mui/icons-material";
 
 //-----------------------------------------------------------------------------------
 
-
 function StoreProducts() {
-  const [allProducts, setAllProducts] = useState([]);
+  const [categoryToShow, setCategoryToShow] = useState();
   const productsInCart = useSelector(selectProductsCartList);
-  const [productsInStore, setProductsInStore] = useState([]);
+  // const [productsInStore, setProductsInStore] = useState([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { categorie } = useParams("allProducts");
+  const { category } = useParams("all products");
+  const allProductsStorage = useSelector(selectAllProducts);
 
   const handleAddRemoveProductFromCart = (productId) => {
-    const product = allProducts.find((product) => product.id === productId);
+    const product = allProductsStorage.find(
+      (product) => product.id === productId
+    );
     const findProduct = productsInCart.find(
       (product) => product.id === productId
     );
@@ -45,47 +52,57 @@ function StoreProducts() {
     }
   };
 
+  // console.log(allProductsStorage);
+  // const fetchCategoriesData = async () => {
+  //   try {
+  //     const categoriesData = await CategoryRequest();
+  //     setAllCategories(categoriesData);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
+  // console.log(allProductsStorage);
   useEffect(() => {
     const productsRequest = async () => {
       try {
-        const request = await fetch(`https://dummyjson.com/products?limit=100`);
-        const res = await request.json();
-        localStorage.setItem("allProducts", JSON.stringify(res.products));
-        const productsWithQuantity = res.products.map((product) => ({
-          ...product,
-          quantity: Number(1),
-        }));
-        return productsWithQuantity;
+        if (!allProductsStorage) {
+          const request = await fetch(
+            `https://dummyjson.com/products?limit=100`
+          );
+          const res = await request.json();
+          const productsWithQuantity = res.products.map((product) => ({
+            ...product,
+            quantity: Number(1),
+          }));
+          dispatch(setAllProducts(productsWithQuantity));
+          return productsWithQuantity;
+        }
       } catch (error) {
         throw new Error(`Something went wrong | Error: ${error}`);
       }
     };
+    productsRequest();
 
-    productsRequest().then((data) => {
-      setAllProducts(data);
-    });
-  }, []);
-
-  useEffect(() => {
-    const handleCategoriesSelected = (categorie) => {
-      const result = allProducts.filter(
-        (product) => product.category === categorie
+    const handleCategoriesSelected = (category) => {
+      const result = allProductsStorage.filter(
+        (product) => product.category === category
       );
-      setProductsInStore(result);
+      setCategoryToShow(result);
     };
-    setProductsInStore(allProducts); // Establece todos los productos por defecto
 
-    if (categorie !== "all products") {
-      handleCategoriesSelected(categorie);
+    setCategoryToShow(allProductsStorage);
+
+    if (category !== "all products") {
+      handleCategoriesSelected(category);
     }
-  }, [categorie, allProducts]);
+  }, [category, allProductsStorage, dispatch]);
 
   return (
     <>
       <Box sx={{ mt: 5, display: "flex", justifyContent: "center" }}>
         <Typography gutterBottom variant="h4" component="div">
-          {categorie.toUpperCase()}
+          {category.toUpperCase()}
         </Typography>
       </Box>
       <Grid
@@ -97,7 +114,7 @@ function StoreProducts() {
         rowGap={3}
         justifyContent="space-evenly"
       >
-        {productsInStore.map((product) => (
+        {categoryToShow?.map((product) => (
           <Grid key={product.id} item xs={11} sm={5} md={4} lg={3}>
             <Card>
               <Link to={`/product-description/${product.title}`}>

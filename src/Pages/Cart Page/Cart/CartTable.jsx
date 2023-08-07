@@ -47,6 +47,7 @@ import {
   selectProductsCartList,
 } from "../../../Reducers/cartSlice";
 
+import { selectAllProducts } from "../../../Reducers/productsSlice ";
 import { selectUserIsLogeedIn } from "../../../Reducers/userSlice";
 
 function CartTable() {
@@ -57,18 +58,17 @@ function CartTable() {
   const [subTotal, setSubTotal] = useState("");
   const [necesaryLogginWarning, setNecesaryLogginWarning] = useState(false);
   const [value, setValue] = useState(0);
-  // const [savedCartList, setSavedCartList] = useState([]);
   const [showCarts, setShowCarts] = useState(true);
   const savedCartList = useSelector(selectProductsSavedCartList);
+  const allProductsStorage = useSelector(selectAllProducts);
 
-  
   const handleRemoveProduct = (productId) => {
     dispatch(removeProductFromCart(productId));
   };
 
   const handleForwardProductToCart = (productId) => {
-    const getLS = JSON.parse(localStorage.getItem("allProducts"));
-    const findProduct = getLS.find((product) => product.id === productId);
+    
+    const findProduct = allProductsStorage.find((product) => product.id === productId);
     dispatch(removeProductFromSavedCart(productId));
     dispatch(forwardProductToCart(findProduct));
   };
@@ -238,7 +238,7 @@ function CartTable() {
               {necesaryLogginWarning && (
                 <Alert
                   severity="warning"
-                  sx={{ display: "flex", flexDirection: "column",mb:5 }}
+                  sx={{ display: "flex", flexDirection: "column", mb: 5 }}
                 >
                   <Typography variant="span">
                     You must be logged in to continue.

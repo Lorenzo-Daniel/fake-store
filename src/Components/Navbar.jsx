@@ -23,6 +23,12 @@ import {
   removeAllProductFromSavedCart,
 } from "../Reducers/savedCartSlice";
 
+import {
+  setAllCategories,
+  selectAllcategories,
+} from "../Reducers/productsSlice ";
+
+import { removeAllProductsState } from "../Reducers/productsSlice ";
 
 import { getAuth, signOut } from "firebase/auth";
 import { checkAndHandleCartDocument } from "../helpers/firebaseHelpers/firestoreHelpers";
@@ -44,18 +50,17 @@ import MoreIcon from "@mui/icons-material/MoreVert";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import PopUpModal from "./popUpModal/PopUpModal";
 
-
 //-----------------------------------------------------------------------
 
 function Navbar() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
-  const [allCategories, setAllCategories] = useState([]);
   const totalCount = useSelector(selectTotalCount);
   const userData = useSelector(selectUser);
   const productsCartList = useSelector(selectProductsCartList);
   const userIsLogged = useSelector(selectUserIsLogeedIn);
   const purchseOrder = useSelector(selectPurchaseOrder);
+  const allCategories = useSelector(selectAllcategories);
   const auth = getAuth();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -66,15 +71,11 @@ function Navbar() {
   const [confirmLogout, setConfirmLogout] = useState(false);
 
   const CategoryRequest = async () => {
-    let res;
-    if (localStorage.getItem("categoriesList")) {
-      res = JSON.parse(localStorage.getItem("categoriesList"));
-    } else {
+    if (!allCategories) {
       const request = await fetch(`https://dummyjson.com/products/categories`);
-      res = await request.json();
-      localStorage.setItem("categoriesList", JSON.stringify(res));
+      const res = await request.json();
+      dispatch(setAllCategories(res));
     }
-    return res;
   };
 
   const handleLogout = () => {
@@ -95,6 +96,7 @@ function Navbar() {
           dispatch(removeAllProductFromSavedCart());
           dispatch(documentIsCharged(false));
           dispatch(removePurchaseOrder());
+          dispatch(removeAllProductsState())
           dispatch(logout());
         })
         .catch((error) => {
@@ -132,7 +134,7 @@ function Navbar() {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchCategoriesData = async () => {
       try {
         const categoriesData = await CategoryRequest();
         setAllCategories(categoriesData);
@@ -141,7 +143,7 @@ function Navbar() {
       }
     };
 
-    fetchData();
+    fetchCategoriesData();
     checkIfDocumentExists(auth);
     // eslint-disable-next-line
   }, [auth, messagesCount]);

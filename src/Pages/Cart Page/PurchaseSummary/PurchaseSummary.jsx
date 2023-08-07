@@ -174,15 +174,22 @@ function PurchaseSummary() {
           </Box>
         </Container>
       ) : (
-        <Alert severity="success">
-          {`     
-
-your purchase has been completed successfully!! Your purchase order number is:
-${purchaseOrder?.orderNumber}`}{" "}
-          <br />{" "}
-          {`The merchandise will be delivered on 
-          ${purchaseOrder?.deliveryDate}, between 9:00 a.m. and 2:00 p.m. Thank
-          you for choosing us!!`}
+        <Alert
+          severity="success"
+          sx={{ lineHeight: "25px", letterSpacing: "1px" }}
+        >
+          your purchase has been completed successfully!!
+          <br /> Your purchase order number is:
+          <Typography variant="span" color={"primary"} ml={1}>
+            {purchaseOrder?.orderNumber}
+          </Typography>
+          <br />
+          The merchandise will be delivered on
+          <Typography variant="span" color={"primary"} ml={1}>
+            {purchaseOrder?.deliveryDate}
+          </Typography>
+            , between 9:00 a.m. and 2:00 p.m. Thank
+          you for choosing us!!
           <Button
             variant="text"
             onClick={() => {

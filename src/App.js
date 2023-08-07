@@ -132,7 +132,7 @@ function App() {
         <Navbar />
         <Routes>
           <Route exact path="/" element={<Home />} />
-          <Route exact path="/store/:categorie" element={<StoreProducts />} />
+          <Route exact path="/store/:category" element={<StoreProducts />} />
           <Route
             exact
             path="/product-description/:title"

@@ -45,7 +45,7 @@ export const getUserIdPurchaseDocument = async (
         const historyOrdersData = userSnapshot.data();
         dispatch(setHistoryOrders(historyOrdersData));
       } else {
-        console.log("El usuario no existe en la base de datos.");
+        console.error("El usuario no existe en la base de datos.");
       }
     } catch (error) {
       console.error("Error al obtener el documento del usuario:", error);

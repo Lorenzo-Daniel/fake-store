@@ -22,6 +22,7 @@ import {
   selectProductsCartList,
 } from "../../Reducers/cartSlice";
 
+import { selectAllProducts } from "../../Reducers/productsSlice ";
 //---------------------------------------------------------------------
 
 function ProductDescription() {
@@ -29,17 +30,11 @@ function ProductDescription() {
   const [img, setImg] = useState([]);
   const { title } = useParams();
   const productsInCart = useSelector(selectProductsCartList);
+  const allProductsStorage = useSelector(selectAllProducts)
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const getProductTitle = (title) => {
-    const getAllProducts = JSON.parse(localStorage.getItem("allProducts"));
-    const findProduct = getAllProducts.find(
-      (product) => product.title === title
-    );
-    setProduct(findProduct);
-    setImg(findProduct.images);
-  };
+
 
   const handleAddRemoveProductToCart = (productId) => {
     const findProduct = productsInCart.find((pdt) => pdt.id === productId);
@@ -51,8 +46,15 @@ function ProductDescription() {
   };
 
   useEffect(() => {
+    const getProductTitle = (title) => {
+      const findProduct = allProductsStorage.find(
+        (product) => product.title === title
+      );
+      setProduct(findProduct);
+      setImg(findProduct.images);
+    };
     getProductTitle(title);
-  }, [title]);
+  }, [title,allProductsStorage]);
 
   return (
     <>
