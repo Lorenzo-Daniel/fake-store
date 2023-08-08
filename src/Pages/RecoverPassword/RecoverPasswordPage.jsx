@@ -2,7 +2,6 @@ import { Container, Divider, Typography } from "@mui/material";
 import useResponsive from "../../hooks/useResponsive";
 import RecoverPasswordForm from "./RecoverPasswordForm";
 
-
 import {
   StyledContent,
   StyledRoot,
@@ -30,10 +29,16 @@ function RecoverPasswordPage() {
 
         <Container maxWidth="sm">
           <StyledContent>
-            <Typography variant="h5" gutterBottom>
+            <Typography variant="h4" gutterBottom>
               Recover your password!
-              <Divider sx={{ my: 2 }} />
             </Typography>
+            <Divider sx={{ mb: 5 }} />
+            <StyledSection sx={{ mb: 3, display: { sm: "block", md: "none" } }}>
+              <img
+                src="/assets/illustrations/illustration_recover_password.svg"
+                alt="login"
+              />
+            </StyledSection>
             <RecoverPasswordForm />
           </StyledContent>
         </Container>

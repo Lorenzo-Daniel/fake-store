@@ -1,10 +1,4 @@
-import {
-  Box,
-  Button,
-  Container,
-  Divider,
-  Typography,
-} from "@mui/material";
+import {  Button} from "@mui/material";
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import Form from "../../../Components/FormGroup";
@@ -88,20 +82,14 @@ function CreditCardForm() {
     </Button>
   );
   return (
-    <Box>
-      <Typography variant="h4" my={4}>
-        Credit Card
-      </Typography>
-      <Divider />
-      <Container sx={{ mt: 5 }}>
-        <Form
-          formData={formData}
-          inputsData={inputsData}
-          onSubmit={onSubmitHandler}
-          children={buttonSubmit}
-        />
-      </Container>
-    </Box>
+    <>
+      <Form
+        formData={formData}
+        inputsData={inputsData}
+        onSubmit={onSubmitHandler}
+        children={buttonSubmit}
+      />
+    </>
   );
 }
 

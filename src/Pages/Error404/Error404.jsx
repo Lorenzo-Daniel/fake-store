@@ -1,5 +1,4 @@
-import useResponsive from "../../../hooks/useResponsive";
-import LoginForm from "./LoginForm";
+import useResponsive from "../../hooks/useResponsive";
 
 //-------------------------------------------------------------------
 
@@ -11,41 +10,39 @@ import {
 
 // ----------------------------------------------------------------------
 
-import {StyledRoot,StyledSection,StyledContent} from '../../../helpers/Layout-helper/layout'
+import {StyledRoot,StyledSection,StyledContent} from '../../helpers/Layout-helper/layout'
 
 //----------------------------------------------------------------------
 
-function LoginPage() {
+function Error404() {
   const mdUp = useResponsive("up", "md");
   return (
     <>
       <StyledRoot>
         {mdUp && (
           <StyledSection>
-            <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
-              Hi, Welcome Back
-            </Typography>
             <img
-              src="/assets/illustrations/illustration_login.png"
-              alt="login"
+              src="/assets/illustrations/illustration_error404.svg"
+              alt="error-404"
             />
           </StyledSection>
         )}
 
         <Container maxWidth="sm">
           <StyledContent>
-            <Typography variant="h4" gutterBottom>
-              Sign in to Minimal
-            </Typography>
-            <Divider sx={{ mb: 5 }} />
-          <StyledSection sx={{mb:3, display:{sm:'block',md:'none'}}}>
-          <img
-              src="/assets/illustrations/illustration_login.png"
-              alt="login"
+           <StyledSection sx={{mb:3, display:{sm:'block',md:'none'}}}>
+            <img
+              src="/assets/illustrations/illustration_error404.svg"
+              alt="error-404"
             />
           </StyledSection>
-
-            <LoginForm />
+            <Typography variant="h4" gutterBottom>
+              Oops! Error 404 !! 
+            </Typography>
+            <Divider sx={{ mb: 5 }} />
+            <Typography variant="h6" gutterBottom>
+              The page does not exist or access has been restricted because your user is not authenticated
+            </Typography>
           </StyledContent>
         </Container>
       </StyledRoot>
@@ -53,4 +50,6 @@ function LoginPage() {
   );
 }
 
-export default LoginPage;
+
+
+export default Error404

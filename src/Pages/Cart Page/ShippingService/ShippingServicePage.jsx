@@ -32,6 +32,12 @@ function ShippingServicePage() {
               Shipping data
             </Typography>
             <Divider sx={{ mb: 5 }} />
+            <StyledSection sx={{ mb: 3, display: { md: "none" } }}>
+              <img
+                src="/assets/illustrations/illustration_shipment_of_merchandise.jpg"
+                alt="shipping"
+              />
+            </StyledSection>
             <ShippingServiceForm />
           </StyledContent>
         </Container>

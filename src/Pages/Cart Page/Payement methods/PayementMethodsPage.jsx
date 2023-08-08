@@ -33,6 +33,12 @@ function PayementMethodsPage() {
               Payement Methods
             </Typography>
             <Divider sx={{ mb: 5 }} />
+            <StyledSection sx={{mb:3, display:{sm:'block',md:'none'}}}>
+            <img
+              src="/assets/illustrations/illustration_payement_methods.svg"
+              alt="payement-methods"
+            />
+          </StyledSection>
 
             <PayementMethods />
           </StyledContent>

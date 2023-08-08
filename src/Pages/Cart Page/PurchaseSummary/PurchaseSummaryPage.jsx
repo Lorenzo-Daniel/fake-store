@@ -1,7 +1,8 @@
-import { Container, Typography } from "@mui/material";
+import { Container, Divider, Typography } from "@mui/material";
 import {
   StyledRoot,
   StyledSection,
+  StyledContent,
 } from "../../../helpers/Layout-helper/layout";
 import useResponsive from "../../../hooks/useResponsive";
 import PurchaseSummary from "./PurchaseSummary";
@@ -12,7 +13,7 @@ function PurchaseSummaryPage() {
     <>
       <StyledRoot>
         {mdUp && (
-          <StyledSection sx={{ height: "100vh" }}>
+          <StyledSection>
             <Typography variant="h4" mt={4} textAlign={"center"}>
               Purchase Summary
             </Typography>
@@ -22,8 +23,20 @@ function PurchaseSummaryPage() {
             />
           </StyledSection>
         )}
-        <Container>
-        <PurchaseSummary/>
+        <Container maxWidth="sm">
+          <StyledContent>
+            <Typography variant="h4" my={4}>
+              Purchase Summary
+            </Typography>
+            <Divider sx={{ mb: 5 }} />
+            <StyledSection sx={{ mb: 3, display: { sm: "block", md: "none" } }}>
+              <img
+                src="/assets/illustrations/illustration_purchase_summary.svg"
+                alt="shipping"
+              />
+            </StyledSection>
+          <PurchaseSummary />
+          </StyledContent>
         </Container>
       </StyledRoot>
     </>

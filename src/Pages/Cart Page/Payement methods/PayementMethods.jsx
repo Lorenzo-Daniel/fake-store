@@ -10,9 +10,9 @@ function PayementMethods() {
   const navigate = useNavigate();
 
   return (
-    <Box>
+    <>
       <Grid container spacing={2} mt={5}>
-        <Grid item xs={12} lg={8}>
+        <Grid item xs={12} >
           <Button
             sx={{
               width: "100%",
@@ -36,7 +36,7 @@ function PayementMethods() {
             <AccountBalanceIcon />
           </Button>
         </Grid>
-        <Grid item xs={12} lg={8}>
+        <Grid item xs={12} >
           <Button
             sx={{
               width: "100%",
@@ -61,7 +61,7 @@ function PayementMethods() {
           </Button>
         </Grid>
       </Grid>
-    </Box>
+    </>
   );
 }
 

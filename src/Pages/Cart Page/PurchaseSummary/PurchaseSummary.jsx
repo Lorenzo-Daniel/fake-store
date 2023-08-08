@@ -3,7 +3,6 @@ import {
   Box,
   Button,
   Container,
-  Divider,
   Typography,
   List,
   ListItem,
@@ -73,12 +72,8 @@ function PurchaseSummary() {
   }, [userExtendedData]);
   return (
     <>
-      <Typography variant="h4" my={4}>
-        Purchase Summary
-      </Typography>
-      <Divider />
       {purchaseOrder?.formValues ? (
-        <Container sx={{ mt: 5 }}>
+        <Container >
           <Box display={"flex"} flexDirection={"column"} rowGap={5}>
             <Box sx={{ padding: "15px" }}>
               <List

@@ -23,6 +23,7 @@ import ProductDescription from "./Pages/ProductDescription/ProductDescription";
 import RecoverPasswordPage from "./Pages/RecoverPassword/RecoverPasswordPage";
 import SignUpPage from "./Pages/SignUpPage/SignUpPage";
 import StoreProducts from "./Pages/StoreProducts/StoreProducts";
+import Error404 from "./Pages/Error404/Error404";
 import UserAccount from "./Pages/User account/UserAccount";
 import UserMessage from "./Pages/UserMessages/UserMessage";
 
@@ -141,12 +142,18 @@ function App() {
           <Route exact path="/cart" element={<CartPage />} />
           <Route exact path="/loginPage" element={<LoginPage />} />
           <Route exact path="/signUp" element={<SignUpPage />} />
+          <Route exact path="/user-messages" element={<UserMessage />} />
+          <Route
+            exact
+            path="/recover-password"
+            element={<RecoverPasswordPage />}
+          />
+   
           <Route
             exact
             path="/payement-methods"
             element={<PayementMethodsPage />}
           />
-          <Route exact path="/user-messages" element={<UserMessage />} />
           <Route exact path="/user-account" element={<UserAccount />} />
           <Route exact path="/credit-card-form" element={<CreditCardPage />} />
           <Route
@@ -160,11 +167,7 @@ function App() {
             element={<PurchaseSummaryPage />}
           />
 
-          <Route
-            exact
-            path="/recover-password"
-            element={<RecoverPasswordPage />}
-          />
+          <Route exact path="/error-404" element={<Error404 />} />
         </Routes>
       </BrowserRouter>
     </div>

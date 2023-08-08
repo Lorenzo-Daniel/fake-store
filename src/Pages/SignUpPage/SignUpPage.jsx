@@ -1,14 +1,19 @@
-import {
-  Container,
-  Typography,
-  Divider
-} from "@mui/material";
 import useResponsive from "../../hooks/useResponsive";
 import SignUpForm from "./SignUpForm/SignUpForm";
 
+//-------------------------------------------------------------------
 
-import { StyledContent, StyledRoot, StyledSection } from '../../helpers/Layout-helper/layout';
+import { Container, Typography, Divider } from "@mui/material";
+
 // ----------------------------------------------------------------------
+
+import {
+  StyledRoot,
+  StyledSection,
+  StyledContent,
+} from "../../helpers/Layout-helper/layout";
+
+//----------------------------------------------------------------------
 
 function SignUpPage() {
   const mdUp = useResponsive("up", "md");
@@ -18,21 +23,22 @@ function SignUpPage() {
         {mdUp && (
           <StyledSection>
             <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
-              Hi, Welcome!
+              Welcome!!
             </Typography>
-            <img
-              src="/assets/illustrations/illustration_signUp.jpg"
-              alt="login"
-            />
+            <img src="/assets/illustrations/illustration_signUp.jpg" alt="signUp" />
           </StyledSection>
         )}
 
         <Container maxWidth="sm">
           <StyledContent>
-            <Typography  variant="h4" gutterBottom>
-              Sign up
+            <Typography variant="h4" gutterBottom>
+              Sign Up
             </Typography>
-           <Divider sx={{mb:5}}/>
+            <Divider sx={{ mb: 5 }} />
+            <StyledSection sx={{ mb: 3, display: {  md: "none" } ,maxWidth:'600px' }}>
+              <img src="/assets/illustrations/illustration_signUp.jpg" 
+              alt="login" />
+            </StyledSection>
             <SignUpForm />
           </StyledContent>
         </Container>
