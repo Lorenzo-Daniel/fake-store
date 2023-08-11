@@ -22,22 +22,24 @@ function ShippingServicePage() {
             <img
               src="/assets/illustrations/illustration_shipment_of_merchandise.jpg"
               alt="shipping"
+              width={'100%'}
             />
           </StyledSection>
         )}
 
         <Container maxWidth="sm">
           <StyledContent>
-            <Typography variant="h4" gutterBottom>
-              Shipping data
-            </Typography>
-            <Divider sx={{ mb: 5 }} />
             <StyledSection sx={{ mb: 3, display: { md: "none" } }}>
               <img
                 src="/assets/illustrations/illustration_shipment_of_merchandise.jpg"
                 alt="shipping"
+                width={'100%'}
               />
             </StyledSection>
+            <Typography variant="h4" gutterBottom>
+              Delivery Data
+            </Typography>
+            <Divider  />
             <ShippingServiceForm />
           </StyledContent>
         </Container>

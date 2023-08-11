@@ -23,22 +23,25 @@ function RecoverPasswordPage() {
             <img
               src="/assets/illustrations/illustration_recover_password.svg"
               alt="login"
+              width={'100%'}
+
             />
           </StyledSection>
         )}
 
         <Container maxWidth="sm">
           <StyledContent>
-            <Typography variant="h4" gutterBottom>
-              Recover your password!
-            </Typography>
-            <Divider sx={{ mb: 5 }} />
             <StyledSection sx={{ mb: 3, display: { sm: "block", md: "none" } }}>
               <img
                 src="/assets/illustrations/illustration_recover_password.svg"
                 alt="login"
+                width={'100%'}
               />
             </StyledSection>
+            <Typography variant="h4" gutterBottom>
+              Recover your password!
+            </Typography>
+            <Divider sx={{ mb: 5 }} />
             <RecoverPasswordForm />
           </StyledContent>
         </Container>

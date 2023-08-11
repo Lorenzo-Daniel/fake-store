@@ -18,7 +18,7 @@ function PayementMethodsPage() {
         {mdUp && (
           <StyledSection>
             <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
-              Hi, Welcome Back
+             Payement Methods
             </Typography>
             <img
               src="/assets/illustrations/illustration_payement_methods.svg"
@@ -29,17 +29,16 @@ function PayementMethodsPage() {
 
         <Container maxWidth="sm">
           <StyledContent>
-            <Typography variant="h4" gutterBottom>
-              Payement Methods
-            </Typography>
-            <Divider sx={{ mb: 5 }} />
             <StyledSection sx={{mb:3, display:{sm:'block',md:'none'}}}>
             <img
               src="/assets/illustrations/illustration_payement_methods.svg"
               alt="payement-methods"
             />
           </StyledSection>
-
+            <Typography variant="h4" gutterBottom>
+             Select Preference
+            </Typography>
+            <Divider />
             <PayementMethods />
           </StyledContent>
         </Container>

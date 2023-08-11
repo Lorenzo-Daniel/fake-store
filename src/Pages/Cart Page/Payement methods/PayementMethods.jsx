@@ -11,7 +11,7 @@ function PayementMethods() {
 
   return (
     <>
-      <Grid container spacing={2} mt={5}>
+      <Grid container spacing={2} mt={2}>
         <Grid item xs={12} >
           <Button
             sx={{

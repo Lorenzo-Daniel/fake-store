@@ -2,13 +2,16 @@
 
 [deploy]: https://precious-caramel-78198c.netlify.app/
 
+![Vinoteca - Google Chrome 2022-10-14 14-21-25](https://user-images.githubusercontent.com/103971385/195919276-b838614c-c749-417f-9063-a011c7aadc15.gif)
+
+
 ## Description:
 
 ### FAKE STORE is a fictional e-commerce web app developed with React JS using create-react-app
 
 ### The app implements :
 
-- To handle the Global Store :
+ To handle the Global Store :
 
   - @reduxjs/toolkit
   - react-redux
@@ -172,3 +175,7 @@ _'/error-404'_ : Renders a 404 error message.
 - _"redux-thunk": "^2.4.2"_
 - _"swiper": "^10.0.4"_
 - _"web-vitals": "^2.1.4"_
+
+<br>
+
+## _Developed by Daniel Lorenzo_

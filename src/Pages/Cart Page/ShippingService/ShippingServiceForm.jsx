@@ -1,4 +1,4 @@
-import { Button, Container } from "@mui/material";
+import { Box, Button} from "@mui/material";
 
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -91,14 +91,14 @@ function ShippingServiceForm() {
   );
   return (
     <>
-       <Container sx={{ mt: 5 }}>
+       <Box sx={{ mt: 4 }}>
         <Form
           formData={formData}
           inputsData={inputsData}
           onSubmit={onSubmitHandler}
           children={buttonSubmit}
         />
-      </Container>
+      </Box>
     </>
   );
 }

@@ -1,8 +1,12 @@
 import useResponsive from "../../../hooks/useResponsive";
 import CartTable from "./CartTable";
-import { Container } from "@mui/material";
+import { Container, Typography,Box } from "@mui/material";
 
-import {StyledRoot,StyledSection} from '../../../helpers/Layout-helper/layout'
+import {
+  StyledRoot,
+  StyledSection,
+  StyledContent,
+} from "../../../helpers/Layout-helper/layout";
 
 //----------------------------------------------------------------------
 
@@ -12,7 +16,38 @@ function Cart() {
     <>
       <StyledRoot>
         {mdUp && (
-          <StyledSection sx={{ height: "100vh" }}>
+          <StyledSection>
+            <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
+              Shopping Cart
+            </Typography>
+          
+              <img
+                src="/assets/illustrations/illustration_cart.svg "
+                alt="cart-page"
+                width={'100%'}
+              />
+          </StyledSection>
+        )}
+
+        <Container maxWidth="sm">
+          <StyledContent>
+            <StyledSection sx={{ mb: 3, display: { sm: "block", md: "none" } }}>
+              <Box sx={{ maxWidth: "800px" }}>
+                <img
+                  src="/assets/illustrations/illustration_cart.svg "
+                  alt="cart-page"
+                  width={'100%'}
+                />
+              </Box>
+            </StyledSection>
+
+            <CartTable />
+          </StyledContent>
+        </Container>
+      </StyledRoot>
+      {/* <StyledRoot>
+        {mdUp && (
+          <StyledSection>
             <img
               src="/assets/illustrations/illustration_cart.jpg"
               alt="cart-page"
@@ -22,7 +57,7 @@ function Cart() {
         <Container>
           <CartTable />
         </Container>
-      </StyledRoot>
+      </StyledRoot> */}
     </>
   );
 }

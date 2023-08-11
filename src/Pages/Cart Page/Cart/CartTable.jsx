@@ -100,26 +100,26 @@ function CartTable() {
 
   return (
     <Box>
-      <Container>
+      <Box>
         {showCarts ? (
           <Box>
             <Typography variant="h4" mt={4} mb={2}>
-              Cart
+              Cart Products
             </Typography>
           </Box>
         ) : (
           <Box>
             <Typography variant="h4" mt={4} mb={2}>
-              Saved Products
+              Saved Cart Products
             </Typography>
           </Box>
         )}
-      </Container>
+      </Box>
       <Box sx={{ width: "100%" }}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <Tabs value={value} onChange={handleChangeCart}>
             <Tab label="Cart products" onClick={() => setShowCarts(true)} />
-            <Tab label="Saved Cart" onClick={() => setShowCarts(false)} />
+            <Tab label="Saved Cart Products" onClick={() => setShowCarts(false)} />
           </Tabs>
         </Box>
       </Box>
@@ -369,12 +369,12 @@ function CartTable() {
                 <Typography variant="h4" textAlign={"center"}>
                   You dont have saved products!
                 </Typography>
-                <Box my={5}>
+                <Box my={5} >
                   <img
                     src="/assets/illustrations/illustration_empty_cart.jpg"
                     alt="empty-cart"
-                    width={"100%"}
                     className="rounded"
+                    width={'100%'}
                   />
                 </Box>
               </Grid>

@@ -8,6 +8,7 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  Divider,
 } from "@mui/material";
 
 import React, { useEffect } from "react";
@@ -74,7 +75,7 @@ function PurchaseSummary() {
     <>
       {purchaseOrder?.formValues ? (
         <Container >
-          <Box display={"flex"} flexDirection={"column"} rowGap={5}>
+          <Box display={"flex"} flexDirection={"column"} >
             <Box sx={{ padding: "15px" }}>
               <List
                 sx={{
@@ -126,6 +127,7 @@ function PurchaseSummary() {
                 </ListItem>
               </List>
             </Box>
+            <Divider/>
             <Box sx={{ padding: "15px" }}>
               <List
                 sx={{
@@ -153,9 +155,13 @@ function PurchaseSummary() {
                   );
                 })}
               </List>
+              <Divider sx={{my:2}}/>
+              <Box display={"flex"} justifyContent={'end'} mt={2}>
+
               <Typography>
                 Total Price : $ {purchaseOrder?.totalPrice}
               </Typography>
+              </Box>
             </Box>
             <Box display={"flex"} padding={2} maxWidth={"300px"}>
               <Button

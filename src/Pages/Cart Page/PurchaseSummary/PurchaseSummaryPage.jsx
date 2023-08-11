@@ -14,7 +14,7 @@ function PurchaseSummaryPage() {
       <StyledRoot>
         {mdUp && (
           <StyledSection>
-            <Typography variant="h4" mt={4} textAlign={"center"}>
+            <Typography variant="h3" mt={4} textAlign={"center"}>
               Purchase Summary
             </Typography>
             <img
@@ -25,16 +25,16 @@ function PurchaseSummaryPage() {
         )}
         <Container maxWidth="sm">
           <StyledContent>
-            <Typography variant="h4" my={4}>
-              Purchase Summary
-            </Typography>
-            <Divider sx={{ mb: 5 }} />
             <StyledSection sx={{ mb: 3, display: { sm: "block", md: "none" } }}>
               <img
                 src="/assets/illustrations/illustration_purchase_summary.svg"
                 alt="shipping"
               />
             </StyledSection>
+            <Typography  sx={{display:{md:'none'}}} variant="h4" my={2}>
+              Purchase Summary
+            </Typography>
+            <Divider />
           <PurchaseSummary />
           </StyledContent>
         </Container>

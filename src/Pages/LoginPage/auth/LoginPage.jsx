@@ -3,15 +3,15 @@ import LoginForm from "./LoginForm";
 
 //-------------------------------------------------------------------
 
-import {
-  Container,
-  Typography,
-  Divider,
-} from "@mui/material";
+import { Container, Typography, Divider } from "@mui/material";
 
 // ----------------------------------------------------------------------
 
-import {StyledRoot,StyledSection,StyledContent} from '../../../helpers/Layout-helper/layout'
+import {
+  StyledRoot,
+  StyledSection,
+  StyledContent,
+} from "../../../helpers/Layout-helper/layout";
 
 //----------------------------------------------------------------------
 
@@ -34,16 +34,16 @@ function LoginPage() {
 
         <Container maxWidth="sm">
           <StyledContent>
+            <StyledSection sx={{ mb: 3, display: { sm: "block", md: "none" } }}>
+              <img
+                src="/assets/illustrations/illustration_login.png"
+                alt="login"
+              />
+            </StyledSection>
             <Typography variant="h4" gutterBottom>
               Sign in to Minimal
             </Typography>
             <Divider sx={{ mb: 5 }} />
-          <StyledSection sx={{mb:3, display:{sm:'block',md:'none'}}}>
-          <img
-              src="/assets/illustrations/illustration_login.png"
-              alt="login"
-            />
-          </StyledSection>
 
             <LoginForm />
           </StyledContent>
