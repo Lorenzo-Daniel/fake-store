@@ -143,6 +143,13 @@ _'/error-404'_ : Renders a 404 error message.
 
 - If the user wants to access any page that requires being logged in.
 
+<br>
+
+![Fake Store - Google Chrome 2023-08-11 13-02-00](https://github.com/Lorenzo-Daniel/fake-store/assets/103971385/4dda52cc-27d1-4572-bb0a-025aa0854d81)
+ 
+
+
+
 ## Dependencies :
 
 - _"@emotion/react": "^11.11.1"_
