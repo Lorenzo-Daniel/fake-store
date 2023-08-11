@@ -39,7 +39,7 @@ import {
   selectIsCharged,
 } from "./Reducers/savedCartSlice";
 
-import { logout, selectUser } from "./Reducers/userSlice";
+import { logout, selectIsLoggedin, selectUser } from "./Reducers/userSlice";
 
 import { checkAndHandleCartDocument } from "./helpers/firebaseHelpers/firestoreHelpers";
 
@@ -49,11 +49,13 @@ function App() {
   const dispatch = useDispatch();
   const auth = getAuth();
   const [userId, setUserId] = useState("");
+  const isLoggedIn = useSelector(selectIsLoggedin);
   const totalCount = useSelector(selectTotalCount);
   const productsCartList = useSelector(selectProductsCartList);
   const userData = useSelector(selectUser);
   const db = getFirestore();
   const isCharged = useSelector(selectIsCharged);
+
   const checkIfDocumentExists = async (userId) => {
     try {
       const userDoc = await getDoc(doc(db, "cartProducts", userId));
@@ -69,6 +71,7 @@ function App() {
     }
   };
 
+  console.log(isLoggedIn);
   useEffect(() => {
     let signoutTimer;
     let countdownTimer;
@@ -148,29 +151,83 @@ function App() {
             path="/recover-password"
             element={<RecoverPasswordPage />}
           />
-   
-          <Route
-            exact
-            path="/payement-methods"
-            element={<PayementMethodsPage />}
-          />
-          <Route exact path="/user-account" element={<UserAccount />} />
-          <Route exact path="/credit-card-form" element={<CreditCardPage />} />
-          <Route
-            exact
-            path="/shipping-service"
-            element={<ShippingServicePage />}
-          />
-          <Route
-            exact
-            path="/purchase-summary"
-            element={<PurchaseSummaryPage />}
-          />
-
-          <Route exact path="/error-404" element={<Error404 />} />
+          {/* Rutas protegidas que solo se muestran si el usuario está logueado */}
+          {isLoggedIn ? (
+            <>
+              <Route
+                exact
+                path="/payement-methods"
+                element={<PayementMethodsPage />}
+              />
+              <Route exact path="/user-account" element={<UserAccount />} />
+              <Route
+                exact
+                path="/credit-card-form"
+                element={<CreditCardPage />}
+              />
+              <Route
+                exact
+                path="/shipping-service"
+                element={<ShippingServicePage />}
+              />
+              <Route
+                exact
+                path="/purchase-summary"
+                element={<PurchaseSummaryPage />}
+              />
+            </>
+          ) : (
+            // Ruta para mostrar cuando el usuario no está logueado
+            <Route path="*" element={<Error404 />} />
+          )}
+          {/* Ruta para mostrar cuando la URL no existe */}
+          <Route path="*" element={<Error404 />} />
         </Routes>
       </BrowserRouter>
     </div>
+    // <div>
+    //   <BrowserRouter>
+    //     <Navbar />
+    //     <Routes>
+    //       <Route exact path="/" element={<Home />} />
+    //       <Route exact path="/store/:category" element={<StoreProducts />} />
+    //       <Route
+    //         exact
+    //         path="/product-description/:title"
+    //         element={<ProductDescription />}
+    //       />
+    //       <Route exact path="/cart" element={<CartPage />} />
+    //       <Route exact path="/loginPage" element={<LoginPage />} />
+    //       <Route exact path="/signUp" element={<SignUpPage />} />
+    //       <Route exact path="/user-messages" element={<UserMessage />} />
+    //       <Route
+    //         exact
+    //         path="/recover-password"
+    //         element={<RecoverPasswordPage />}
+    //       />
+
+    //       <Route
+    //         exact
+    //         path="/payement-methods"
+    //         element={<PayementMethodsPage />}
+    //       />
+    //       <Route exact path="/user-account" element={<UserAccount />} />
+    //       <Route exact path="/credit-card-form" element={<CreditCardPage />} />
+    //       <Route
+    //         exact
+    //         path="/shipping-service"
+    //         element={<ShippingServicePage />}
+    //       />
+    //       <Route
+    //         exact
+    //         path="/purchase-summary"
+    //         element={<PurchaseSummaryPage />}
+    //       />
+
+    //       <Route exact path="/error-404" element={<Error404 />} />
+    //     </Routes>
+    //   </BrowserRouter>
+    // </div>
   );
 }
 

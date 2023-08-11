@@ -1,195 +1,174 @@
-# Fake Store
+# [Fake Store][Deploy]
 
-## Under construction
-[Deploy][Deploy]
+[deploy]: https://precious-caramel-78198c.netlify.app/
 
-[deploy]:https://precious-caramel-78198c.netlify.app/
+## Description:
 
+### FAKE STORE is a fictional e-commerce web app developed with React JS using create-react-app
 
-### Descripción:
+### The app implements :
 
-### FAKE STORE es un e-commerce web app ficticia desarrollada con React JS usando create-react-app
+- To handle the Global Store :
 
-### Para manejar el Almacenamiento Global de la app implemento :  
-- @reduxjs/toolkit
-- react-redux
-- redux-persist
-- redux-thunk
+  - @reduxjs/toolkit
+  - react-redux
+  - redux-persist
+  - redux-thunk
 
-### Para crear la interfaz implemento: MUI 
+### To create the interface:
 
-### Para autenticación de usario implemento: firebase/auth   
+- MUI
 
-### Para base de datos implemento : firebase/firestore
+### For user authentication:
 
+- firebase/auth
 
-## Navegación e interaccion de usuario
+### For database :
 
-### * La interfaz sera diferente dependiendo de si el usuario esta autenticado o no, ofreciendo distintas posibilidades de navegación
+- firebase/firestore
 
+## Navigation and user interaction
 
-## Navegación sin usuario autenticado
+### \* The interface will be different depending on whether the user is authenticated or not, offering different navigation possibilities
 
+## Browsing without an authenticated user
 
-- ' / ' : cuando la aplicación se monta nos ofrece una interfaz de bienvenida con la opcion de navegar a _'/store'_
+### _' / '_ : When the application is mounted it offers the user a welcome interface with the option to navigate to _'/store/all-products'_
 
-- _'/store/:params'_ : 
-  - El componente se monta por defecto en _'store/all-products_ y renderiza 100 _ProductCard_.
-  - Los datos provienen de un llamado a _'https://dummyjson.com/products?limit=100'_ (fake-api).
-  - Seleccionando cualquiera de las categorias de producto que ofrece la lista de categorias de _TemporaryDrawer_ en _Navbar_, podremos modificar el _param_ de la url y renderizar solo los productos que correspondan a la categoria seleccionada
-  - Cada _ProductCard_ tendra dos botones : 
-    - _add to cart/remove from cart_ : agrega o elimina el producto del carrito de compras.
-    - _learn more_ : navega a _'/product-description/:params'_.
+### _'/store/:params'_ :
 
-<br>
-
-- _'/product-description/:params'_ :  
-  - Renderiza los detalles del producto seleccionado, recive un _identificador_ de producto como _params_.
+- The component is mounted by default in _'store/all-products_ and renders 100 _ProductCard_.
+- The data comes from a call to _'https://dummyjson.com/products?limit=100'_ (fake-api).
+- By selecting any of the product categories offered by the list of _TemporaryDrawer_ categories in _Navbar_, we can modify the _param_ of the url and render only the products that correspond to the selected category
+- Each _ProductCard_ has two buttons :
+  - _add to cart/remove from cart_ : add or remove the product from the shopping cart.
+  - _learn more_ : navigate to _'/product-description/:params'_.
 
 <br>
 
-- _'/cart'_ : 
-  - Si el usuario agrega productos al carrito de compras; renderiza un detalle de los productos agregados.   
-  - Permite al usuario aumentar o reducir la cantidad de unidades de cada producto seleccionado.
-  - Permite eliminar un producto del carrito.
-  - Permite eliminar todos los productos del carrito. 
+### _'/product-description/:params'_ : Renders the details of the selected product, receives a _product_identifier_ as _params_.
+
+- Provides the user with extended information about the product.
+- Offers the possibility of removing or adding the product to the shopping cart.
 
 <br>
 
-- _'sign-in'_ : 
-  - Renderiza un formulario de logueo con usario y contraseña _(firebase/auth)_.
-  - Validaciones tipicas de formulario.
-  - _'error: el usuario no exite'_ :  renderiza un dialogo aunciando al usuario sobre el error y ofrece la posibilidad de navegar a '/sign-up'.
-  - _'error: contraseña incorrecta'_ : renderiza un dialogo aunciando al usuario sobre el error y sugiere verificar los datos
-  - _success_: Renderiza un dialogo aunciando al usuario sobre el logueo exitoso y navega a '/store/all-products'.
-  - Provee un link hacia '/recover-password' si el usuario tiene problemas con su contraseña.
+### _'/cart'_ : If the user adds products to the shopping cart; renders a detail of the added products.
+
+- Allows the user to increase or reduce the number of units of each selected product.
+- Allows the user remove a product from the cart.
+- Allows the user remove all products from the cart.
 
 <br>
 
-- '/recover-password' : 
-    - Renderiza un formulario de modificacion de contraseña (firebase/auth)
-    - Validaciones tipicas de formulario
-    - _'error: el usuario ya existe'_ : renderiza un dialogo advirtiendo al usuario del error.
-    - _success_ : renderiza un dialogo anunciando el proceso exitoso y sugiere verificar su email inbox para modificar la contraseña mediante el link que se  le ha enviado.
+### _'sign-in'_ : Renders a login form with username and password _(firebase/auth)_.
+
+- Typical form validations.
+- _'error: user did not exit'_ : renders a dialog notifying the user of the error and offering the option to navigate to '/sign-up'.
+- _'error: incorrect password'_ : renders a dialog notifying the user about the error and suggesting to verify the data
+- _success_: Render a dialog announcing the user about successful login and navigate to '/store/all-products'.
+- Provide a link to '/recover-password' if the user forgot their password.
 
 <br>
 
-- '/sign-up' : 
-    - renderiza un formulario de registro, los datos recogidos seran guardados en base de datos (firebase/firestore)
-    - Validaciones tipicas de formulario
-    - _'error: el usuario ya existe'_ : si el usuario ingresado ya existe renderiza un dialogo advirtiendo al usuario el error y sugiere verificar si no no ha realizado antes un registro con ese usuario.
-    -success: renderiza un dialogo aunciando al ususario el registro exitoso y navega hacia '/store/all-products
+### '/recover-password' : Renders a password change form (firebase/auth)
+
+- Typical form validations
+- _'error: user already exists'_ : renders a dialog warning the user of the error.
+- _success_ : renders a dialog announcing the successful process and suggests checking your email inbox to change the password using the link that has been sent.
 
 <br>
 
-- 'user-messages' : renderiza un _hard-coded_ message de bienvenida a FAKE STORE
+### '/sign-up' : renders a sign-up form, the collected data will be stored in the database (firebase/firestore)
 
+- Typical form validations
+- _'error: the user already exists'_ : if the entered user already exists, it renders a dialog warning the user of the error and suggests checking if they have not previously registered with that user.
+  -success: render a dialog announcing the successful registration to the user and navigate to '/store/all-products
 
-## Navegación con usuario autenticado 
+<br>
 
-### * Todas las navegaciones posibles para ususario no autenticado mas las que se enumeran a continuacion.
+### 'user-messages' : renders a _hard-coded_ welcome message to FAKE STORE
 
+## Navigation with authenticated user
 
+### \* All possible navigations for non-authenticated user plus those listed below.
 
+### _Navbar_ : clicking on the user icon (now colored blue) gives the user access to _'/user-account'_ . It will also allow the user to perform _logout_ and close the session.
 
+### _'user-account'_ : renders user data and offers the possibility to modify :
 
+- User email.
+- User phone.
+- Permanently delete the user account.
+- If the user has previously made purchases, it renders a summary with the history of purchase orders, if the user has not made purchases this option appears in disabled
 
+<br>
 
+### _'/cart'_ :
 
+- If the user abandoned a previous session with products in the shopping cart without finalizing the purchase, this data will be saved in the database and will be called in the next user login to be rendered in the _saved cart_ section. It will allow the products to be restored to the shopping cart and continue shopping or delete them.
+- Checkout will be available and navigate to _'/payment-methods'_.
 
+<br>
 
+### _'/payment-methods'_ : will offer the user the possibility of selecting a payment method:
 
+- Cash : navigate to _'/shipping-service'_
+- Credit card : navigate to _'/credit-card-form'_
 
+  <br>
 
+### _'/credit-card-form'_ : renders a form and requests credit card details :
 
-### Deploy : [Aquí](https://coruscating-figolla-d9c79f.netlify.app/)
+- Typical form validations.
+- _success_ : navigate to _'/shipping-service'_
 
-![Vinoteca - Google Chrome 2022-10-14 14-21-25](https://user-images.githubusercontent.com/103971385/195919276-b838614c-c749-417f-9063-a011c7aadc15.gif)
+<br>
 
-### Características del desafío:
+### _'/shipping-service'_ : renders a form and requests shipping data:
 
-### User story/brief:
+- typical form validations.
+- _success_ : navigate to _'/purchase-summary'_
 
-- Un usuario debe poder ingresar, navegar por los productos e ir a sus detalles.
-- Desde el detalle se debe poder ver la descripción, foto y precio e ingresarlo al carrito.
-- Una vez que el carrito tenga al menos un producto, se deberá visualizar un listado compacto de la orden con el precio total.
-- Al ingresar su nombre, apellido, teléfono e e-mail (ingresándolo dos veces para corroborar que sea correcto), debe activarse el botón de ‘realizar compra’.
-- Al clickear ‘realizar compra’ debe guardarse en la base de datos una orden que tenga todos los productos, la fecha y dar feedback del número de orden.
+ <br>
 
-### Componentes sugeridos:
+### _'/purchase-summary'_ : Renders a summary of the purchase with user data, shipping data, selected products and final price.
 
+- Handles the possibility that the user wants to log off at this point, warning that he will lose all the previous steps and the purchase will not be finalized.
+- If the user completes their purchase, render a successful purchase completion dialog and provide the user with a purchase order id and shipping date and time
 
-- Navbar
-- Menu
-- CartWidget
-- ListItem
-- ItemList
-- ItemDetail
-  - ItemQuantitySelector
-  -Description
-  -AddItemButton
-- Checkout
-  -Brief (detalle de compra)
+_'/error-404'_ : Renders a 404 error message.
 
----
+- If the url does not exist.
 
-### Requisitos:
+- If the user wants to access any page that requires being logged in.
 
-- Inicio: Al momento de ingresar a la app en la ruta base ‘/’
+## Dependencies :
 
-  - Visualizar -como mínimo- un set de productos disponibles para la compra.
-  - Contar con algún acceso visible a la vista de carrito que debe alojarse en el route /cart.
-  - Acceder a un menú desplegable que contendrá las categorías. Al clickear en una, debe navegar a la lista de productos de la misma mediante un route      /categories/:categoryId. Éste invocará la misma vista que el home, pero visualizando solamente productos de esa
-categoría.
-
-- Flow: Al clickear un ítem del listado debe navegar a la ruta /item/:id, donde id es el id del item (generado por firebase), y ver la descripción del producto ( foto, precio, selector de cantidad). Si se ingresa a /item/:id y el producto no existe en firebase, debemos responder un mensaje adecuado que indique algo relacionado a que el producto no existe.
-
-- Firebase:
-  - Implementar al menos dos colecciones:
-    - Items: catálogo completo
-    - Link para foto (puede almacenarse de modo estático en la página en una subruta /images/:itemid)
-    - Precio unitario
-    - Descripción (sólo se ve en detalle)
-    - Categoria (id a mano para versión estática, o id de firebase para versión dinámica -opcional-)
-- orders : las órdenes generadas, que deben incluir los productos, descripciones y los precios al momento de la compra.
-  -Las órdenes deben poder tener items surtidos, cada uno con su cantidad. Por ejemplo: remeras x 2 y gorra x 1
-  -id, items, fecha, estado ( por defecto en ‘generada’)
-- El cart debe ser accesible durante toda la experiencia y tener una indicación de la cantidad de items incluidos agregados (ej. si hay un ítem con dos unidades y un    ítem con una unidad, debe decir ‘tres’).
-  - Checkout mínimo:
-  - Items con sus cantidades
-  - Total de la orden
-  - Input para nombre, apellido y teléfono
-  - Input para email y lógica de repetir el email 2 veces.
-- Finalizada la orden, debo recibir mi order id con el id del objeto de firebase.
-- La navegabilidad debe ocurrir utilizando el router, y no href’s o location.
-
----
-
-### Construido con :
-
-- Html
-- css
-- React JS
-
----
-
-### Luego de clonar el repositorio, posiciónate en la carpeta VinotecaReact y ejecuta _npm install_ para instalar las dependencias:
-
-- "bootstrap": "^5.2.0",
-- "firebase": "^9.10.0",
-- "react": "^18.2.0",
-- "react-dom": "^18.2.0",
-- "react-router-dom": "^6.3.0",
-- "react-scripts": "^2.1.3",
-- "sweetalert2": "^11.4.29",
-- "sweetalert2-react-content": "^5.0.3",
-
----
-
-### Desarrollado por _Daniel Lorenzo_
-
-
-
-
-
-
+- _"@emotion/react": "^11.11.1"_
+- _"@emotion/styled": "^11.11.0"_
+- _"@fortawesome/fontawesome-svg-core": "^6.4.0"_
+- _"@fortawesome/free-regular-svg-icons": "^6.4.0"_
+- _"@fortawesome/free-solid-svg-icons": "^6.4.0"_
+- _"@fortawesome/react-fontawesome": "^0.2.0"_
+- _"@iconify/react": "^4.1.1"_
+- _"@mui/icons-material": "^5.14.0"_
+- _"@mui/lab": "^5.0.0-alpha.136"_
+- _"@mui/material": "^5.14.0"_
+- _"@reduxjs/toolkit": "^1.9.5"_
+- _"@testing-library/jest-dom": "^5.16.5"_
+- _"@testing-library/react": "^13.4.0"_
+- _"@testing-library/user-event": "^13.5.0"_
+- _"bootstrap": "^5.3.0"_
+- _"firebase": "^10.0.0"_
+- _"material-ui-popup-state": "^5.0.9"_
+- _"react": "^18.2.0"_
+- _"react-dom": "^18.2.0"_
+- _"react-redux": "^8.1.1"_
+- _"react-router": "^6.14.1"_
+- _"react-router-dom": "^6.14.1"_
+- _"react-scripts": "5.0.1"_
+- _"redux-persist": "^6.0.0"_
+- _"redux-thunk": "^2.4.2"_
+- _"swiper": "^10.0.4"_
+- _"web-vitals": "^2.1.4"_

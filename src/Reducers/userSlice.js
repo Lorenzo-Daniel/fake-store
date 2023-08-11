@@ -38,5 +38,6 @@ export const selectUserIsLogeedIn = (state) => state.rootReducer.userState.isLog
 export const selectUserExtendedData = (state) => state.rootReducer.userState.extendedUserData;
 export const selectUser = (state) => state.rootReducer.userState.userData;
 export const selectHistoryOrders = (state) => state.rootReducer.userState.historyOrders;
+export const selectIsLoggedin = (state) => state.rootReducer.userState.isLoggedIn;
 
 export default userSlice.reducer;
