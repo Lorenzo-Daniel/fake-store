@@ -145,7 +145,7 @@ _'/error-404'_ : Renders a 404 error message.
 
 <br>
 
-[video history](https://github.com/Lorenzo-Daniel/fake-store/assets/103971385/e10eaeed-ac41-499d-9ced-410a20eff011)
+[video history](https://github.com/Lorenzo-Daniel/fake-store/assets/103971385/10ff6c8c-2a1d-4352-ba59-53a8da334ad9)
 
 
 ## Dependencies :
