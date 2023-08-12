@@ -45,19 +45,6 @@ function Cart() {
           </StyledContent>
         </Container>
       </StyledRoot>
-      {/* <StyledRoot>
-        {mdUp && (
-          <StyledSection>
-            <img
-              src="/assets/illustrations/illustration_cart.jpg"
-              alt="cart-page"
-            />
-          </StyledSection>
-        )}
-        <Container>
-          <CartTable />
-        </Container>
-      </StyledRoot> */}
     </>
   );
 }

@@ -17,7 +17,6 @@ import Form from "../../../Components/FormGroup";
 
 //-----------------------------------------------------------
 
-
 function LoginForm() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
@@ -128,8 +127,8 @@ function LoginForm() {
             {onErrorSubmit}
 
             {onErrorSubmit === "The user is not registered" && (
-              <Link to="/signUp" className="btn text-primary">
-                Register
+              <Link to="/sign-up" className="btn text-primary">
+                Sign up
               </Link>
             )}
           </Alert>

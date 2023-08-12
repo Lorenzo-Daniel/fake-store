@@ -248,7 +248,7 @@ function CartTable() {
                     You have an account?
                     <Button
                       variant="text"
-                      onClick={() => navigate("/loginPage")}
+                      onClick={() => navigate("/sign-in")}
                     >
                       sing in
                     </Button>
@@ -256,7 +256,7 @@ function CartTable() {
                   <br />
                   <Typography variant="span">
                     You dont have an account?
-                    <Button variant="text" onClick={() => navigate("/signUp")}>
+                    <Button variant="text" onClick={() => navigate("/sign-up")}>
                       sing Up
                     </Button>
                   </Typography>

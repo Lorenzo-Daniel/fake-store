@@ -143,8 +143,8 @@ function App() {
             element={<ProductDescription />}
           />
           <Route exact path="/cart" element={<CartPage />} />
-          <Route exact path="/loginPage" element={<LoginPage />} />
-          <Route exact path="/signUp" element={<SignUpPage />} />
+          <Route exact path="/sign-in" element={<LoginPage />} />
+          <Route exact path="/sign-up" element={<SignUpPage />} />
           <Route exact path="/user-messages" element={<UserMessage />} />
           <Route
             exact

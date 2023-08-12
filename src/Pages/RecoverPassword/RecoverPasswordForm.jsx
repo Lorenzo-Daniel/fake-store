@@ -112,7 +112,7 @@ function RecoverPasswordForm() {
         <Alert sx={{ p: 5 }} severity="success">
           {onSuccessSubmit}
           <Link
-            to={"/loginPage"}
+            to={"/sign-in"}
             variant={"text"}
             className="ms-2"
             onClick={() => {

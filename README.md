@@ -2,7 +2,6 @@
 
 [deploy]: https://precious-caramel-78198c.netlify.app/
 
-![Vinoteca - Google Chrome 2022-10-14 14-21-25](https://user-images.githubusercontent.com/103971385/195919276-b838614c-c749-417f-9063-a011c7aadc15.gif)
 
 
 ## Description:
@@ -148,9 +147,8 @@ _'/error-404'_ : Renders a 404 error message.
 
 <br>
 
-![Fake Store - Google Chrome 2023-08-11 13-02-00](https://github.com/Lorenzo-Daniel/fake-store/assets/103971385/4dda52cc-27d1-4572-bb0a-025aa0854d81)
  
-
+[video history](https://github.com/Lorenzo-Daniel/fake-store/assets/103971385/e10eaeed-ac41-499d-9ced-410a20eff011)
 
 
 ## Dependencies :
