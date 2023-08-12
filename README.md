@@ -2,11 +2,6 @@
 
 [deploy]: https://precious-caramel-78198c.netlify.app/
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 2198a9c512e812a34cfec8bda46be05990339daa
-
 ## Description:
 
 ### FAKE STORE is a fictional e-commerce web app developed with React JS using create-react-app
