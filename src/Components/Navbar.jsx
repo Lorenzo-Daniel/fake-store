@@ -236,7 +236,7 @@ function Navbar() {
       ) : (
         <div>
           <MenuItem divider>You are not logged in </MenuItem>
-          <MenuItem onClick={() => navigate("/loginPage")}>Login</MenuItem>
+          <MenuItem onClick={() => navigate("/sign-in")}>Login</MenuItem>
           <MenuItem onClick={() => navigate("/SignUp")}>Register</MenuItem>
         </div>
       )}
