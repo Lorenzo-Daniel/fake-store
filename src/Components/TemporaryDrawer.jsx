@@ -1,8 +1,5 @@
-import AccountCircle from "@mui/icons-material/AccountCircle";
 import MenuIcon from "@mui/icons-material/Menu";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import {
-  Badge,
   Box,
   Divider,
   Drawer,
@@ -11,7 +8,6 @@ import {
   ListItem,
   ListItemButton,
   ListItemText,
-  MenuItem,
 } from "@mui/material";
 
 import React, { useState } from "react";
