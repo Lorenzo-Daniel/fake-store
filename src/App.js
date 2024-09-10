@@ -71,7 +71,6 @@ function App() {
     }
   };
 
-  console.log(isLoggedIn);
   useEffect(() => {
     let signoutTimer;
     let countdownTimer;
@@ -185,49 +184,7 @@ function App() {
         </Routes>
       </BrowserRouter>
     </div>
-    // <div>
-    //   <BrowserRouter>
-    //     <Navbar />
-    //     <Routes>
-    //       <Route exact path="/" element={<Home />} />
-    //       <Route exact path="/store/:category" element={<StoreProducts />} />
-    //       <Route
-    //         exact
-    //         path="/product-description/:title"
-    //         element={<ProductDescription />}
-    //       />
-    //       <Route exact path="/cart" element={<CartPage />} />
-    //       <Route exact path="/loginPage" element={<LoginPage />} />
-    //       <Route exact path="/signUp" element={<SignUpPage />} />
-    //       <Route exact path="/user-messages" element={<UserMessage />} />
-    //       <Route
-    //         exact
-    //         path="/recover-password"
-    //         element={<RecoverPasswordPage />}
-    //       />
-
-    //       <Route
-    //         exact
-    //         path="/payement-methods"
-    //         element={<PayementMethodsPage />}
-    //       />
-    //       <Route exact path="/user-account" element={<UserAccount />} />
-    //       <Route exact path="/credit-card-form" element={<CreditCardPage />} />
-    //       <Route
-    //         exact
-    //         path="/shipping-service"
-    //         element={<ShippingServicePage />}
-    //       />
-    //       <Route
-    //         exact
-    //         path="/purchase-summary"
-    //         element={<PurchaseSummaryPage />}
-    //       />
-
-    //       <Route exact path="/error-404" element={<Error404 />} />
-    //     </Routes>
-    //   </BrowserRouter>
-    // </div>
+   
   );
 }
 

@@ -81,6 +81,7 @@ function UserAccount() {
   const [formErrorsPhone, setFormErrorsPhone] = useState({ phone: "" });
   const [onSuccessSumbit, setOnSuccessSumbit] = useState("");
 
+  console.log(auth?.currentUser);
   const formDataPhone = {
     setFormValues: setFormValuesPhone,
     setFormErrors: setFormErrorsPhone,

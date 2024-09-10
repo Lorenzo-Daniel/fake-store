@@ -58,7 +58,7 @@ function UserMessage() {
   useEffect(() => {
     checkIfDocumentExists();
      // eslint-disable-next-line 
-  }, [auth,]);
+  }, [auth]);
 
   const handleClose = () => {
     setOpen(false);

@@ -24,7 +24,6 @@ function TemporaryDrawer({ allCategories }) {
     left: false,
   });
   const navigate = useNavigate();
-
   const anchor = "left";
   const toggleDrawer = (anchor, open) => (event) => {
     if (
@@ -54,38 +53,17 @@ function TemporaryDrawer({ allCategories }) {
         </ListItem>
         <Divider />
         {allCategories?.map((text, index) => (
-          <ListItem key={text} disablePadding>
+          <ListItem key={index} disablePadding>
             <ListItemButton>
               <ListItemText
-                primary={text}
-                onClick={() => navigate(`store/${text}`)}
+                primary={text.slug}
+                onClick={() => navigate(`store/${text.slug}`)}
               />
             </ListItemButton>
           </ListItem>
         ))}
       </List>
       <Divider />
-      <Box>
-        <MenuItem sx={{ ml: 0, pl: 0 }}>
-          <IconButton
-            aria-label="account of current user"
-            aria-controls="primary-search-account-menu"
-            aria-haspopup="true"
-            color="inherit"
-          >
-            <AccountCircle />
-          </IconButton>
-          <p>Profile</p>
-        </MenuItem>
-        <MenuItem sx={{ ml: 0, pl: 0 }}>
-          <IconButton aria-label="show 17 new notifications" color="inherit">
-            <Badge badgeContent={17} color="error">
-              <NotificationsIcon />
-            </Badge>
-          </IconButton>
-          <p>Notifications</p>
-        </MenuItem>
-      </Box>
     </Box>
   );
 

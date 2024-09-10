@@ -69,6 +69,7 @@ function Navbar() {
   const [messageRead, setMessageRead] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [confirmLogout, setConfirmLogout] = useState(false);
+console.log(allCategories);
 
   const CategoryRequest = async () => {
     if (!allCategories) {
@@ -146,7 +147,7 @@ function Navbar() {
     fetchCategoriesData();
     checkIfDocumentExists(auth);
     // eslint-disable-next-line
-  }, [auth, messagesCount]);
+  }, [auth, messagesCount,allCategories]);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -281,7 +282,7 @@ function Navbar() {
             <IconButton
               sx={{ display: { xs: "none", md: "flex" } }}
               size="large"
-              aria-label="show 17 new notifications"
+              aria-label="show 1 new notifications"
               color="inherit"
               onClick={handleMessages}
             >

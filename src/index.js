@@ -2,16 +2,16 @@ import { getAnalytics } from "firebase/analytics";
 
 import { initializeApp } from "firebase/app";
 
-import React from 'react';
-import ReactDOM from 'react-dom/client';
+import React from "react";
+import ReactDOM from "react-dom/client";
 
-import { Provider } from 'react-redux';
-import { persistStore } from 'redux-persist';
-import { PersistGate } from 'redux-persist/integration/react';
+import { Provider } from "react-redux";
+import { persistStore } from "redux-persist";
+import { PersistGate } from "redux-persist/integration/react";
+import { StrictMode } from "react";
+import App from "./App";
 
-import App from './App';
-
-import store from './StoreAppRedux/Store';
+import store from "./StoreAppRedux/Store";
 // import {firebaseConfig} from './firebaseConfig/firebaseConfig'
 export const firebaseConfig = {
   apiKey: "AIzaSyAx-FQAzA_zs4uccqRctlBRdxUKs9BqRmg",
@@ -23,17 +23,19 @@ export const firebaseConfig = {
   measurementId: "G-PBD0XTP357",
 };
 
- const app = initializeApp(firebaseConfig);
- // eslint-disable-next-line
- const analytics = getAnalytics(app);
+const app = initializeApp(firebaseConfig);
+// eslint-disable-next-line
+const analytics = getAnalytics(app);
 
-const persistor = persistStore(store)
+const persistor = persistStore(store);
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <PersistGate persistor = {persistor}>
-  <Provider store={store}>
-    <App />
-  </Provider>
+  <PersistGate persistor={persistor}>
+    <Provider store={store}>
+      <StrictMode>
+        <App />
+      </StrictMode>
+    </Provider>
   </PersistGate>
 );
