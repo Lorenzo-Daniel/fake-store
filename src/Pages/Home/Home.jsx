@@ -1,21 +1,33 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Box } from "@mui/material";
-
+import { Button, Box ,ImageList} from "@mui/material";
 function Home() {
   const navigate = useNavigate();
 
   return (
     <>
-      <Box sx={{ position: "relative" }}>
-        <Box sx={{ position: "relative", height: "100vh" }} />
+      <Box
+        sx={{
+          height: "calc(100vh - 6em)",
+          justifyContent: "center",
+          display: "flex",
+          position: "relative",
+          backgroundColor: "#8fd3f8",
+          overflow:'hidden'
+        }}
+      >
+        <img
+        className=""
+          src="/assets/illustrations/home.jpg "
+          alt=""
+        />
+
         <Button
           sx={{
             backgroundColor: "#bdcffa",
             position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
+            top: "20px",
+            right: "20px",
           }}
           variant={"outlined"}
           size="small"

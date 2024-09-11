@@ -87,7 +87,7 @@ function StoreProducts() {
 
   return (
     <>
-      <Box sx={{ mt: 5, display: "flex", justifyContent: "center"}}>
+      <Box sx={{ mt: 5, display: "flex", justifyContent: "center" }}>
         <Typography gutterBottom variant="h4" component="div">
           {category.toUpperCase()}
         </Typography>
@@ -98,70 +98,87 @@ function StoreProducts() {
         direction="row"
         justifyContent="flex-start"
         spacing={5}
-        sx={{ paddingX: { xs: "5px", md: "15px", lg: "25px", xl: "200px" }  } }
+        sx={{ paddingX: { xs: "5px", md: "15px", lg: "25px", xl: "200px" } }}
       >
-        { categoryToShow.length < 1 ? <Grid sx={{width:"100vw"}}> <Box sx={{ display:"flex",width:"100%",justifyContent:"center",height:"100vh",alignItems:"center",fontSize:"28px",textAlign:"center"}}>No tenemos ningún producto en categoria ❝{category.toUpperCase()}❞</Box> </Grid> : categoryToShow?.map((product) => (
-          <Grid key={product.id} item xs={12} sm={6} md={4} lg={3}>
-            <Card>
-              <Link to={`/product-description/${product.title}`}>
-                <CardMedia
-                  sx={{ height: 250 }}
-                  image={product.thumbnail}
-                  title={product.title}
-                />
-              </Link>
-              <CardContent>
-                <Typography gutterBottom variant="h6" component="div">
-                  {product.title}
-                </Typography>
-                <Typography component="span">$ {product.price}</Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {product.category}
-                </Typography>
-              </CardContent>
-              <CardActions
-                className="mb-3"
-                sx={{ display: "flex", justifyContent: "start" }}
-              >
-                <Button
-                  variant="contained"
-                  size="small"
-                  onClick={() =>
-                    navigate(`/product-description/${product.title}`)
-                  }
-                >
-                  Learn More
-                </Button>
-                <Button
-                  size="small"
-                  variant="outlined"
-                  color={
-                    productsInCart.find((pdt) => pdt.id === product.id)
-                      ? "error"
-                      : "primary"
-                  }
-                  onClick={() => handleAddRemoveProductFromCart(product.id)}
-                >
-                  {productsInCart.find((pdt) => pdt.id === product.id) ? (
-                    <Box>
-                      Remove FROM CART
-                      <Delete />
-                    </Box>
-                  ) : (
-                    <Box>
-                      Add To Cart
-                      <ShoppingCartCheckoutTwoTone />
-                    </Box>
-                  )}
-                </Button>
-              </CardActions>
-            </Card>
+        {categoryToShow.length < 1 ? (
+          <Grid sx={{ width: "100vw" }}>
+            <Box
+              sx={{
+                display: "flex",
+                width: "100%",
+                justifyContent: "center",
+                height: "100vh",
+                alignItems: "center",
+                fontSize: "28px",
+                textAlign: "center",
+              }}
+            >
+              No tenemos ningún producto en categoria ❝{category.toUpperCase()}❞
+            </Box>
           </Grid>
-        ))}
+        ) : (
+          categoryToShow?.map((product) => (
+            <Grid key={product.id} item xs={12} sm={6} md={4} lg={3}>
+              <Card>
+                <Link to={`/product-description/${product.title}`}>
+                  <CardMedia
+                    sx={{ height: 250 }}
+                    image={product.thumbnail}
+                    title={product.title}
+                  />
+                </Link>
+                <CardContent>
+                  <Typography gutterBottom variant="h6" component="div">
+                    {product.title}
+                  </Typography>
+                  <Typography component="span">$ {product.price}</Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {product.category}
+                  </Typography>
+                </CardContent>
+                <CardActions
+                  className="mb-3"
+                  sx={{ display: "flex", justifyContent: "start" }}
+                >
+                  <Button
+                    variant="contained"
+                    size="small"
+                    onClick={() =>
+                      navigate(`/product-description/${product.title}`)
+                    }
+                  >
+                    Learn More
+                  </Button>
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    color={
+                      productsInCart.find((pdt) => pdt.id === product.id)
+                        ? "error"
+                        : "primary"
+                    }
+                    onClick={() => handleAddRemoveProductFromCart(product.id)}
+                  >
+                    {productsInCart.find((pdt) => pdt.id === product.id) ? (
+                      <Box>
+                        Remove FROM CART
+                        <Delete />
+                      </Box>
+                    ) : (
+                      <Box>
+                        Add To Cart
+                        <ShoppingCartCheckoutTwoTone />
+                      </Box>
+                    )}
+                  </Button>
+                </CardActions>
+              </Card>
+            </Grid>
+          ))
+        )}
       </Grid>
     </>
   );
 }
 
 export default StoreProducts;
-

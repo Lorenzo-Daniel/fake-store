@@ -12,6 +12,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import "./App.css";
 import Navbar from "./Components/Navbar";
+import Footer from "./Components/Footer";
 import CartPage from "./Pages/Cart Page/Cart/CartPage";
 import CreditCardPage from "./Pages/Cart Page/Cerdit card/CreditCardPage";
 import PayementMethodsPage from "./Pages/Cart Page/Payement methods/PayementMethodsPage";
@@ -182,6 +183,7 @@ function App() {
           {/* Ruta para mostrar cuando la URL no existe */}
           <Route path="*" element={<Error404 />} />
         </Routes>
+   <Footer/>
       </BrowserRouter>
     </div>
    
