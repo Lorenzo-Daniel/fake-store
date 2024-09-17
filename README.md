@@ -135,7 +135,7 @@
 
 The application is live and can be accessed at the following link:
 
-[Visit the NASA Web App](https://precious-caramel-78198c.netlify.app/)
+[Visit the FAKE STORE Web App](https://precious-caramel-78198c.netlify.app/)
 
 This web app is deployed using **Netlify** for easy continuous deployment and integration with GitHub.
 
